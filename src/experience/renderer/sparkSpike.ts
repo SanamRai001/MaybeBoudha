@@ -2,11 +2,11 @@ export const SPARK_VERSION = '2.2.0'
 
 export const TEST_ASSET = {
   label: 'PlayCanvas biker',
-  format: 'SPZ v4',
-  bytes: 2_242_956,
+  format: 'compressed PLY',
+  bytes: 2_487_573,
   sourceRepository: 'playcanvas/engine',
   sourceCommit: 'b5b983982a9860d21e0c1dafb2f85f72e2c01afb',
-  url: 'https://cdn.jsdelivr.net/gh/playcanvas/engine@b5b983982a9860d21e0c1dafb2f85f72e2c01afb/examples/assets/splats/biker.spz',
+  url: 'https://cdn.jsdelivr.net/gh/playcanvas/engine@b5b983982a9860d21e0c1dafb2f85f72e2c01afb/examples/assets/splats/biker.compressed.ply',
 } as const
 
 export type ProgressSnapshot = {
