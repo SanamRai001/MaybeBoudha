@@ -2,15 +2,16 @@ import { describe, expect, it } from 'vitest'
 
 import { formatBytes, progressSnapshot, TEST_ASSET } from './sparkSpike'
 
-describe('Spark renderer spike helpers', () => {
-  it('keeps the upstream test asset pinned to a concrete commit', () => {
+describe('renderer spike helpers', () => {
+  it('keeps the shared upstream test asset pinned to a concrete commit', () => {
     expect(TEST_ASSET.sourceCommit).toMatch(/^[a-f0-9]{40}$/)
     expect(TEST_ASSET.url).toContain(TEST_ASSET.sourceCommit)
-    expect(TEST_ASSET.bytes).toBeGreaterThan(10_000_000)
+    expect(TEST_ASSET.sourceRepository).toBe('playcanvas/engine')
+    expect(TEST_ASSET.bytes).toBeGreaterThan(2_000_000)
   })
 
   it('formats the sample payload size for the metrics panel', () => {
-    expect(formatBytes(TEST_ASSET.bytes)).toBe('17.3 MB')
+    expect(formatBytes(TEST_ASSET.bytes)).toBe('2.1 MB')
     expect(formatBytes(0)).toBe('0 B')
   })
 
