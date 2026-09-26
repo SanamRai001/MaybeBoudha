@@ -35,3 +35,45 @@ jobs:
 
       - name: Build production bundle
         run: npm run build
+
+  runtime-smoke:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Build production bundle
+        run: npm run build
+
+      - name: Start preview server
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/maybeboudha-preview.log 2>&1 &
+          echo $! > /tmp/maybeboudha-preview.pid
+
+      - name: Install Playwright Chromium
+        run: npx --yes playwright@1.55.0 install --with-deps chromium
+
+      - name: Capture Phase 2 runtime
+        run: |
+          npx --yes playwright@1.55.0 screenshot             --browser=chromium             --viewport-size="1440,1000"             --wait-for-timeout=25000             http://127.0.0.1:4173             /tmp/maybeboudha-phase-2.png
+
+      - name: Upload runtime screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase-2-runtime-smoke
+          path: /tmp/maybeboudha-phase-2.png
+          if-no-files-found: warn
