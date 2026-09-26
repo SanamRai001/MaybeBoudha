@@ -75,13 +75,13 @@ jobs:
           fi
           echo "CHROME=$CHROME" >> "$GITHUB_ENV"
 
-      - name: Capture Spark runtime
+      - name: Probe Spark runtime
         run: |
-          timeout 55s "$CHROME"             --headless             --no-sandbox             --disable-dev-shm-usage             --use-angle=swiftshader             --enable-webgl             --window-size=1440,1000             --virtual-time-budget=25000             --screenshot=/tmp/maybeboudha-phase-2-spark.png             "http://127.0.0.1:4173/?renderer=spark"
+          timeout 75s node scripts/runtime-smoke.mjs             spark             /tmp/maybeboudha-phase-2-spark.png
 
-      - name: Capture PlayCanvas runtime
+      - name: Probe PlayCanvas runtime
         run: |
-          timeout 65s "$CHROME"             --headless             --no-sandbox             --disable-dev-shm-usage             --use-angle=swiftshader             --enable-webgl             --window-size=1440,1000             --virtual-time-budget=30000             --screenshot=/tmp/maybeboudha-phase-2-playcanvas.png             "http://127.0.0.1:4173/?renderer=playcanvas"
+          timeout 75s node scripts/runtime-smoke.mjs             playcanvas             /tmp/maybeboudha-phase-2-playcanvas.png
 
       - name: Upload runtime screenshots
         if: always()
