@@ -1,22 +1,28 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
-import { ExperienceViewport } from './ExperienceViewport'
+import { ExperienceViewport, type SceneRendererProps } from './ExperienceViewport'
 import { shouldForceSceneFailure } from './scene/prepareScene'
 
-vi.mock('./renderer/ThreeSceneCanvas', () => ({
-  ThreeSceneCanvas: ({ reducedMotion }: { reducedMotion: boolean }) => (
+function TestRenderer({ reducedMotion }: SceneRendererProps) {
+  return (
     <div data-testid="renderer-surface" data-reduced-motion={String(reducedMotion)}>
       renderer ready
     </div>
-  ),
-}))
+  )
+}
 
 describe('ExperienceViewport', () => {
-  it('moves from the loading state into the renderer surface', async () => {
+  it('moves from the loading state into an injected renderer surface', async () => {
     const prepareScene = vi.fn(async () => undefined)
 
-    render(<ExperienceViewport reducedMotion={false} prepareScene={prepareScene} />)
+    render(
+      <ExperienceViewport
+        reducedMotion={false}
+        prepareScene={prepareScene}
+        renderer={TestRenderer}
+      />,
+    )
 
     expect(screen.getByRole('status').textContent).toContain('Preparing scene')
     expect(await screen.findByTestId('renderer-surface')).not.toBeNull()
@@ -29,7 +35,13 @@ describe('ExperienceViewport', () => {
       .mockRejectedValueOnce(new Error('forced scene failure'))
       .mockResolvedValueOnce(undefined)
 
-    render(<ExperienceViewport reducedMotion={true} prepareScene={prepareScene} />)
+    render(
+      <ExperienceViewport
+        reducedMotion={true}
+        prepareScene={prepareScene}
+        renderer={TestRenderer}
+      />,
+    )
 
     const fallback = await screen.findByRole('alert')
     expect(fallback.textContent).toContain('The 3D scene could not load.')
