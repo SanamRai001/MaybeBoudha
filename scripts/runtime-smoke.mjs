@@ -16,10 +16,7 @@ if (!chrome) {
 
 const port = renderer === 'spark' ? 9222 : 9223
 const targetUrl = `http://127.0.0.1:4173/?renderer=${renderer}`
-const browser = spawn(
-  chrome,
-  [
-    '--headless=new',
+const browserArgs = [
     '--no-sandbox',
     '--disable-dev-shm-usage',
     '--use-gl=angle',
@@ -31,7 +28,15 @@ const browser = spawn(
     '--window-size=1440,1000',
     `--remote-debugging-port=${port}`,
     'about:blank',
-  ],
+]
+
+if (process.env.MAYBEBOUDHA_HEADFUL !== '1') {
+  browserArgs.unshift('--headless=new')
+}
+
+const browser = spawn(
+  chrome,
+  browserArgs,
   { stdio: ['ignore', 'pipe', 'pipe'] },
 )
 
