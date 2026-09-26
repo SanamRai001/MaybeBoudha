@@ -1,12 +1,12 @@
 export const SPARK_VERSION = '2.2.0'
 
 export const TEST_ASSET = {
-  label: 'Niantic horned lizard',
-  format: 'SPZ',
-  bytes: 18_143_098,
-  sourceRepository: 'nianticlabs/spz',
-  sourceCommit: 'affd0ecea7fbb4c265ee119475af7ee5b2997482',
-  url: 'https://cdn.jsdelivr.net/gh/nianticlabs/spz@affd0ecea7fbb4c265ee119475af7ee5b2997482/samples/hornedlizard.spz',
+  label: 'PlayCanvas biker',
+  format: 'SPZ v4',
+  bytes: 2_242_956,
+  sourceRepository: 'playcanvas/engine',
+  sourceCommit: 'b5b983982a9860d21e0c1dafb2f85f72e2c01afb',
+  url: 'https://cdn.jsdelivr.net/gh/playcanvas/engine@b5b983982a9860d21e0c1dafb2f85f72e2c01afb/examples/assets/splats/biker.spz',
 } as const
 
 export type ProgressSnapshot = {
