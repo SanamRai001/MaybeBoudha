@@ -3,7 +3,6 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { SceneRendererProps } from '../ExperienceViewport'
 import { ViewerFallback } from '../ui/ViewerFallback'
 import {
-  PLAYCANVAS_CAMERA_CONTROLS_URL,
   PLAYCANVAS_MODULE_URL,
   PLAYCANVAS_SPZ_PARSER_URL,
   PLAYCANVAS_VERSION,
@@ -15,6 +14,7 @@ import { formatBytes, TEST_ASSET } from './sparkSpike'
 type RuntimeMetrics = {
   phase: 'loading' | 'ready' | 'error'
   loadMs: number | null
+  numSplats: number | null
   fps: number | null
   error: string | null
 }
@@ -22,23 +22,27 @@ type RuntimeMetrics = {
 const INITIAL_METRICS: RuntimeMetrics = {
   phase: 'loading',
   loadMs: null,
+  numSplats: null,
   fps: null,
   error: null,
 }
 
-const CAMERA_TARGET: [number, number, number] = [0.1, 0.141, 0.206]
-const CAMERA_POSITION: [number, number, number] = [
-  -1.9104306297,
-  1.3367805898,
-  -2.1217193697,
-]
+const CAMERA_TARGET: [number, number, number] = [0, 1, 0]
+const CAMERA_POSITION: [number, number, number] = [3.15, 2.05, 5.05]
 
 type PlayCanvasAsset = {
-  resource?: unknown
+  resource?: {
+    gsplatData?: {
+      numSplats?: number
+    }
+  }
 }
 
 type PlayCanvasApplication = {
-  assets: unknown
+  assets: {
+    add: (asset: PlayCanvasAsset) => void
+    load: (asset: PlayCanvasAsset) => void
+  }
   loader: {
     getHandler: (type: string) => {
       addParser: (parser: unknown) => void
@@ -55,9 +59,6 @@ type PlayCanvasApplication = {
 }
 
 type PlayCanvasEntity = {
-  script?: {
-    create: (name: string) => void
-  }
   setPosition: (x: number, y: number, z: number) => void
   lookAt: (x: number, y: number, z: number) => void
   addComponent: (type: string, data?: Record<string, unknown>) => void
@@ -76,14 +77,9 @@ type PlayCanvasModule = {
     name: string,
     type: string,
     file: { url: string },
-  ) => PlayCanvasAsset
-  AssetListLoader: new (
-    assets: PlayCanvasAsset[],
-    registry: unknown,
-  ) => {
-    load: (
-      callback: (error?: string | Error | null) => void,
-    ) => void
+  ) => PlayCanvasAsset & {
+    ready: (callback: () => void) => void
+    on: (name: string, callback: (error: unknown) => void) => void
   }
   Color: new (r: number, g: number, b: number, a?: number) => unknown
   Entity: new (name: string) => PlayCanvasEntity
@@ -143,7 +139,11 @@ function PlayCanvasMetrics({ metrics }: { metrics: RuntimeMetrics }) {
       </div>
       <div>
         <span>Splats</span>
-        <strong>786,233</strong>
+        <strong>
+          {metrics.numSplats === null
+            ? '—'
+            : new Intl.NumberFormat('en-US').format(metrics.numSplats)}
+        </strong>
       </div>
       <div>
         <span>FPS</span>
@@ -180,7 +180,7 @@ export function PlayCanvasSceneCanvas({
     const startedAt = performance.now()
 
     void loadPlayCanvasModules()
-      .then(async ({ playcanvas, parser }) => {
+      .then(({ playcanvas, parser }) => {
         if (disposed) {
           return
         }
@@ -188,7 +188,6 @@ export function PlayCanvasSceneCanvas({
         const {
           Application,
           Asset,
-          AssetListLoader,
           Color,
           Entity,
           WasmModule,
@@ -221,82 +220,71 @@ export function PlayCanvasSceneCanvas({
         resizeObserver.observe(canvas)
         app.resizeCanvas(canvas.clientWidth, canvas.clientHeight)
 
-        const controlsAsset = new Asset(
-          'camera-controls',
-          'script',
-          { url: PLAYCANVAS_CAMERA_CONTROLS_URL },
-        )
         const splatAsset = new Asset(
-          'niantic-horned-lizard',
+          'playcanvas-biker-spz-v4',
           'gsplat',
           { url: TEST_ASSET.url },
         )
 
-        const loader = new AssetListLoader(
-          [controlsAsset, splatAsset],
-          app.assets,
-        )
-
-        await new Promise<void>((resolve, reject) => {
-          loader.load((error) => {
-            if (error) {
-              reject(
-                error instanceof Error
-                  ? error
-                  : new Error(String(error)),
-              )
-              return
-            }
-
-            resolve()
-          })
+        splatAsset.on('error', (error) => {
+          if (!disposed) {
+            setMetrics((current) => ({
+              ...current,
+              phase: 'error',
+              error: toErrorMessage(error),
+            }))
+          }
         })
 
-        if (disposed || !app) {
-          return
-        }
-
-        const camera = new Entity('Camera')
-        camera.setPosition(...CAMERA_POSITION)
-        camera.lookAt(...CAMERA_TARGET)
-        camera.addComponent('camera', {
-          clearColor: new Color(0.035, 0.043, 0.039),
-        })
-        camera.addComponent('script')
-        camera.script?.create('cameraControls')
-        app.root.addChild(camera)
-
-        const splat = new Entity('SPZ comparison fixture')
-        splat.addComponent('gsplat', {
-          asset: splatAsset,
-        })
-        app.root.addChild(splat)
-
-        let frames = 0
-        let sampledAt = performance.now()
-
-        frameListener = () => {
-          const now = performance.now()
-          frames += 1
-          const elapsed = now - sampledAt
-
-          if (elapsed < 1000) {
+        splatAsset.ready(() => {
+          if (disposed || !app) {
             return
           }
 
-          handleFps((frames * 1000) / elapsed)
-          frames = 0
-          sampledAt = now
-        }
+          const camera = new Entity('Camera')
+          camera.setPosition(...CAMERA_POSITION)
+          camera.lookAt(...CAMERA_TARGET)
+          camera.addComponent('camera', {
+            clearColor: new Color(0.035, 0.043, 0.039),
+          })
+          app.root.addChild(camera)
 
-        app.on('update', frameListener)
+          const splat = new Entity('SPZ v4 comparison fixture')
+          splat.addComponent('gsplat', {
+            asset: splatAsset,
+          })
+          app.root.addChild(splat)
 
-        setMetrics((current) => ({
-          ...current,
-          phase: 'ready',
-          loadMs: performance.now() - startedAt,
-          error: null,
-        }))
+          let frames = 0
+          let sampledAt = performance.now()
+
+          frameListener = () => {
+            const now = performance.now()
+            frames += 1
+            const elapsed = now - sampledAt
+
+            if (elapsed < 1000) {
+              return
+            }
+
+            handleFps((frames * 1000) / elapsed)
+            frames = 0
+            sampledAt = now
+          }
+
+          app.on('update', frameListener)
+
+          setMetrics((current) => ({
+            ...current,
+            phase: 'ready',
+            loadMs: performance.now() - startedAt,
+            numSplats: splatAsset.resource?.gsplatData?.numSplats ?? null,
+            error: null,
+          }))
+        })
+
+        app.assets.add(splatAsset)
+        app.assets.load(splatAsset)
       })
       .catch((error: unknown) => {
         if (!disposed) {
