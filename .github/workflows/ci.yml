@@ -68,11 +68,23 @@ jobs:
 
       - name: Capture Spark runtime
         run: |
-          npx --yes playwright@1.55.0 screenshot             --browser=chromium             --viewport-size="1440,1000"             --wait-for-timeout=25000             "http://127.0.0.1:4173/?renderer=spark"             /tmp/maybeboudha-phase-2-spark.png
+          timeout 55s npx --yes playwright@1.55.0 screenshot \
+            --browser=chromium \
+            --viewport-size="1440,1000" \
+            --wait-for-timeout=25000 \
+            --timeout=15000 \
+            "http://127.0.0.1:4173/?renderer=spark" \
+            /tmp/maybeboudha-phase-2-spark.png
 
       - name: Capture PlayCanvas runtime
         run: |
-          npx --yes playwright@1.55.0 screenshot             --browser=chromium             --viewport-size="1440,1000"             --wait-for-timeout=30000             "http://127.0.0.1:4173/?renderer=playcanvas"             /tmp/maybeboudha-phase-2-playcanvas.png
+          timeout 65s npx --yes playwright@1.55.0 screenshot \
+            --browser=chromium \
+            --viewport-size="1440,1000" \
+            --wait-for-timeout=30000 \
+            --timeout=15000 \
+            "http://127.0.0.1:4173/?renderer=playcanvas" \
+            /tmp/maybeboudha-phase-2-playcanvas.png
 
       - name: Upload runtime screenshots
         if: always()
