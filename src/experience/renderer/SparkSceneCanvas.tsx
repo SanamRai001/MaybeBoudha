@@ -38,16 +38,8 @@ const INITIAL_METRICS: RuntimeMetrics = {
   error: null,
 }
 
-const CAMERA_TARGET: [number, number, number] = [0.1, 0.141, 0.206]
-
-// The public Babylon sample exposes camera-orbit as alpha=4, beta=1.2,
-// radius=3.3. These are the equivalent Cartesian coordinates around
-// CAMERA_TARGET using Babylon ArcRotateCamera's documented formula.
-const CAMERA_POSITION: [number, number, number] = [
-  -1.9104306297,
-  1.3367805898,
-  -2.1217193697,
-]
+const CAMERA_TARGET: [number, number, number] = [0, 1, 0]
+const CAMERA_POSITION: [number, number, number] = [3.15, 2.05, 5.05]
 
 type SparkSceneContentProps = {
   onProgress: (progress: ProgressSnapshot) => void
@@ -238,8 +230,8 @@ export function SparkSceneCanvas({ reducedMotion }: SceneRendererProps) {
         <OrbitCameraControls
           reducedMotion={reducedMotion}
           target={CAMERA_TARGET}
-          minDistance={1.2}
-          maxDistance={12}
+          minDistance={2}
+          maxDistance={14}
           minPolarAngle={0.15}
           maxPolarAngle={Math.PI * 0.82}
         />
