@@ -66,22 +66,30 @@ jobs:
       - name: Install Chromium
         run: npx --yes playwright@1.55.0 install --with-deps chromium
 
-      - name: Resolve Chromium headless shell
+      - name: Resolve full Chromium binary
         run: |
-          CHROME="$(find "$HOME/.cache/ms-playwright" -type f \( -name "headless_shell" -o -name "chrome-headless-shell" \) | head -n 1)"
+          CHROME="$(find "$HOME/.cache/ms-playwright" -type f -path "*/chromium-*/chrome-linux/chrome" | head -n 1)"
           if [ -z "$CHROME" ]; then
-            echo "Unable to locate Playwright Chromium headless shell."
+            echo "Unable to locate full Playwright Chromium binary."
             exit 1
           fi
           echo "CHROME=$CHROME" >> "$GITHUB_ENV"
 
       - name: Probe Spark runtime
+        id: spark-smoke
+        continue-on-error: true
         run: |
-          timeout 75s node scripts/runtime-smoke.mjs             spark             /tmp/maybeboudha-phase-2-spark.png
+          timeout 75s node scripts/runtime-smoke.mjs \
+            spark \
+            /tmp/maybeboudha-phase-2-spark.png
 
       - name: Probe PlayCanvas runtime
+        id: playcanvas-smoke
+        continue-on-error: true
         run: |
-          timeout 75s node scripts/runtime-smoke.mjs             playcanvas             /tmp/maybeboudha-phase-2-playcanvas.png
+          timeout 75s node scripts/runtime-smoke.mjs \
+            playcanvas \
+            /tmp/maybeboudha-phase-2-playcanvas.png
 
       - name: Upload runtime screenshots
         if: always()
@@ -90,3 +98,11 @@ jobs:
           name: phase-2-runtime-smoke
           path: /tmp/maybeboudha-phase-2-*.png
           if-no-files-found: warn
+
+      - name: Require both renderer probes
+        if: always()
+        run: |
+          echo "Spark probe: ${{ steps.spark-smoke.outcome }}"
+          echo "PlayCanvas probe: ${{ steps.playcanvas-smoke.outcome }}"
+          test "${{ steps.spark-smoke.outcome }}" = "success"
+          test "${{ steps.playcanvas-smoke.outcome }}" = "success"
