@@ -27,6 +27,9 @@ export type SparkModule = {
 
 export type SparkSplatMesh = {
   numSplats: number
+  quaternion: {
+    set: (x: number, y: number, z: number, w: number) => void
+  }
   dispose: () => void
 }
 
