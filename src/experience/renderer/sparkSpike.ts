@@ -1,8 +1,5 @@
 export const SPARK_VERSION = '2.2.0'
 
-export const SPARK_MODULE_URL =
-  'https://sparkjs.dev/releases/spark/2.2.0/spark.module.js'
-
 export const TEST_ASSET = {
   label: 'Niantic horned lizard',
   format: 'SPZ',
@@ -11,27 +8,6 @@ export const TEST_ASSET = {
   sourceCommit: 'affd0ecea7fbb4c265ee119475af7ee5b2997482',
   url: 'https://cdn.jsdelivr.net/gh/nianticlabs/spz@affd0ecea7fbb4c265ee119475af7ee5b2997482/samples/hornedlizard.spz',
 } as const
-
-export type SparkModule = {
-  SparkRenderer: new (options: { renderer: unknown }) => {
-    dispose: () => void
-  }
-  SplatMesh: new (options: {
-    url: string
-    editable?: boolean
-    raycastable?: boolean
-    onProgress?: (event: ProgressEvent) => void
-    onLoad?: (mesh: SparkSplatMesh) => void | Promise<void>
-  }) => SparkSplatMesh
-}
-
-export type SparkSplatMesh = {
-  numSplats: number
-  quaternion: {
-    set: (x: number, y: number, z: number, w: number) => void
-  }
-  dispose: () => void
-}
 
 export type ProgressSnapshot = {
   loadedBytes: number
@@ -68,9 +44,4 @@ export function progressSnapshot(event: ProgressEvent): ProgressSnapshot {
         ? null
         : Math.min(100, Math.max(0, (loadedBytes / totalBytes) * 100)),
   }
-}
-
-export async function loadSparkModule(): Promise<SparkModule> {
-  const module = await import(/* @vite-ignore */ SPARK_MODULE_URL)
-  return module as unknown as SparkModule
 }
