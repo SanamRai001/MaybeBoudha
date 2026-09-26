@@ -19,10 +19,13 @@ const targetUrl = `http://127.0.0.1:4173/?renderer=${renderer}`
 const browser = spawn(
   chrome,
   [
-    '--headless',
+    '--headless=new',
     '--no-sandbox',
     '--disable-dev-shm-usage',
+    '--use-gl=angle',
     '--use-angle=swiftshader',
+    '--ignore-gpu-blocklist',
+    '--disable-gpu-sandbox',
     '--enable-webgl',
     '--enable-unsafe-swiftshader',
     '--window-size=1440,1000',
