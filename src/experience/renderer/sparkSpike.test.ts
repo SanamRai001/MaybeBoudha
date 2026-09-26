@@ -7,11 +7,12 @@ describe('renderer spike helpers', () => {
     expect(TEST_ASSET.sourceCommit).toMatch(/^[a-f0-9]{40}$/)
     expect(TEST_ASSET.url).toContain(TEST_ASSET.sourceCommit)
     expect(TEST_ASSET.sourceRepository).toBe('playcanvas/engine')
+    expect(TEST_ASSET.format).toBe('compressed PLY')
     expect(TEST_ASSET.bytes).toBeGreaterThan(2_000_000)
   })
 
   it('formats the sample payload size for the metrics panel', () => {
-    expect(formatBytes(TEST_ASSET.bytes)).toBe('2.1 MB')
+    expect(formatBytes(TEST_ASSET.bytes)).toBe('2.4 MB')
     expect(formatBytes(0)).toBe('0 B')
   })
 
