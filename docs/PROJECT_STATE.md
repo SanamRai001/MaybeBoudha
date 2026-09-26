@@ -12,13 +12,14 @@ Build a browser-based, photorealistic interactive heritage experience centered o
 - Default branch: `main`
 - Completed implementation branch: `feat/phase-1-viewer-foundation`
 - Pull request: `#1`
+- Phase 1 merge SHA: `3a49774bb389dd42352ae5cbc60978e1add743be`
 - Working title: `MaybeBoudha`
 
 ## Completed phase
 
 **Phase 1 — Viewer Foundation**
 
-Status: **complete pending merge of PR #1**
+Status: **complete and merged to `main`**
 
 ## Changes
 
@@ -33,18 +34,18 @@ Status: **complete pending merge of PR #1**
 - added Vitest + React Testing Library coverage for loading/failure/retry behavior;
 - added Node 24 GitHub Actions CI;
 - committed `package-lock.json` generated from the CI environment;
-- CI now uses read-only repository permissions and `npm ci`.
+- CI uses read-only repository permissions and `npm ci`.
 
 ## Verification
 
-Verified on the Phase 1 branch:
+Verified before merge and required again on `main`:
 
 - automated tests pass: **3/3**;
 - `tsc --noEmit` passes as part of the production build;
 - Vite production build passes;
 - forced preparation failure renders the recovery UI and retry path in tests;
 - renderer injection is exercised by tests;
-- current CI resolves dependencies from the committed lockfile.
+- dependencies resolve from the committed lockfile.
 
 Not yet claimed as verified:
 
@@ -100,7 +101,7 @@ Recommended:
 
 ## Resume rule
 
-1. inspect `main`, PR state, and Git history;
+1. inspect `main` and Git history;
 2. verify this checkpoint against the repository;
-3. if PR #1 is not merged, finish that before Phase 2;
+3. begin Phase 2 from the current `main`;
 4. update this file at the end of the next completed phase.
