@@ -16,22 +16,30 @@ if (!chrome) {
 
 const port = renderer === 'spark' ? 9222 : 9223
 const targetUrl = `http://127.0.0.1:4173/?renderer=${renderer}`
+const headful = process.env.MAYBEBOUDHA_HEADFUL === '1'
 const browserArgs = [
-    '--no-sandbox',
-    '--disable-dev-shm-usage',
-    '--use-gl=angle',
-    '--use-angle=swiftshader',
-    '--ignore-gpu-blocklist',
-    '--disable-gpu-sandbox',
-    '--enable-webgl',
-    '--enable-unsafe-swiftshader',
-    '--window-size=1440,1000',
-    `--remote-debugging-port=${port}`,
-    'about:blank',
+  '--no-sandbox',
+  '--disable-dev-shm-usage',
+  '--ignore-gpu-blocklist',
+  '--enable-webgl',
+  '--window-size=1440,1000',
+  `--remote-debugging-port=${port}`,
+  'about:blank',
 ]
 
-if (process.env.MAYBEBOUDHA_HEADFUL !== '1') {
-  browserArgs.unshift('--headless=new')
+if (headful) {
+  // Use the runner's Mesa/X11 path for Three.js, which requires a usable
+  // WebGL2 context. Forced SwiftShader exposed a context to PlayCanvas but
+  // caused R3F/Three renderer creation to fail before Spark could initialize.
+  browserArgs.unshift('--use-gl=desktop')
+} else {
+  browserArgs.unshift(
+    '--headless=new',
+    '--use-gl=angle',
+    '--use-angle=swiftshader',
+    '--disable-gpu-sandbox',
+    '--enable-unsafe-swiftshader',
+  )
 }
 
 const browser = spawn(
@@ -212,6 +220,20 @@ try {
   await client.send('Runtime.enable')
   await client.send('Page.enable')
   await client.send('Log.enable')
+
+  const capabilities = await evaluate(
+    client,
+    `(() => {
+      const webglCanvas = document.createElement('canvas')
+      const webgl2Canvas = document.createElement('canvas')
+      return {
+        webgl: Boolean(webglCanvas.getContext('webgl')),
+        webgl2: Boolean(webgl2Canvas.getContext('webgl2')),
+        userAgent: navigator.userAgent,
+      }
+    })()`,
+  )
+  console.log(`[${renderer}] graphics capabilities:`, JSON.stringify(capabilities))
 
   const state = await waitForRenderer(client)
   console.log(`[${renderer}] renderer state:`, JSON.stringify(state))
