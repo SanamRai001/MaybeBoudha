@@ -8,9 +8,22 @@ The goal is not to make a conventional informational website or a generic 3D mod
 
 ## Current status
 
-**Phase 0 — Documentation and planning**
+**Phase 1 — Viewer Foundation: complete**
 
-There is intentionally no application code yet. The project is being defined before implementation so that the renderer, reconstruction pipeline, content model, and performance strategy can evolve without forcing a rewrite.
+The repository now contains the smallest working browser viewer foundation needed to begin testing real reconstruction technology:
+
+- Vite + React + TypeScript;
+- Three.js + React Three Fiber placeholder renderer;
+- injected renderer boundary so the rendering implementation can be replaced;
+- orbit / zoom camera controls;
+- loading and recoverable failure states;
+- reduced-motion awareness;
+- renderer error fallback;
+- automated component tests;
+- reproducible npm lockfile;
+- CI test and production-build gates.
+
+The visible geometry is deliberately a placeholder. It is **not** a scan or reconstruction of Boudhanath.
 
 ## Product direction
 
@@ -31,7 +44,29 @@ The photorealistic layer is expected to come from **Gaussian Splatting, photogra
 
 The website and the captured 3D scene must remain decoupled.
 
-A placeholder or small test reconstruction should be usable during development. Replacing that asset with the real Boudhanath reconstruction later should not require rewriting the application.
+The current viewer accepts an injected renderer implementation. A small test reconstruction can therefore replace the placeholder in the next phase without coupling product UI and loading/error behavior to one rendering library.
+
+## Local development
+
+Requires Node.js 24 or newer.
+
+```bash
+npm ci
+npm run dev
+```
+
+Verification:
+
+```bash
+npm test
+npm run build
+```
+
+The recoverable scene-loading failure path can be exercised in development with:
+
+```text
+?scene=fail
+```
 
 ## Documentation
 
@@ -45,21 +80,15 @@ A placeholder or small test reconstruction should be usable during development. 
 1. Work in small, verifiable phases.
 2. Do not optimize for visual spectacle before the real rendering pipeline is proven.
 3. Preserve a clean boundary between UI, camera logic, content, and the 3D renderer.
-4. Test on realistic mobile hardware as well as desktop.
+4. Test on realistic mobile hardware as well as desktop before production release.
 5. Treat cultural accuracy, source licensing, privacy, and capture permissions as product requirements.
 6. Avoid committing huge raw reconstruction files directly to Git.
 7. Record important technical decisions before large implementation changes.
 
 ## Immediate next step
 
-**Phase 1 — Viewer Foundation**
+**Phase 2 — Real Reconstruction Renderer Spike**
 
-Build only the smallest application capable of proving:
-
-- the app shell loads;
-- a 3D scene can be mounted cleanly;
-- camera controls work;
-- a replaceable scene asset can be loaded;
-- the experience fails gracefully on unsupported or low-performance devices.
+Use a small, legally usable real reconstruction to compare the leading browser rendering paths. Measure visual quality, loading cost, asset size, memory, camera behavior, and integration complexity before choosing the production renderer or splat format.
 
 See [ROADMAP.md](docs/ROADMAP.md) for the phase boundaries.
