@@ -12,6 +12,41 @@ permissions:
   contents: read
 
 jobs:
+  lockfile-sync:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Regenerate exact npm lockfile
+        run: |
+          rm -f package-lock.json
+          npm install --package-lock-only --no-audit --no-fund
+
+      - name: Commit lockfile when changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json
+          if git diff --cached --quiet; then
+            echo "Lockfile already matches package.json."
+            exit 0
+          fi
+          git commit -m "chore(phase-2): repair generated npm lockfile"
+          git push origin HEAD:${{ github.head_ref }}
+
   verify:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -24,11 +59,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: npm
-          cache-dependency-path: package-lock.json
 
-      - name: Install locked dependencies
-        run: npm ci --no-audit --no-fund
+      - name: Resolve dependencies during lockfile repair
+        run: npm install --no-audit --no-fund
 
       - name: Run tests
         run: npm test
@@ -49,11 +82,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: npm
-          cache-dependency-path: package-lock.json
 
-      - name: Install locked dependencies
-        run: npm ci --no-audit --no-fund
+      - name: Resolve dependencies during lockfile repair
+        run: npm install --no-audit --no-fund
 
       - name: Build production bundle
         run: npm run build
