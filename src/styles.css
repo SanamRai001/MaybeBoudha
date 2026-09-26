@@ -131,6 +131,22 @@ h1 {
   font-size: 0.9rem;
 }
 
+.renderer-links {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.renderer-links a {
+  color: #8d9088;
+  text-underline-offset: 3px;
+}
+
+.renderer-links a[aria-current="page"] {
+  color: #e2c477;
+  text-decoration-thickness: 2px;
+}
+
 .viewer-column {
   min-width: 0;
 }
