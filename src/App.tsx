@@ -1,4 +1,6 @@
 import { ExperienceViewport } from './experience/ExperienceViewport'
+import { SparkSceneCanvas } from './experience/renderer/SparkSceneCanvas'
+import { SPARK_VERSION, TEST_ASSET } from './experience/renderer/sparkSpike'
 import { useReducedMotion } from './hooks/useReducedMotion'
 
 function App() {
@@ -10,41 +12,44 @@ function App() {
         <a className="brand" href="/" aria-label="MaybeBoudha home">
           MaybeBoudha
         </a>
-        <span className="phase-badge">Phase 1 · Viewer foundation</span>
+        <span className="phase-badge">Phase 2 · Reconstruction renderer spike</span>
       </header>
 
       <section className="hero" aria-labelledby="page-title">
         <div className="hero-copy">
           <p className="eyebrow">Boudhanath · Kathmandu, Nepal</p>
-          <h1 id="page-title">A foundation for a place that should feel present.</h1>
+          <h1 id="page-title">Proving the photorealistic rendering path.</h1>
           <p className="hero-description">
-            This is the technical viewer prototype. The simple geometry is intentionally temporary;
-            a measured real-scene reconstruction will replace it only after the rendering pipeline
-            is proven.
+            The viewer now loads a real Gaussian Splat reconstruction to measure the technology
+            before we capture Boudhanath. This sample is deliberately unrelated to the monument.
           </p>
 
           <dl className="prototype-notes">
             <div>
-              <dt>Interaction</dt>
-              <dd>Drag to orbit · wheel or pinch to zoom</dd>
+              <dt>Renderer</dt>
+              <dd>Spark {SPARK_VERSION} · Three.js integration</dd>
+            </div>
+            <div>
+              <dt>Fixture</dt>
+              <dd>{TEST_ASSET.label} · pinned upstream SPZ</dd>
             </div>
             <div>
               <dt>Motion</dt>
               <dd>{reducedMotion ? 'Reduced motion respected' : 'Standard interaction enabled'}</dd>
             </div>
-            <div>
-              <dt>Scene</dt>
-              <dd>Replaceable placeholder renderer</dd>
-            </div>
           </dl>
         </div>
 
         <div className="viewer-column">
-          <div className="viewer-frame" aria-label="Interactive 3D prototype">
-            <ExperienceViewport reducedMotion={reducedMotion} />
+          <div className="viewer-frame" aria-label="Gaussian Splat renderer spike">
+            <ExperienceViewport
+              reducedMotion={reducedMotion}
+              renderer={SparkSceneCanvas}
+            />
           </div>
           <p className="viewer-caption">
-            Placeholder geometry only — this is not a scan or reconstruction of Boudhanath.
+            Technical test asset only — this is not Boudhanath. Runtime metrics are shown inside the
+            viewer so we can evaluate the renderer before choosing the production pipeline.
           </p>
         </div>
       </section>
