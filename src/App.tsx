@@ -1,10 +1,18 @@
 import { ExperienceViewport } from './experience/ExperienceViewport'
+import { PlayCanvasSceneCanvas } from './experience/renderer/PlayCanvasSceneCanvas'
+import {
+  PLAYCANVAS_VERSION,
+  rendererCandidateFromSearch,
+} from './experience/renderer/playcanvasSpike'
 import { SparkSceneCanvas } from './experience/renderer/SparkSceneCanvas'
 import { SPARK_VERSION, TEST_ASSET } from './experience/renderer/sparkSpike'
 import { useReducedMotion } from './hooks/useReducedMotion'
 
 function App() {
   const reducedMotion = useReducedMotion()
+  const rendererCandidate = rendererCandidateFromSearch(window.location.search)
+  const isPlayCanvas = rendererCandidate === 'playcanvas'
+  const Renderer = isPlayCanvas ? PlayCanvasSceneCanvas : SparkSceneCanvas
 
   return (
     <main className="app-shell">
@@ -20,18 +28,41 @@ function App() {
           <p className="eyebrow">Boudhanath · Kathmandu, Nepal</p>
           <h1 id="page-title">Proving the photorealistic rendering path.</h1>
           <p className="hero-description">
-            The viewer now loads a real Gaussian Splat reconstruction to measure the technology
-            before we capture Boudhanath. This sample is deliberately unrelated to the monument.
+            The viewer loads the same real Gaussian Splat reconstruction through two candidate
+            engines so we can compare integration and delivery behavior before capturing
+            Boudhanath.
           </p>
 
           <dl className="prototype-notes">
             <div>
               <dt>Renderer</dt>
-              <dd>Spark {SPARK_VERSION} · Three.js integration</dd>
+              <dd>
+                {isPlayCanvas
+                  ? `PlayCanvas ${PLAYCANVAS_VERSION}`
+                  : `Spark ${SPARK_VERSION} · Three.js integration`}
+              </dd>
             </div>
             <div>
               <dt>Fixture</dt>
               <dd>{TEST_ASSET.label} · pinned upstream SPZ</dd>
+            </div>
+            <div>
+              <dt>Compare</dt>
+              <dd className="renderer-links">
+                <a
+                  href="?renderer=spark"
+                  aria-current={isPlayCanvas ? undefined : 'page'}
+                >
+                  Spark
+                </a>
+                <span aria-hidden="true">·</span>
+                <a
+                  href="?renderer=playcanvas"
+                  aria-current={isPlayCanvas ? 'page' : undefined}
+                >
+                  PlayCanvas
+                </a>
+              </dd>
             </div>
             <div>
               <dt>Motion</dt>
@@ -44,12 +75,12 @@ function App() {
           <div className="viewer-frame" aria-label="Gaussian Splat renderer spike">
             <ExperienceViewport
               reducedMotion={reducedMotion}
-              renderer={SparkSceneCanvas}
+              renderer={Renderer}
             />
           </div>
           <p className="viewer-caption">
-            Technical test asset only — this is not Boudhanath. Runtime metrics are shown inside the
-            viewer so we can evaluate the renderer before choosing the production pipeline.
+            Technical test asset only — this is not Boudhanath. Both candidates use the same SPZ
+            source so renderer differences are easier to isolate.
           </p>
         </div>
       </section>
