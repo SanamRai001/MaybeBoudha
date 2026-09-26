@@ -4,10 +4,23 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 type OrbitCameraControlsProps = {
   reducedMotion: boolean
+  target?: [number, number, number]
+  minDistance?: number
+  maxDistance?: number
+  minPolarAngle?: number
+  maxPolarAngle?: number
 }
 
-export function OrbitCameraControls({ reducedMotion }: OrbitCameraControlsProps) {
+export function OrbitCameraControls({
+  reducedMotion,
+  target = [0, 1.15, 0],
+  minDistance = 4.2,
+  maxDistance = 11,
+  minPolarAngle = 0.35,
+  maxPolarAngle = Math.PI * 0.48,
+}: OrbitCameraControlsProps) {
   const { camera, gl } = useThree()
+  const [targetX, targetY, targetZ] = target
 
   const controls = useMemo(
     () => new OrbitControls(camera, gl.domElement),
@@ -17,15 +30,24 @@ export function OrbitCameraControls({ reducedMotion }: OrbitCameraControlsProps)
   useEffect(() => {
     controls.enablePan = false
     controls.dampingFactor = 0.065
-    controls.minDistance = 4.2
-    controls.maxDistance = 11
-    controls.minPolarAngle = 0.35
-    controls.maxPolarAngle = Math.PI * 0.48
-    controls.target.set(0, 1.15, 0)
+    controls.minDistance = minDistance
+    controls.maxDistance = maxDistance
+    controls.minPolarAngle = minPolarAngle
+    controls.maxPolarAngle = maxPolarAngle
+    controls.target.set(targetX, targetY, targetZ)
     controls.update()
 
     return () => controls.dispose()
-  }, [controls])
+  }, [
+    controls,
+    maxDistance,
+    maxPolarAngle,
+    minDistance,
+    minPolarAngle,
+    targetX,
+    targetY,
+    targetZ,
+  ])
 
   useEffect(() => {
     controls.enableDamping = !reducedMotion
