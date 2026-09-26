@@ -4,10 +4,7 @@ import type { SceneRendererProps } from '../ExperienceViewport'
 import { ViewerFallback } from '../ui/ViewerFallback'
 import {
   PLAYCANVAS_MODULE_URL,
-  PLAYCANVAS_SPZ_PARSER_URL,
   PLAYCANVAS_VERSION,
-  PLAYCANVAS_ZSTD_GLUE_URL,
-  PLAYCANVAS_ZSTD_WASM_URL,
 } from './playcanvasSpike'
 import { formatBytes, TEST_ASSET } from './sparkSpike'
 
@@ -27,8 +24,8 @@ const INITIAL_METRICS: RuntimeMetrics = {
   error: null,
 }
 
-const CAMERA_TARGET: [number, number, number] = [0, 1, 0]
-const CAMERA_POSITION: [number, number, number] = [3.15, 2.05, 5.05]
+const CAMERA_TARGET: [number, number, number] = [-1.5, 1.05, 0]
+const CAMERA_POSITION: [number, number, number] = [0.6, 1.75, 3.4]
 
 type PlayCanvasAsset = {
   resource?: {
@@ -43,11 +40,6 @@ type PlayCanvasApplication = {
     add: (asset: PlayCanvasAsset) => void
     load: (asset: PlayCanvasAsset) => void
   }
-  loader: {
-    getHandler: (type: string) => {
-      addParser: (parser: unknown) => void
-    }
-  }
   root: {
     addChild: (entity: unknown) => void
   }
@@ -60,6 +52,9 @@ type PlayCanvasApplication = {
 
 type PlayCanvasEntity = {
   setPosition: (x: number, y: number, z: number) => void
+  setLocalPosition: (x: number, y: number, z: number) => void
+  setLocalEulerAngles: (x: number, y: number, z: number) => void
+  setLocalScale: (x: number, y: number, z: number) => void
   lookAt: (x: number, y: number, z: number) => void
   addComponent: (type: string, data?: Record<string, unknown>) => void
 }
@@ -83,35 +78,15 @@ type PlayCanvasModule = {
   }
   Color: new (r: number, g: number, b: number, a?: number) => unknown
   Entity: new (name: string) => PlayCanvasEntity
-  WasmModule: {
-    setConfig: (
-      name: string,
-      config: {
-        glueUrl: string
-        wasmUrl: string
-      },
-    ) => void
-  }
-}
-
-type SpzParserModule = {
-  SpzParser: new (app: PlayCanvasApplication) => unknown
 }
 
 function toErrorMessage(error: unknown) {
   return error instanceof Error ? error.message : String(error)
 }
 
-async function loadPlayCanvasModules() {
-  const [playcanvas, parser] = await Promise.all([
-    import(/* @vite-ignore */ PLAYCANVAS_MODULE_URL),
-    import(/* @vite-ignore */ PLAYCANVAS_SPZ_PARSER_URL),
-  ])
-
-  return {
-    playcanvas: playcanvas as unknown as PlayCanvasModule,
-    parser: parser as unknown as SpzParserModule,
-  }
+async function loadPlayCanvasModule() {
+  const playcanvas = await import(/* @vite-ignore */ PLAYCANVAS_MODULE_URL)
+  return playcanvas as unknown as PlayCanvasModule
 }
 
 function PlayCanvasMetrics({ metrics }: { metrics: RuntimeMetrics }) {
@@ -179,8 +154,8 @@ export function PlayCanvasSceneCanvas({
     setMetrics(INITIAL_METRICS)
     const startedAt = performance.now()
 
-    void loadPlayCanvasModules()
-      .then(({ playcanvas, parser }) => {
+    void loadPlayCanvasModule()
+      .then((playcanvas) => {
         if (disposed) {
           return
         }
@@ -190,23 +165,13 @@ export function PlayCanvasSceneCanvas({
           Asset,
           Color,
           Entity,
-          WasmModule,
         } = playcanvas
-
-        WasmModule.setConfig('ZstdDecoderModule', {
-          glueUrl: PLAYCANVAS_ZSTD_GLUE_URL,
-          wasmUrl: PLAYCANVAS_ZSTD_WASM_URL,
-        })
 
         app = new Application(canvas, {
           graphicsDeviceOptions: {
             antialias: false,
           },
         })
-
-        app.loader
-          .getHandler('gsplat')
-          .addParser(new parser.SpzParser(app))
 
         app.start()
 
@@ -221,7 +186,7 @@ export function PlayCanvasSceneCanvas({
         app.resizeCanvas(canvas.clientWidth, canvas.clientHeight)
 
         const splatAsset = new Asset(
-          'playcanvas-biker-spz-v4',
+          'playcanvas-biker-compressed-ply',
           'gsplat',
           { url: TEST_ASSET.url },
         )
@@ -249,10 +214,13 @@ export function PlayCanvasSceneCanvas({
           })
           app.root.addChild(camera)
 
-          const splat = new Entity('SPZ v4 comparison fixture')
+          const splat = new Entity('compressed PLY comparison fixture')
           splat.addComponent('gsplat', {
             asset: splatAsset,
           })
+          splat.setLocalPosition(-1.5, 0.05, 0)
+          splat.setLocalEulerAngles(180, 90, 0)
+          splat.setLocalScale(0.7, 0.7, 0.7)
           app.root.addChild(splat)
 
           let frames = 0
