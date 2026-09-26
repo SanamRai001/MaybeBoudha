@@ -52,11 +52,15 @@ The project is deliberately split into small phases. A later phase should not be
 
 ### Verification
 
-- dev build starts;
-- production build passes;
-- scene mounts and unmounts without errors;
-- camera input works on pointer and touch;
-- intentional fallback appears when scene loading is forced to fail.
+- production TypeScript/Vite build passes;
+- loading → renderer lifecycle is covered by automated tests;
+- forced scene failure → fallback → retry is covered by automated tests;
+- renderer implementation is injectable rather than coupled to product state;
+- OrbitControls is attached to the rendered canvas for pointer/touch orbit and zoom;
+- dependency resolution is committed in `package-lock.json`;
+- real-device gesture quality remains intentionally deferred to later device/browser verification.
+
+**Status: complete.**
 
 ---
 
