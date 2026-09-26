@@ -221,6 +221,56 @@ h1 {
   background: #252820;
 }
 
+.splat-runtime {
+  position: absolute;
+  inset: 0;
+}
+
+.splat-metrics {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, auto));
+  gap: 1px;
+  max-width: calc(100% - 28px);
+  overflow: hidden;
+  border: 1px solid rgba(233, 228, 210, 0.13);
+  border-radius: 12px;
+  background: rgba(9, 11, 10, 0.82);
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+}
+
+.splat-metrics div {
+  min-width: 110px;
+  padding: 9px 11px;
+  border-right: 1px solid rgba(233, 228, 210, 0.08);
+  border-bottom: 1px solid rgba(233, 228, 210, 0.08);
+}
+
+.splat-metrics span,
+.splat-metrics strong {
+  display: block;
+}
+
+.splat-metrics span {
+  margin-bottom: 3px;
+  color: #777a72;
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.splat-metrics strong {
+  overflow: hidden;
+  color: #e5e1d5;
+  font-size: 0.74rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 @keyframes loading-pulse {
   from {
     opacity: 0.35;
@@ -274,7 +324,7 @@ h1 {
   }
 
   .phase-badge {
-    max-width: 150px;
+    max-width: 170px;
     text-align: right;
     line-height: 1.45;
   }
@@ -289,8 +339,16 @@ h1 {
   }
 
   .viewer-frame {
-    min-height: 430px;
+    min-height: 500px;
     aspect-ratio: 0.88 / 1;
     border-radius: 18px;
+  }
+
+  .splat-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .splat-metrics div {
+    min-width: 0;
   }
 }
