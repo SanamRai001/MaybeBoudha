@@ -34,6 +34,15 @@ const INITIAL_METRICS: RuntimeMetrics = {
 
 const CAMERA_TARGET: [number, number, number] = [0.1, 0.141, 0.206]
 
+// The Babylon reference for this public sample exposes camera-orbit as
+// alpha=4, beta=1.2, radius=3.3. Converted into Cartesian coordinates
+// around CAMERA_TARGET using Babylon ArcRotateCamera's documented formula.
+const CAMERA_POSITION: [number, number, number] = [
+  -1.9104306297,
+  1.3367805898,
+  -2.1217193697,
+]
+
 function toErrorMessage(error: unknown) {
   return error instanceof Error ? error.message : 'Unknown Spark runtime error.'
 }
@@ -90,6 +99,11 @@ function SparkSceneContent({
             }
           },
         })
+
+        // Spark's public SPZ examples apply this 180° X rotation before display.
+        // Without it, the Niantic fixture decoded successfully but sat outside
+        // the useful view orientation in our first smoke capture.
+        splat.quaternion.set(1, 0, 0, 0)
 
         splatMesh = splat
         splatObject = splat as unknown as Object3D
@@ -248,11 +262,11 @@ export function SparkSceneCanvas({ reducedMotion }: SceneRendererProps) {
   }
 
   return (
-    <div className="splat-runtime">
+    <div className="splat-runtime" data-splat-state={metrics.phase}>
       <Canvas
         key={attempt}
         camera={{
-          position: [4, 1.2, 3.3],
+          position: CAMERA_POSITION,
           fov: 42,
           near: 0.01,
           far: 100,
