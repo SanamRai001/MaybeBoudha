@@ -1,21 +1,27 @@
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import type { Object3D } from 'three'
+import { Canvas, extend, useFrame, useThree } from '@react-three/fiber'
+import {
+  SparkRenderer as SparkRendererImpl,
+  SplatMesh as SplatMeshImpl,
+  type SplatMesh as SparkSplatMesh,
+} from '@sparkjsdev/spark'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import type { SceneRendererProps } from '../ExperienceViewport'
 import { OrbitCameraControls } from '../camera/OrbitCameraControls'
 import { ViewerFallback } from '../ui/ViewerFallback'
 import {
   formatBytes,
-  loadSparkModule,
   progressSnapshot,
   SPARK_VERSION,
   TEST_ASSET,
   type ProgressSnapshot,
 } from './sparkSpike'
 
+const SparkRenderer = extend(SparkRendererImpl)
+const SplatMesh = extend(SplatMeshImpl)
+
 type RuntimeMetrics = {
-  phase: 'module' | 'asset' | 'ready' | 'error'
+  phase: 'asset' | 'ready' | 'error'
   progress: ProgressSnapshot | null
   loadMs: number | null
   numSplats: number | null
@@ -24,7 +30,7 @@ type RuntimeMetrics = {
 }
 
 const INITIAL_METRICS: RuntimeMetrics = {
-  phase: 'module',
+  phase: 'asset',
   progress: null,
   loadMs: null,
   numSplats: null,
@@ -34,104 +40,54 @@ const INITIAL_METRICS: RuntimeMetrics = {
 
 const CAMERA_TARGET: [number, number, number] = [0.1, 0.141, 0.206]
 
-// The Babylon reference for this public sample exposes camera-orbit as
-// alpha=4, beta=1.2, radius=3.3. Converted into Cartesian coordinates
-// around CAMERA_TARGET using Babylon ArcRotateCamera's documented formula.
+// The public Babylon sample exposes camera-orbit as alpha=4, beta=1.2,
+// radius=3.3. These are the equivalent Cartesian coordinates around
+// CAMERA_TARGET using Babylon ArcRotateCamera's documented formula.
 const CAMERA_POSITION: [number, number, number] = [
   -1.9104306297,
   1.3367805898,
   -2.1217193697,
 ]
 
-function toErrorMessage(error: unknown) {
-  return error instanceof Error ? error.message : 'Unknown Spark runtime error.'
-}
-
 type SparkSceneContentProps = {
-  onPhase: (phase: RuntimeMetrics['phase']) => void
   onProgress: (progress: ProgressSnapshot) => void
   onLoaded: (loadMs: number, numSplats: number) => void
-  onError: (message: string) => void
 }
 
 function SparkSceneContent({
-  onPhase,
   onProgress,
   onLoaded,
-  onError,
 }: SparkSceneContentProps) {
-  const { gl, scene } = useThree()
+  const renderer = useThree((state) => state.gl)
+  const startedAt = useRef(performance.now())
 
-  useEffect(() => {
-    let disposed = false
-    let sparkRenderer: { dispose: () => void } | null = null
-    let splatMesh: { dispose: () => void } | null = null
-    let sparkObject: Object3D | null = null
-    let splatObject: Object3D | null = null
-    const startedAt = performance.now()
+  const sparkRendererArgs = useMemo(
+    () => ({ renderer }),
+    [renderer],
+  )
 
-    onPhase('module')
+  const splatMeshArgs = useMemo(
+    () => ({
+      url: TEST_ASSET.url,
+      editable: false,
+      raycastable: false,
+      onProgress: (event: ProgressEvent) => {
+        onProgress(progressSnapshot(event))
+      },
+      onLoad: (mesh: SparkSplatMesh) => {
+        onLoaded(performance.now() - startedAt.current, mesh.numSplats)
+      },
+    }),
+    [onLoaded, onProgress],
+  )
 
-    void loadSparkModule()
-      .then(({ SparkRenderer, SplatMesh }) => {
-        if (disposed) {
-          return
-        }
-
-        onPhase('asset')
-
-        sparkRenderer = new SparkRenderer({ renderer: gl })
-        sparkObject = sparkRenderer as unknown as Object3D
-        scene.add(sparkObject)
-
-        const splat = new SplatMesh({
-          url: TEST_ASSET.url,
-          editable: false,
-          raycastable: false,
-          onProgress: (event) => {
-            if (!disposed) {
-              onProgress(progressSnapshot(event))
-            }
-          },
-          onLoad: (mesh) => {
-            if (!disposed) {
-              onLoaded(performance.now() - startedAt, mesh.numSplats)
-            }
-          },
-        })
-
-        // Spark's public SPZ examples apply this 180° X rotation before display.
-        // Without it, the Niantic fixture decoded successfully but sat outside
-        // the useful view orientation in our first smoke capture.
-        splat.quaternion.set(1, 0, 0, 0)
-
-        splatMesh = splat
-        splatObject = splat as unknown as Object3D
-        scene.add(splatObject)
-      })
-      .catch((error: unknown) => {
-        if (!disposed) {
-          onError(toErrorMessage(error))
-        }
-      })
-
-    return () => {
-      disposed = true
-
-      if (splatObject) {
-        scene.remove(splatObject)
-      }
-
-      if (sparkObject) {
-        scene.remove(sparkObject)
-      }
-
-      splatMesh?.dispose()
-      sparkRenderer?.dispose()
-    }
-  }, [gl, onError, onLoaded, onPhase, onProgress, scene])
-
-  return null
+  return (
+    <SparkRenderer args={[sparkRendererArgs]}>
+      <group rotation={[Math.PI, 0, 0]}>
+        <SplatMesh args={[splatMeshArgs]} />
+      </group>
+    </SparkRenderer>
+  )
 }
 
 type FrameSamplerProps = {
@@ -169,9 +125,7 @@ function SparkMetrics({ metrics }: { metrics: RuntimeMetrics }) {
       ? 'Ready'
       : metrics.progress?.percent !== null && metrics.progress
         ? `${metrics.progress.percent.toFixed(0)}%`
-        : metrics.phase === 'module'
-          ? 'Loading runtime'
-          : 'Loading asset'
+        : 'Loading asset'
 
   return (
     <aside className="splat-metrics" aria-label="Renderer spike metrics">
@@ -215,10 +169,6 @@ export function SparkSceneCanvas({ reducedMotion }: SceneRendererProps) {
   const [attempt, setAttempt] = useState(0)
   const [metrics, setMetrics] = useState<RuntimeMetrics>(INITIAL_METRICS)
 
-  const handlePhase = useCallback((phase: RuntimeMetrics['phase']) => {
-    setMetrics((current) => ({ ...current, phase }))
-  }, [])
-
   const handleProgress = useCallback((progress: ProgressSnapshot) => {
     setMetrics((current) => ({ ...current, progress }))
   }, [])
@@ -237,16 +187,11 @@ export function SparkSceneCanvas({ reducedMotion }: SceneRendererProps) {
     setMetrics((current) => ({ ...current, fps }))
   }, [])
 
-  const handleError = useCallback((error: string) => {
-    setMetrics((current) => ({
-      ...current,
-      phase: 'error',
-      error,
-    }))
-  }, [])
+  useEffect(() => {
+    setMetrics(INITIAL_METRICS)
+  }, [attempt])
 
   const retry = () => {
-    setMetrics(INITIAL_METRICS)
     setAttempt((current) => current + 1)
   }
 
@@ -287,10 +232,8 @@ export function SparkSceneCanvas({ reducedMotion }: SceneRendererProps) {
         <color attach="background" args={['#090b0a']} />
 
         <SparkSceneContent
-          onPhase={handlePhase}
           onProgress={handleProgress}
           onLoaded={handleLoaded}
-          onError={handleError}
         />
         <OrbitCameraControls
           reducedMotion={reducedMotion}
