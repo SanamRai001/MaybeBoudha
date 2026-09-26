@@ -38,8 +38,8 @@ const INITIAL_METRICS: RuntimeMetrics = {
   error: null,
 }
 
-const CAMERA_TARGET: [number, number, number] = [0, 1, 0]
-const CAMERA_POSITION: [number, number, number] = [3.15, 2.05, 5.05]
+const CAMERA_TARGET: [number, number, number] = [-1.5, 1.05, 0]
+const CAMERA_POSITION: [number, number, number] = [0.6, 1.75, 3.4]
 
 type SparkSceneContentProps = {
   onProgress: (progress: ProgressSnapshot) => void
@@ -75,7 +75,11 @@ function SparkSceneContent({
 
   return (
     <SparkRenderer args={[sparkRendererArgs]}>
-      <group rotation={[Math.PI, 0, 0]}>
+      <group
+        position={[-1.5, 0.05, 0]}
+        rotation={[Math.PI, Math.PI / 2, 0]}
+        scale={0.7}
+      >
         <SplatMesh args={[splatMeshArgs]} />
       </group>
     </SparkRenderer>
@@ -230,8 +234,8 @@ export function SparkSceneCanvas({ reducedMotion }: SceneRendererProps) {
         <OrbitCameraControls
           reducedMotion={reducedMotion}
           target={CAMERA_TARGET}
-          minDistance={2}
-          maxDistance={14}
+          minDistance={1.5}
+          maxDistance={12}
           minPolarAngle={0.15}
           maxPolarAngle={Math.PI * 0.82}
         />
