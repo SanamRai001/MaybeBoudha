@@ -1,32 +1,11 @@
 import { Canvas } from '@react-three/fiber'
 
+import type { SceneRendererProps } from '../ExperienceViewport'
 import { OrbitCameraControls } from '../camera/OrbitCameraControls'
 import { PlaceholderScene } from '../scene/PlaceholderScene'
 import { ViewerFallback } from '../ui/ViewerFallback'
 
-type ThreeSceneCanvasProps = {
-  reducedMotion: boolean
-}
-
-function supportsWebGL() {
-  try {
-    const canvas = document.createElement('canvas')
-    return Boolean(canvas.getContext('webgl2') ?? canvas.getContext('webgl'))
-  } catch {
-    return false
-  }
-}
-
-export function ThreeSceneCanvas({ reducedMotion }: ThreeSceneCanvasProps) {
-  if (!supportsWebGL()) {
-    return (
-      <ViewerFallback
-        title="3D rendering is unavailable."
-        description="This browser or device could not create a WebGL context. The final experience will provide a lightweight non-3D fallback."
-      />
-    )
-  }
-
+export function ThreeSceneCanvas({ reducedMotion }: SceneRendererProps) {
   return (
     <Canvas
       camera={{
@@ -44,7 +23,7 @@ export function ThreeSceneCanvas({ reducedMotion }: ThreeSceneCanvasProps) {
       fallback={
         <ViewerFallback
           title="3D rendering is unavailable."
-          description="The renderer could not start on this device."
+          description="The renderer could not start on this device. The final experience will provide a lightweight non-3D fallback."
         />
       }
     >
