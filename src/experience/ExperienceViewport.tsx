@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ComponentType } from 'react'
 
 import { LoadingState } from './ui/LoadingState'
 import { ViewerFallback } from './ui/ViewerFallback'
@@ -10,6 +10,10 @@ import {
   type ScenePreparer,
 } from './scene/prepareScene'
 
+export type SceneRendererProps = {
+  reducedMotion: boolean
+}
+
 type ExperienceStatus =
   | { state: 'loading' }
   | { state: 'ready' }
@@ -18,6 +22,7 @@ type ExperienceStatus =
 type ExperienceViewportProps = {
   reducedMotion: boolean
   prepareScene?: ScenePreparer
+  renderer?: ComponentType<SceneRendererProps>
 }
 
 function toError(error: unknown) {
@@ -27,6 +32,7 @@ function toError(error: unknown) {
 export function ExperienceViewport({
   reducedMotion,
   prepareScene = preparePlaceholderScene,
+  renderer: Renderer = ThreeSceneCanvas,
 }: ExperienceViewportProps) {
   const [attempt, setAttempt] = useState(0)
   const [status, setStatus] = useState<ExperienceStatus>({ state: 'loading' })
@@ -77,7 +83,7 @@ export function ExperienceViewport({
         />
       )}
     >
-      <ThreeSceneCanvas reducedMotion={reducedMotion} />
+      <Renderer reducedMotion={reducedMotion} />
     </RendererErrorBoundary>
   )
 }
