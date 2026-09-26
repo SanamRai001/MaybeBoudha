@@ -39,7 +39,7 @@ jobs:
   runtime-smoke:
     needs: verify
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
@@ -66,14 +66,18 @@ jobs:
       - name: Install Playwright Chromium
         run: npx --yes playwright@1.55.0 install --with-deps chromium
 
-      - name: Capture Phase 2 runtime
+      - name: Capture Spark runtime
         run: |
-          npx --yes playwright@1.55.0 screenshot             --browser=chromium             --viewport-size="1440,1000"             --wait-for-timeout=25000             http://127.0.0.1:4173             /tmp/maybeboudha-phase-2.png
+          npx --yes playwright@1.55.0 screenshot             --browser=chromium             --viewport-size="1440,1000"             --wait-for-timeout=25000             "http://127.0.0.1:4173/?renderer=spark"             /tmp/maybeboudha-phase-2-spark.png
 
-      - name: Upload runtime screenshot
+      - name: Capture PlayCanvas runtime
+        run: |
+          npx --yes playwright@1.55.0 screenshot             --browser=chromium             --viewport-size="1440,1000"             --wait-for-timeout=30000             "http://127.0.0.1:4173/?renderer=playcanvas"             /tmp/maybeboudha-phase-2-playcanvas.png
+
+      - name: Upload runtime screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: phase-2-runtime-smoke
-          path: /tmp/maybeboudha-phase-2.png
+          path: /tmp/maybeboudha-phase-2-*.png
           if-no-files-found: warn
