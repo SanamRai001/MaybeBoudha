@@ -216,7 +216,6 @@ export function SparkSceneCanvas({ reducedMotion }: SceneRendererProps) {
         gl={{
           antialias: false,
           alpha: false,
-          powerPreference: 'high-performance',
         }}
         fallback={
           <ViewerFallback
