@@ -1,17 +1,15 @@
 import { describe, expect, it } from 'vitest'
 
 import {
-  PLAYCANVAS_SPZ_PARSER_URL,
-  PLAYCANVAS_TAG_COMMIT,
-  PLAYCANVAS_ZSTD_WASM_URL,
+  PLAYCANVAS_MODULE_URL,
+  PLAYCANVAS_VERSION,
   rendererCandidateFromSearch,
 } from './playcanvasSpike'
 
 describe('PlayCanvas renderer spike configuration', () => {
-  it('pins parser and wasm support to the PlayCanvas release commit', () => {
-    expect(PLAYCANVAS_TAG_COMMIT).toMatch(/^[a-f0-9]{40}$/)
-    expect(PLAYCANVAS_SPZ_PARSER_URL).toContain(PLAYCANVAS_TAG_COMMIT)
-    expect(PLAYCANVAS_ZSTD_WASM_URL).toContain(PLAYCANVAS_TAG_COMMIT)
+  it('pins the PlayCanvas runtime version', () => {
+    expect(PLAYCANVAS_VERSION).toBe('2.22.4')
+    expect(PLAYCANVAS_MODULE_URL).toContain('playcanvas@2.22.4')
   })
 
   it('selects Spark by default and PlayCanvas only when requested', () => {
