@@ -16,7 +16,6 @@ export function OrbitCameraControls({ reducedMotion }: OrbitCameraControlsProps)
 
   useEffect(() => {
     controls.enablePan = false
-    controls.enableDamping = !reducedMotion
     controls.dampingFactor = 0.065
     controls.minDistance = 4.2
     controls.maxDistance = 11
@@ -26,6 +25,11 @@ export function OrbitCameraControls({ reducedMotion }: OrbitCameraControlsProps)
     controls.update()
 
     return () => controls.dispose()
+  }, [controls])
+
+  useEffect(() => {
+    controls.enableDamping = !reducedMotion
+    controls.update()
   }, [controls, reducedMotion])
 
   useFrame(() => {
