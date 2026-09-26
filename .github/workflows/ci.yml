@@ -27,14 +27,8 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
-      - name: Resolve Phase 2 dependencies
-        run: npm install --no-audit --no-fund
-
-      - name: Export regenerated lockfile
-        uses: actions/upload-artifact@v4
-        with:
-          name: phase-2-package-lock
-          path: package-lock.json
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
 
       - name: Run tests
         run: npm test
@@ -58,8 +52,8 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
-      - name: Resolve Phase 2 dependencies
-        run: npm install --no-audit --no-fund
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
 
       - name: Build production bundle
         run: npm run build
