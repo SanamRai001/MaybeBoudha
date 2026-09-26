@@ -63,26 +63,25 @@ jobs:
           npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/maybeboudha-preview.log 2>&1 &
           echo $! > /tmp/maybeboudha-preview.pid
 
-      - name: Install Playwright Chromium
+      - name: Install Chromium
         run: npx --yes playwright@1.55.0 install --with-deps chromium
+
+      - name: Resolve Chromium headless shell
+        run: |
+          CHROME="$(find "$HOME/.cache/ms-playwright" -type f \( -name "headless_shell" -o -name "chrome-headless-shell" \) | head -n 1)"
+          if [ -z "$CHROME" ]; then
+            echo "Unable to locate Playwright Chromium headless shell."
+            exit 1
+          fi
+          echo "CHROME=$CHROME" >> "$GITHUB_ENV"
 
       - name: Capture Spark runtime
         run: |
-          timeout 55s npx --yes playwright@1.55.0 screenshot \
-            --browser=chromium \
-            --viewport-size="1440,1000" \
-            --wait-for-timeout=25000 \
-            "http://127.0.0.1:4173/?renderer=spark" \
-            /tmp/maybeboudha-phase-2-spark.png
+          timeout 55s "$CHROME"             --headless             --no-sandbox             --disable-dev-shm-usage             --use-angle=swiftshader             --enable-webgl             --window-size=1440,1000             --virtual-time-budget=25000             --screenshot=/tmp/maybeboudha-phase-2-spark.png             "http://127.0.0.1:4173/?renderer=spark"
 
       - name: Capture PlayCanvas runtime
         run: |
-          timeout 65s npx --yes playwright@1.55.0 screenshot \
-            --browser=chromium \
-            --viewport-size="1440,1000" \
-            --wait-for-timeout=30000 \
-            "http://127.0.0.1:4173/?renderer=playcanvas" \
-            /tmp/maybeboudha-phase-2-playcanvas.png
+          timeout 65s "$CHROME"             --headless             --no-sandbox             --disable-dev-shm-usage             --use-angle=swiftshader             --enable-webgl             --window-size=1440,1000             --virtual-time-budget=30000             --screenshot=/tmp/maybeboudha-phase-2-playcanvas.png             "http://127.0.0.1:4173/?renderer=playcanvas"
 
       - name: Upload runtime screenshots
         if: always()
