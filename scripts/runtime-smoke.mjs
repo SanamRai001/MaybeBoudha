@@ -28,16 +28,13 @@ const browserArgs = [
 ]
 
 if (headful) {
-  // Use the runner's Mesa/X11 path for Three.js, which requires a usable
-  // WebGL2 context. Forced SwiftShader exposed a context to PlayCanvas but
-  // caused R3F/Three renderer creation to fail before Spark could initialize.
   browserArgs.unshift('--use-gl=desktop')
 } else {
+  // Let Chromium select its normal headless GL implementation. Forcing a
+  // specific ANGLE/SwiftShader backend exposed raw WebGL2 but made
+  // THREE.WebGLRenderer fail to bind that context.
   browserArgs.unshift(
     '--headless=new',
-    '--use-gl=angle',
-    '--use-angle=swiftshader',
-    '--disable-gpu-sandbox',
     '--enable-unsafe-swiftshader',
   )
 }
