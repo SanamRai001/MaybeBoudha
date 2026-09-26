@@ -72,7 +72,6 @@ jobs:
             --browser=chromium \
             --viewport-size="1440,1000" \
             --wait-for-timeout=25000 \
-            --timeout=15000 \
             "http://127.0.0.1:4173/?renderer=spark" \
             /tmp/maybeboudha-phase-2-spark.png
 
@@ -82,7 +81,6 @@ jobs:
             --browser=chromium \
             --viewport-size="1440,1000" \
             --wait-for-timeout=30000 \
-            --timeout=15000 \
             "http://127.0.0.1:4173/?renderer=playcanvas" \
             /tmp/maybeboudha-phase-2-playcanvas.png
 
