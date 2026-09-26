@@ -28,9 +28,8 @@ function App() {
           <p className="eyebrow">Boudhanath · Kathmandu, Nepal</p>
           <h1 id="page-title">Proving the photorealistic rendering path.</h1>
           <p className="hero-description">
-            The viewer loads the same real Gaussian Splat reconstruction through two candidate
-            engines so we can compare integration and delivery behavior before capturing
-            Boudhanath.
+            The viewer loads the same Gaussian Splat reconstruction through two candidate engines
+            so we can compare integration and delivery behavior before capturing Boudhanath.
           </p>
 
           <dl className="prototype-notes">
@@ -44,7 +43,7 @@ function App() {
             </div>
             <div>
               <dt>Fixture</dt>
-              <dd>{TEST_ASSET.label} · pinned upstream SPZ</dd>
+              <dd>{TEST_ASSET.label} · pinned compressed PLY</dd>
             </div>
             <div>
               <dt>Compare</dt>
@@ -79,8 +78,8 @@ function App() {
             />
           </div>
           <p className="viewer-caption">
-            Technical test asset only — this is not Boudhanath. Both candidates use the same SPZ
-            source so renderer differences are easier to isolate.
+            Technical test asset only — this is not Boudhanath. Both candidates use the same
+            compressed PLY source so renderer differences are easier to isolate.
           </p>
         </div>
       </section>
