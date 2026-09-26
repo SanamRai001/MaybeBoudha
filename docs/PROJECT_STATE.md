@@ -1,8 +1,6 @@
 # Project State
 
-This is the canonical checkpoint for continuing MaybeBoudha work.
-
-Update it at the end of every completed phase.
+This is the canonical checkpoint for continuing MaybeBoudha work. Repository state wins if this file ever becomes stale.
 
 ## Objective
 
@@ -12,100 +10,97 @@ Build a browser-based, photorealistic interactive heritage experience centered o
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
+- Completed implementation branch: `feat/phase-1-viewer-foundation`
+- Pull request: `#1`
 - Working title: `MaybeBoudha`
 
-## Current phase
+## Completed phase
 
-**Phase 0 — Product and architecture foundation**
+**Phase 1 — Viewer Foundation**
 
-Status: **complete**
+Status: **complete pending merge of PR #1**
 
-## Completed
+## Changes
 
-- repository created;
-- product vision documented;
-- MVP and non-goals documented;
-- proposed technical architecture documented;
-- reconstruction pipeline documented;
-- phased roadmap documented;
-- project-state checkpoint established.
-
-## Implementation state
-
-There is intentionally **no application implementation yet**.
-
-No framework, renderer, splat library, or capture service should be treated as permanently selected until the planned rendering spike provides measurements.
-
-## Current decisions
-
-1. The core product is a photorealistic interactive heritage experience, not a generic 3D viewer.
-2. Real-scene reconstruction is preferred over manually modeling the complete Stupa.
-3. Scene assets must be replaceable independently from application/UI logic.
-4. Large raw captures and production reconstruction binaries should stay outside normal Git history.
-5. The real renderer choice will be validated with a small reconstruction before production Boudhanath integration.
-6. Desktop and mobile may use different scene quality assets.
-7. Essential information must remain accessible when 3D rendering fails.
-8. Cultural content and capture provenance are first-class product concerns.
-
-## Proposed — not yet locked
-
-- Vite;
-- React;
-- TypeScript;
-- Three.js / React Three Fiber for the first viewer spike;
-- a Gaussian Splat-capable renderer;
-- static application hosting plus CDN/object storage for large scene assets.
+- added Vite + React + TypeScript application foundation;
+- added Three.js + React Three Fiber placeholder renderer;
+- added an injectable scene-renderer boundary;
+- added orbit / zoom camera controls through Three.js OrbitControls;
+- added loading, renderer-failure, and recoverable scene-load states;
+- added `?scene=fail` as an intentional recovery-path check;
+- added reduced-motion preference handling;
+- added responsive foundation UI with an explicit placeholder disclaimer;
+- added Vitest + React Testing Library coverage for loading/failure/retry behavior;
+- added Node 24 GitHub Actions CI;
+- committed `package-lock.json` generated from the CI environment;
+- CI now uses read-only repository permissions and `npm ci`.
 
 ## Verification
 
-Phase 0 is documentation-only, so verification consists of:
+Verified on the Phase 1 branch:
 
-- repository contains the documented foundation;
-- roadmap has explicit phase boundaries;
-- implementation has not started;
-- renderer choice remains intentionally open pending measurement.
+- automated tests pass: **3/3**;
+- `tsc --noEmit` passes as part of the production build;
+- Vite production build passes;
+- forced preparation failure renders the recovery UI and retry path in tests;
+- renderer injection is exercised by tests;
+- current CI resolves dependencies from the committed lockfile.
 
-No runtime/build/test verification exists yet because there is no application code.
+Not yet claimed as verified:
 
-## Known risks
+- visual fidelity of a real reconstruction;
+- actual Gaussian Splat rendering;
+- real-device frame rate or memory;
+- cross-browser gesture quality;
+- mobile GPU behavior.
 
-- obtaining sufficiently complete Boudhanath capture coverage;
-- permission/licensing for capture and source imagery;
-- incomplete upper geometry from ground-only capture;
-- browser asset size and decoding cost;
-- mobile GPU/memory limitations;
+Those belong to later phases.
+
+## Decisions
+
+1. React/UI state is kept independent from the concrete 3D renderer.
+2. React Three Fiber is the Phase 1 renderer only; it is **not yet the production renderer decision**.
+3. The real renderer will be selected from measured Phase 2 results.
+4. The current geometry is only a fixture and must not evolve into a manually modeled production Boudhanath.
+5. Loading and failure behavior exist before real scene assets are introduced.
+6. Dependencies are locked and CI uses `npm ci`.
+7. Large reconstruction assets remain outside normal Git history.
+
+## Risks
+
+- obtaining sufficiently complete and legally usable reconstruction input;
+- upper-monument coverage from ground-only capture;
+- real splat payload size and decoding cost;
+- mobile GPU/memory limits;
 - renderer/library churn;
-- reconstruction artifacts caused by crowds, flags, lighting, and movement;
+- reconstruction artifacts from crowds, flags, lighting, and movement;
 - cultural accuracy and respectful presentation.
 
 ## Next phase
 
-### Phase 1 — Viewer Foundation
+### Phase 2 — Real Reconstruction Renderer Spike
+
+Goal: prove the rendering approach with a **small legally usable real reconstruction** before touching a production Boudhanath asset.
 
 Only:
 
-- scaffold Vite + React + TypeScript;
-- define the renderer boundary;
-- mount a tiny placeholder scene;
-- implement base camera controls;
-- add loading/error states;
-- add reduced-motion awareness;
-- verify development and production builds;
-- verify a forced asset-failure path.
+- obtain/generate one small test reconstruction;
+- integrate the leading renderer candidate behind the existing renderer boundary;
+- compare at least the credible rendering paths;
+- measure asset size, load behavior, memory, frame rate, camera behavior, mobile behavior, and integration complexity;
+- choose and document the production renderer + scene format from evidence.
 
-Do **not** begin Phase 2, Boudhanath capture, hotspots, audio, or final visual design during Phase 1.
+Do **not** start the production Boudhanath capture, hotspots, audio, or cinematic intro in Phase 2.
 
 ## Next branch
 
 Recommended:
 
-`feat/phase-1-viewer-foundation`
+`spike/phase-2-reconstruction-renderer`
 
 ## Resume rule
 
-When work resumes:
-
-1. read this file;
-2. inspect the actual repository and Git history;
-3. treat repository state as authoritative if it differs from this document;
-4. update this file when the phase ends.
+1. inspect `main`, PR state, and Git history;
+2. verify this checkpoint against the repository;
+3. if PR #1 is not merged, finish that before Phase 2;
+4. update this file at the end of the next completed phase.
