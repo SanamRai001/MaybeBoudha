@@ -25,6 +25,7 @@ import {
   PerspectiveCamera,
   PlaneGeometry,
   RepeatWrapping,
+  RingGeometry,
   Scene,
   ShaderMaterial,
   SphereGeometry,
@@ -463,15 +464,15 @@ function createStupa(scene: Scene) {
     roughness: 0.86,
   })
   const gold = new MeshPhysicalMaterial({
-    color: '#c28a2b',
-    roughness: 0.3,
-    metalness: 0.78,
-    clearcoat: 0.22,
+    color: '#d2a044',
+    roughness: 0.38,
+    metalness: 0.52,
+    clearcoat: 0.18,
   })
   const darkGold = new MeshPhysicalMaterial({
-    color: '#8f5f1f',
-    roughness: 0.42,
-    metalness: 0.68,
+    color: '#a97727',
+    roughness: 0.46,
+    metalness: 0.46,
   })
   const red = new MeshStandardMaterial({ color: '#8f241e', roughness: 0.76 })
   const blue = new MeshStandardMaterial({ color: '#264c6e', roughness: 0.76 })
@@ -523,6 +524,24 @@ function createStupa(scene: Scene) {
   harmika.position.y = 26.0
   harmika.castShadow = true
   stupa.add(harmika)
+
+  for (let seam = -2; seam <= 2; seam += 1) {
+    const seamY = 24.2 + seam * 0.82
+    const frontSeam = new Mesh(
+      new BoxGeometry(7.28, 0.055, 0.06),
+      darkGold,
+    )
+    frontSeam.position.set(0, seamY, 3.64)
+    stupa.add(frontSeam)
+
+    const sideSeam = new Mesh(
+      new BoxGeometry(0.06, 0.055, 7.28),
+      darkGold,
+    )
+    sideSeam.position.set(3.64, seamY, 0)
+    stupa.add(sideSeam)
+  }
+
   addEyePanels(stupa, eyeTexture)
 
   const redBand = new Mesh(new BoxGeometry(7.6, 0.58, 7.6), red)
@@ -538,42 +557,57 @@ function createStupa(scene: Scene) {
     const progress = i / 12
     const width = MathUtils.lerp(6.7, 1.75, progress)
     const tier = new Mesh(
-      new BoxGeometry(width, 0.58, width),
-      i % 3 === 0 ? darkGold : gold,
+      new BoxGeometry(width, 0.54, width),
+      i % 4 === 0 ? darkGold : gold,
     )
     tier.position.y = tierY
     tier.castShadow = true
     stupa.add(tier)
-    tierY += 0.58
+    tierY += 0.6
   }
 
   const umbrellaBlue = new Mesh(
-    new CylinderGeometry(2.35, 2.5, 0.38, 64),
+    new CylinderGeometry(2.55, 2.72, 0.32, 64),
     blue,
   )
-  umbrellaBlue.position.y = 37.35
+  umbrellaBlue.position.y = 37.5
   stupa.add(umbrellaBlue)
 
+  const umbrellaRed = new Mesh(
+    new CylinderGeometry(2.68, 2.9, 0.28, 64),
+    red,
+  )
+  umbrellaRed.position.y = 37.8
+  stupa.add(umbrellaRed)
+
   const umbrellaYellow = new Mesh(
-    new CylinderGeometry(2.5, 2.72, 0.55, 64),
+    new CylinderGeometry(2.85, 3.08, 0.52, 64),
     yellow,
   )
-  umbrellaYellow.position.y = 37.82
+  umbrellaYellow.position.y = 38.18
   stupa.add(umbrellaYellow)
 
-  const crown = new Mesh(
-    new CylinderGeometry(2.25, 2.55, 1.75, 64),
+  const canopy = new Mesh(
+    new CylinderGeometry(3.15, 2.75, 0.48, 64),
     gold,
   )
-  crown.position.y = 39.0
+  canopy.position.y = 38.7
+  canopy.castShadow = true
+  stupa.add(canopy)
+
+  const crown = new Mesh(
+    new CylinderGeometry(2.0, 2.45, 1.35, 64),
+    gold,
+  )
+  crown.position.y = 39.65
   crown.castShadow = true
   stupa.add(crown)
 
   const pinnacle = new Mesh(
-    new ConeGeometry(1.05, 3.0, 32),
+    new ConeGeometry(0.92, 2.55, 32),
     gold,
   )
-  pinnacle.position.y = 41.35
+  pinnacle.position.y = 41.5
   pinnacle.castShadow = true
   stupa.add(pinnacle)
 
@@ -597,9 +631,9 @@ function addSky(scene: Scene) {
     side: BackSide,
     depthWrite: false,
     uniforms: {
-      topColor: { value: new Color('#7ea8c4') },
-      horizonColor: { value: new Color('#e7d1b2') },
-      bottomColor: { value: new Color('#c4a989') },
+      topColor: { value: new Color('#78a7ca') },
+      horizonColor: { value: new Color('#efc58d') },
+      bottomColor: { value: new Color('#c99b67') },
     },
     vertexShader: `
       varying vec3 vWorldPosition;
@@ -690,7 +724,7 @@ export function BoudhaPrototypeCanvas({
 
     let disposed = false
     const scene = new Scene()
-    scene.fog = new FogExp2('#baa98e', 0.0044)
+    scene.fog = new FogExp2('#c8ad86', 0.0034)
     addSky(scene)
 
     const renderer = new WebGLRenderer({
@@ -726,10 +760,10 @@ export function BoudhaPrototypeCanvas({
     controls.enabled = reducedMotion
     controls.update()
 
-    const hemisphere = new HemisphereLight('#d8ecff', '#7c5333', 1.45)
+    const hemisphere = new HemisphereLight('#dff0ff', '#785339', 1.85)
     scene.add(hemisphere)
 
-    const sun = new DirectionalLight('#ffd7a0', 4.2)
+    const sun = new DirectionalLight('#ffdda8', 4.6)
     sun.position.set(54, 74, 34)
     sun.castShadow = true
     sun.shadow.mapSize.set(2048, 2048)
@@ -741,6 +775,10 @@ export function BoudhaPrototypeCanvas({
     sun.shadow.camera.far = 180
     sun.shadow.bias = -0.00025
     scene.add(sun)
+
+    const fillLight = new DirectionalLight('#9fc5df', 1.05)
+    fillLight.position.set(-45, 38, -52)
+    scene.add(fillLight)
 
     const courtyardTexture = makeCourtyardTexture()
     const courtyard = new Mesh(
@@ -756,14 +794,16 @@ export function BoudhaPrototypeCanvas({
     scene.add(courtyard)
 
     const koraPath = new Mesh(
-      new CylinderGeometry(41, 41, 0.08, 128),
+      new RingGeometry(24.5, 45.5, 128),
       new MeshStandardMaterial({
-        color: '#96725b',
+        color: '#9c7559',
         roughness: 0.94,
+        side: DoubleSide,
       }),
     )
-    koraPath.scale.y = 0.04
-    koraPath.position.y = 0.03
+    koraPath.rotation.x = -Math.PI / 2
+    koraPath.position.y = 0.035
+    koraPath.receiveShadow = true
     scene.add(koraPath)
 
     const { flagTop } = createStupa(scene)
