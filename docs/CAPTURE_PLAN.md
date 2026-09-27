@@ -44,9 +44,11 @@ https://doa.gov.np/pages/817310553/
 
 Before the real partial capture:
 
-- confirm the current site-management rules;
-- confirm whether a systematic photo/video reconstruction pass needs consent;
-- keep any written approval/reference with the capture manifest.
+- follow the GO / NO-GO gate in `PHASE_3C_FIELD_READINESS.md`;
+- obtain written determinations from the Department of Archaeology and the Shree Boudhanath Area Development Committee;
+- complete any required permission/fee/process;
+- keep written approval/reference evidence with the private capture record;
+- record the approved scope in the capture manifest.
 
 Do not assume an entrance ticket is permission for reconstruction/commercial publication.
 
