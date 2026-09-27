@@ -1,10 +1,10 @@
-import { Canvas, extend, useFrame, useThree } from '@react-three/fiber'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import {
   SparkRenderer as SparkRendererImpl,
   SplatMesh as SplatMeshImpl,
-  type SplatMesh as SparkSplatMesh,
 } from '@sparkjsdev/spark'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import type { Object3D } from 'three'
 
 import type { SceneRendererProps } from '../ExperienceViewport'
 import { OrbitCameraControls } from '../camera/OrbitCameraControls'
@@ -16,9 +16,6 @@ import {
   TEST_ASSET,
   type ProgressSnapshot,
 } from './sparkSpike'
-
-const SparkRenderer = extend(SparkRendererImpl)
-const SplatMesh = extend(SplatMeshImpl)
 
 type RuntimeMetrics = {
   phase: 'asset' | 'ready' | 'error'
@@ -41,49 +38,69 @@ const INITIAL_METRICS: RuntimeMetrics = {
 const CAMERA_TARGET: [number, number, number] = [-1.5, 1.05, 0]
 const CAMERA_POSITION: [number, number, number] = [0.6, 1.75, 3.4]
 
+function toErrorMessage(error: unknown) {
+  return error instanceof Error ? error.message : String(error)
+}
+
 type SparkSceneContentProps = {
   onProgress: (progress: ProgressSnapshot) => void
   onLoaded: (loadMs: number, numSplats: number) => void
+  onError: (message: string) => void
 }
 
 function SparkSceneContent({
   onProgress,
   onLoaded,
+  onError,
 }: SparkSceneContentProps) {
-  const renderer = useThree((state) => state.gl)
-  const startedAt = useRef(performance.now())
+  const { gl, scene } = useThree()
 
-  const sparkRendererArgs = useMemo(
-    () => ({ renderer }),
-    [renderer],
-  )
+  useEffect(() => {
+    let disposed = false
+    const startedAt = performance.now()
 
-  const splatMeshArgs = useMemo(
-    () => ({
+    const sparkRenderer = new SparkRendererImpl({ renderer: gl })
+    const splat = new SplatMeshImpl({
       url: TEST_ASSET.url,
       editable: false,
       raycastable: false,
-      onProgress: (event: ProgressEvent) => {
-        onProgress(progressSnapshot(event))
+      onProgress: (event) => {
+        if (!disposed) {
+          onProgress(progressSnapshot(event))
+        }
       },
-      onLoad: (mesh: SparkSplatMesh) => {
-        onLoaded(performance.now() - startedAt.current, mesh.numSplats)
-      },
-    }),
-    [onLoaded, onProgress],
-  )
+    })
 
-  return (
-    <SparkRenderer args={[sparkRendererArgs]}>
-      <group
-        position={[-1.5, 0.05, 0]}
-        rotation={[Math.PI, Math.PI / 2, 0]}
-        scale={0.7}
-      >
-        <SplatMesh args={[splatMeshArgs]} />
-      </group>
-    </SparkRenderer>
-  )
+    splat.position.set(-1.5, 0.05, 0)
+    splat.rotation.set(Math.PI, Math.PI / 2, 0)
+    splat.scale.setScalar(0.7)
+
+    scene.add(sparkRenderer as unknown as Object3D)
+    scene.add(splat as unknown as Object3D)
+
+    void splat.initialized
+      .then((mesh) => {
+        if (!disposed) {
+          onLoaded(performance.now() - startedAt, mesh.numSplats)
+        }
+      })
+      .catch((error: unknown) => {
+        if (!disposed) {
+          console.error('Spark splat initialization failed', error)
+          onError(toErrorMessage(error))
+        }
+      })
+
+    return () => {
+      disposed = true
+      scene.remove(splat as unknown as Object3D)
+      scene.remove(sparkRenderer as unknown as Object3D)
+      splat.dispose()
+      sparkRenderer.dispose()
+    }
+  }, [gl, onError, onLoaded, onProgress, scene])
+
+  return null
 }
 
 type FrameSamplerProps = {
@@ -179,6 +196,14 @@ export function SparkSceneCanvas({ reducedMotion }: SceneRendererProps) {
     }))
   }, [])
 
+  const handleError = useCallback((error: string) => {
+    setMetrics((current) => ({
+      ...current,
+      phase: 'error',
+      error,
+    }))
+  }, [])
+
   const handleFps = useCallback((fps: number) => {
     setMetrics((current) => ({ ...current, fps }))
   }, [])
@@ -187,17 +212,13 @@ export function SparkSceneCanvas({ reducedMotion }: SceneRendererProps) {
     setMetrics(INITIAL_METRICS)
   }, [attempt])
 
-  const retry = () => {
-    setAttempt((current) => current + 1)
-  }
-
   if (metrics.phase === 'error') {
     return (
       <ViewerFallback
-        title="The Gaussian Splat spike could not load."
+        title="The Spark comparison could not load."
         description={metrics.error ?? 'Unknown Spark runtime error.'}
-        actionLabel="Retry spike"
-        onAction={retry}
+        actionLabel="Retry comparison"
+        onAction={() => setAttempt((current) => current + 1)}
       />
     )
   }
@@ -220,7 +241,7 @@ export function SparkSceneCanvas({ reducedMotion }: SceneRendererProps) {
         fallback={
           <ViewerFallback
             title="3D rendering is unavailable."
-            description="The browser could not create the WebGL renderer required for the Gaussian Splat spike."
+            description="The browser could not create the Three.js renderer required for the Spark spike."
           />
         }
       >
@@ -229,6 +250,7 @@ export function SparkSceneCanvas({ reducedMotion }: SceneRendererProps) {
         <SparkSceneContent
           onProgress={handleProgress}
           onLoaded={handleLoaded}
+          onError={handleError}
         />
         <OrbitCameraControls
           reducedMotion={reducedMotion}
