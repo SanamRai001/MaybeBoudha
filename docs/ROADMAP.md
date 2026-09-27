@@ -6,21 +6,6 @@ The project is deliberately split into small phases. A later phase should not be
 
 **Goal:** define what is being built before committing to implementation.
 
-### Deliverables
-
-- product vision;
-- technical plan;
-- phased roadmap;
-- canonical project state;
-- MVP boundaries;
-- initial risks and performance targets.
-
-### Exit criteria
-
-- docs exist on `main`;
-- no implementation has been started;
-- the next phase is narrow and testable.
-
 **Status: complete.**
 
 ---
@@ -29,36 +14,16 @@ The project is deliberately split into small phases. A later phase should not be
 
 **Goal:** create the smallest maintainable browser application that can host a replaceable 3D scene.
 
-### Build
+Delivered:
 
 - Vite + React + TypeScript;
-- base application shell;
-- 3D canvas / renderer boundary;
+- application shell;
+- renderer boundary;
 - camera foundation;
-- loading state;
-- error fallback;
+- loading and error fallback;
 - reduced-motion awareness;
-- one tiny placeholder scene or fixture;
-- no Boudhanath production asset.
-
-### Do not build
-
-- final visual design;
-- hotspots;
-- audio;
-- first-person walking;
-- large animations;
-- production Boudhanath capture.
-
-### Verification
-
-- production TypeScript/Vite build passes;
-- loading → renderer lifecycle is covered by automated tests;
-- forced scene failure → fallback → retry is covered by automated tests;
-- renderer implementation is injectable rather than coupled to product state;
-- OrbitControls is attached to the rendered canvas for pointer/touch orbit and zoom;
-- dependency resolution is committed in `package-lock.json`;
-- real-device gesture quality remains intentionally deferred to later device/browser verification.
+- placeholder scene;
+- tests and locked CI build.
 
 **Status: complete.**
 
@@ -66,48 +31,51 @@ The project is deliberately split into small phases. A later phase should not be
 
 ## Phase 2 — Real reconstruction renderer spike
 
-**Goal:** prove that the chosen browser stack can render a real reconstruction convincingly.
+**Goal:** prove real Gaussian Splat rendering, compare credible browser paths, and select the production architecture from evidence.
 
-### Build
+Delivered:
 
-- obtain or generate one small legal test reconstruction;
-- test leading renderer options;
-- record measured results;
-- select production renderer and asset format;
-- document the decision.
+- Spark 2.2.0 spike;
+- PlayCanvas 2.22.4 spike;
+- real reconstruction fixtures;
+- neutral same-asset compressed-PLY comparison;
+- deterministic browser runtime probes;
+- visual screenshot verification;
+- renderer/scene-format ADR.
 
-### Measure
+Decision:
 
-- scene file size;
-- time to first visible scene;
-- memory;
-- frame rate;
-- mobile behavior;
-- camera behavior;
-- integration complexity.
+- production renderer: **Spark**;
+- splat runtime: **direct Three.js + Spark**;
+- source/interchange reconstruction: **PLY**;
+- large web delivery: **paged RAD**;
+- PlayCanvas retained as fallback candidate.
 
-### Exit criteria
+Real-device performance is intentionally **not claimed** from CI and remains a Phase 4 / Phase 7 production gate with a realistic Boudhanath-sized asset.
 
-A renderer and asset format are selected from measurements, not assumption.
+**Status: complete, pending PR #2 merge.**
 
 ---
 
 ## Phase 3 — Boudhanath capture / asset plan
 
-**Goal:** obtain a legitimate, usable source for the real scene.
+**Goal:** obtain a legitimate, usable source for the real scene and prove the selected reconstruction-to-web pipeline on a partial capture.
 
 ### Work
 
-- define capture coverage;
+- define capture boundary and coverage;
 - define ground and elevated coverage needs;
 - confirm capture permissions;
-- choose reconstruction service/toolchain;
-- record provenance and rights;
-- make a small partial Boudhanath reconstruction before a full capture.
+- choose capture/reconstruction service/toolchain;
+- record provenance and usage rights;
+- define privacy cleanup;
+- capture or obtain a small partial Boudhanath dataset;
+- produce a cleaned partial PLY;
+- prove partial PLY → paged RAD → browser delivery.
 
 ### Exit criteria
 
-A real Boudhanath asset path is proven and legally usable.
+A legally usable partial Boudhanath reconstruction loads through the selected Spark/RAD path and gives enough evidence to plan the full capture.
 
 ---
 
@@ -118,13 +86,13 @@ A real Boudhanath asset path is proven and legally usable.
 ### Build
 
 - optimized real scene;
-- desktop quality profile;
-- mobile quality profile;
+- progressive RAD delivery;
+- quality profiles / LOD tuning;
 - CDN/object-storage delivery;
-- progressive loading;
 - home camera preset;
-- stable orbit / exploration bounds;
-- fallback representation.
+- stable exploration bounds;
+- fallback representation;
+- first real-device desktop/mobile performance measurements.
 
 ### Exit criteria
 
@@ -175,7 +143,7 @@ No gamified scoring, collectibles, or interaction that trivializes religious/cul
 
 ### Work
 
-- real-device profiling;
+- broader real-device profiling;
 - quality auto-selection;
 - user quality override;
 - slow-network behavior;
@@ -183,7 +151,7 @@ No gamified scoring, collectibles, or interaction that trivializes religious/cul
 - keyboard accessibility;
 - touch review;
 - reduced motion;
-- WebGL/WebGPU failure paths;
+- WebGL failure paths;
 - asset-cache/version strategy;
 - cross-browser verification.
 
@@ -213,8 +181,6 @@ Performance and accessibility are measured and documented.
 
 ## Explicit backlog — not scheduled
 
-These ideas remain outside the committed roadmap until the core experience is successful:
-
 - first-person walk mode;
 - day/night switching;
 - historic-vs-current comparison;
@@ -226,4 +192,4 @@ These ideas remain outside the committed roadmap until the core experience is su
 - CMS;
 - social/user features.
 
-They should become new phases only after a concrete product reason exists.
+These become new phases only after a concrete product reason exists.
