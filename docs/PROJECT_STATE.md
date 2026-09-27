@@ -4,183 +4,181 @@ This is the canonical checkpoint for continuing MaybeBoudha work. Repository sta
 
 ## Objective
 
-Build a browser-based, photorealistic interactive heritage experience centered on Boudhanath Stupa, using a legitimate real-scene reconstruction and progressive browser delivery.
+Build a browser-based, photorealistic interactive heritage experience centered on Boudhanath Stupa.
+
+The production architecture remains capable of a legitimate real-scene reconstruction, but the current product decision is to prove the visual experience synthetically before spending effort on external field clearance and real capture.
 
 ## Repository
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Current branch: `main`
+- Current branch: `feat/phase-3p-visual-prototype`
+- Pull request: `#6 — feat: Phase 3P synthetic Boudhanath visual prototype`
 - Working title: `MaybeBoudha`
 
-## Last completed subphase
+## Last completed repository milestone
 
 **Phase 3C.1 — Field readiness / permission gate**
 
-Status: **complete and merged**
-
-PR:
-
-`#5 — docs: Phase 3C.1 Boudhanath field readiness gate`
-
-Merge SHA:
+Merged in PR #5:
 
 `be1369876adde2f87c814df8bafb98839f40505e`
 
-Merged-main verification:
+The clearance package remains valid preparation for a later real capture.
 
-`CI #87 — green`
+## Current product phase
 
-Phase 3C.1 delivered:
-
-- current official heritage/site/drone source review;
-- Department of Archaeology responsibility/permission questions;
-- current Shree Boudhanath Area Development Committee contact;
-- exact systematic-capture description;
-- written evidence requirements;
-- explicit GO / NO-GO rule;
-- capture-day readiness pack;
-- `docs/PHASE_3C_FIELD_READINESS.md`;
-- `docs/CAPTURE_PERMISSION_REQUEST_TEMPLATE.md`.
-
-## Previous completed subphase
-
-**Phase 3B — PLY → paged RAD processing proof**
-
-Merged in PR #4:
-
-`80604179ebe2c3499dffcbf894e070fdc533d28f`
-
-Final Phase 3B main checkpoint:
-
-`433a727f6d954a57ed18982af445cbd26e226eef`
-
-Phase 3B proved:
-
-```text
-pinned PLY
-    ↓
-Spark quality LOD
-    ↓
-chunked RAD
-    ↓
-HTTP range delivery
-    ↓
-paged Spark runtime
-```
-
-See `docs/RAD_PIPELINE_PROOF.md`.
-
-## Current phase
-
-**Phase 3 — Boudhanath Capture / Asset Plan**
+**Phase 3P — Synthetic Visual Feasibility**
 
 ### Current subphase
 
-**Phase 3C.2 — Field clearance**
+**Phase 3P.1 — Composition baseline**
 
-Status: **blocked on external written determinations**
+Status: **implementation and visual review complete on PR #6; final documentation-complete CI pending**
 
-This is an intentional external gate, not unfinished repository implementation.
+## Why Phase 3P exists
 
-## Required clearance evidence
+The user/product decision is:
 
-Before any systematic field capture, obtain and privately retain:
+> Build something genuinely convincing first. Only spend time on field-clearance outreach if the experience becomes good enough to justify a real reconstruction.
 
-1. Department of Archaeology written determination for the exact proposed ground-based systematic photography / derived 3D reconstruction;
-2. Shree Boudhanath Area Development Committee written determination for its site requirements;
-3. any required application, fee, schedule, or conditions;
-4. confirmation that the intended derived 3D/publication scope is allowed;
-5. any date/time or equipment restrictions.
+Therefore Phase 3C.2 is **deferred**, not deleted.
 
-A clear written determination that no prior permission is required also satisfies the relevant gate if it explicitly covers the described activity.
+No real Boudhanath systematic capture may begin while that clearance gate remains unsatisfied.
 
-## Current-source findings
+## Phase 3P.1 delivered
 
-Reviewed on **2026-09-27**:
+Default route now presents a synthetic architectural study containing:
 
-- Boudhanath is within the protected Kathmandu Valley World Heritage property;
-- DoA publishes photography/documentation and ancient-monument filming/permission responsibilities;
-- no official source found explicitly classifies Gaussian Splatting / photogrammetry;
-- the current local site body is the Shree Boudhanath Area Development Committee;
-- no public dedicated Gaussian-Splat/photogrammetry permit form was found;
-- Phase 3C remains **ground-only**;
-- no drone operation is part of the current capture plan.
+- approximate Boudhanath-scale monument massing;
+- stepped base;
+- weathered procedural white dome;
+- articulated dome-base ring;
+- four Buddha-eye panels;
+- gilded harmika;
+- thirteen-stage spire;
+- upper canopy/pinnacle;
+- prayer-wheel ring;
+- animated radial prayer flags;
+- tiled courtyard;
+- ring-shaped kora path;
+- surrounding multi-storey façades;
+- windows, frames, cornices, parapets, shopfronts, and awnings;
+- warm/cool lighting;
+- atmospheric fog and procedural sky;
+- cinematic camera entrance;
+- orbit/zoom controls;
+- reduced-motion handling;
+- responsive editorial UI;
+- explicit `Synthetic study · no scan data` disclosure.
 
-Detailed sources/questions:
-
-`docs/PHASE_3C_FIELD_READINESS.md`
-
-## Field capture remains not started
-
-No real Boudhanath source-photo dataset or Boudhanath reconstruction exists in the repository.
-
-Do not:
-
-- claim permission has been obtained;
-- capture the systematic dataset before written determinations clear the gate;
-- substitute scraped/web imagery;
-- use a drone;
-- attempt the full monument/plaza.
-
-## Next executable subphase after clearance
-
-**Phase 3C.3 — Partial field capture and source reconstruction**
-
-Only after Phase 3C.2 clears:
+Technical engineering routes remain available:
 
 ```text
-one small legitimate ground-accessible capture
-        ↓
-private raw archive + provenance
-        ↓
-cloud Gaussian Splat reconstruction
-        ↓
-source PLY
+?renderer=spark
+?renderer=rad
+?renderer=playcanvas
 ```
 
-Phase 3D remains responsible for:
+The real reconstruction delivery architecture is preserved.
 
-- cleanup;
-- privacy review;
-- cleaned master PLY;
-- real-asset RAD build;
-- browser proof;
-- physical desktop/mobile measurements.
+## Visual verification
 
-## External action package already prepared
+Second-pass screenshot was captured through the CI browser probe and inspected directly.
 
-Use:
+### Strong
 
-- `docs/CAPTURE_PERMISSION_REQUEST_TEMPLATE.md`
-- `docs/PHASE_3C_FIELD_READINESS.md`
-- `docs/CAPTURE_PROVENANCE_TEMPLATE.md`
+- recognizable Boudhanath silhouette;
+- monument dominates the composition;
+- prayer flags create scale/depth;
+- cinematic camera/UI direction works;
+- plaza enclosure reads much better after façade refinement;
+- the prototype now feels like an intentional interactive experience rather than a technical viewer.
 
-Do not commit private authority correspondence to this public repository.
+### Still visibly synthetic
 
-Record only non-sensitive references/status in the public project state after replies are received.
+- façades are representative rather than site-accurate;
+- plaster lacks scan-level microdetail;
+- harmika/eyes remain simplified;
+- spire ornament is still procedural;
+- no photographic PBR environment/material source;
+- no real crowd/incense/pigeon/ritual atmosphere;
+- no capture-derived geometry.
 
-## Known risks
+## Phase 3P.1 verdict
 
-- authorities may require a formal application or fee;
-- approved scope may differ from the current proposal;
-- a verbal response may be insufficient for the project evidence rule;
-- crowds/ceremonies can still make an approved day a practical NO-GO;
-- moving prayer flags and people can degrade reconstruction;
-- upper monument coverage remains limited from ground positions;
-- cloud reconstruction/export capabilities can change.
+**Keep the direction. Continue synthetic realism work.**
 
-## Branch hygiene
+**Do not trigger field-clearance outreach yet.**
 
-Merged feature branches currently remain in the repository. Do not delete them automatically.
+The result is good enough to justify another visual pass, but not realistic enough to justify the real capture/permission effort yet.
 
-A later cleanup pass may remove merged/stale branches after explicit approval.
+See:
+
+`docs/VISUAL_PROTOTYPE.md`
+
+## Verification
+
+Latest implementation head reviewed:
+
+`6c4799cebea65b3da0f6a520723492cf9250369a`
+
+CI #98:
+
+- locked install: passed;
+- tests: passed;
+- production build: passed;
+- default visual prototype probe: passed;
+- Spark regression probe: passed;
+- PlayCanvas regression probe: passed.
+
+RAD Pipeline #25:
+
+- quality LOD build: passed;
+- RAD/RADC generation: passed;
+- manifest: passed;
+- range delivery: passed;
+- paged Spark runtime: passed.
+
+A final documentation-complete verification is still required before merge.
+
+## Next subphase
+
+### Phase 3P.2 — Realism and material pass
+
+Only:
+
+- improve plaster/weathering;
+- improve gold/copper material response;
+- increase architectural façade detail;
+- improve harmika/eye treatment;
+- introduce controlled visual imperfection;
+- improve environment lighting;
+- improve atmospheric depth;
+- refine camera composition;
+- capture and inspect another visual-regression screenshot.
+
+Do not add:
+
+- cultural hotspots;
+- audio;
+- first-person navigation;
+- scraped reconstruction imagery;
+- real systematic field capture.
+
+## Deferred field-clearance path
+
+Phase **3C.2 — Field clearance** remains prepared.
+
+Reactivate it only when the visual prototype is compelling enough that the expected value of a real Boudhanath reconstruction justifies the permission/capture effort.
+
+When reactivated, written determinations from the responsible authorities are still required before systematic real capture.
 
 ## Resume rule
 
-1. inspect actual `main` and CI;
-2. read `PHASE_3C_FIELD_READINESS.md`;
-3. repository state wins over documentation if they differ;
-4. do not advance to field capture until both written determinations are available;
-5. once received, keep private correspondence private and record only non-sensitive references/status publicly;
-6. update this file at every subphase boundary.
+1. inspect PR #6 and current CI;
+2. read `VISUAL_PROTOTYPE.md`;
+3. repository state wins over docs if they differ;
+4. merge Phase 3P.1 only after documentation-complete CI and RAD regression are green;
+5. create Phase 3P.2 from verified `main`;
+6. do not reactivate field clearance until the visual exit question is answered yes.
