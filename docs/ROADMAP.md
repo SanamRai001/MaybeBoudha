@@ -75,9 +75,11 @@ Deliver:
 - raw-asset Git exclusions;
 - delivery/storage layout.
 
-**Status: in progress.**
+**Status: complete and merged in PR #3.**
 
 ### Phase 3B — PLY → RAD processing proof
+
+**Status: next.**
 
 Use a legal test PLY before touching Boudhanath data.
 
