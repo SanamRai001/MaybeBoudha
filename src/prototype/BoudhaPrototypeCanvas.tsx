@@ -864,6 +864,7 @@ export function BoudhaPrototypeCanvas({
     }
 
     let disposed = false
+    let licensedModelDispose: (() => void) | null = null
     const useLicensedModel = licensedModelRequested(window.location.search)
     let licensedModelReady = !useLicensedModel
     const scene = new Scene()
@@ -965,6 +966,7 @@ export function BoudhaPrototypeCanvas({
             return
           }
 
+          licensedModelDispose = dispose
           stupa.visible = false
           licensedEyeOverlay.visible = true
           scene.add(group)
@@ -1097,6 +1099,7 @@ export function BoudhaPrototypeCanvas({
       for (const texture of referenceTextures) {
         texture.dispose()
       }
+      licensedModelDispose?.()
       disposeScene(scene)
       renderer.dispose()
     }
