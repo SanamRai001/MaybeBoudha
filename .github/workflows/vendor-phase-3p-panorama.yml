@@ -27,7 +27,7 @@ jobs:
         run: |
           mkdir -p public/images
           curl --fail --location --retry 3 \
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/P37275-Kathmandu-Boudhanath.jpg/2560px-P37275-Kathmandu-Boudhanath.jpg" \
+            "https://commons.wikimedia.org/wiki/Special:Redirect/file/P37275-Kathmandu-Boudhanath.jpg?width=2560" \
             --output public/images/boudha-surroundings.jpg
 
           test -s public/images/boudha-surroundings.jpg
