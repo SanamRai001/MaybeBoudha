@@ -20,8 +20,15 @@ async function sha256(path) {
   return createHash('sha256').update(bytes).digest('hex')
 }
 
+const sourceFilename = basename(sourcePath)
+const outputStem = sourceFilename.replace(/\.[^.]+$/, '') + '-lod'
+
 const outputNames = (await readdir(outputDir))
-  .filter((name) => name.endsWith('.rad') || name.endsWith('.radc'))
+  .filter(
+    (name) =>
+      name === `${outputStem}.rad` ||
+      (name.startsWith(`${outputStem}-`) && name.endsWith('.radc')),
+  )
   .sort()
 
 if (!outputNames.some((name) => name.endsWith('.rad'))) {
@@ -53,7 +60,7 @@ const manifest = {
   fixture: {
     sourceRepository: 'playcanvas/engine',
     sourceCommit: 'b5b983982a9860d21e0c1dafb2f85f72e2c01afb',
-    sourceFile: basename(sourcePath),
+    sourceFile: sourceFilename,
     bytes: sourceInfo.size,
     sha256: await sha256(sourcePath),
   },
