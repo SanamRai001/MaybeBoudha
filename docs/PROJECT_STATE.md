@@ -50,7 +50,7 @@ Status: **implementation/proof complete on branch; final branch verification pen
 - pinned practical Rust toolchain;
 - quality LOD build;
 - chunked RAD/RADC output;
-- deterministic manifest with hashes/sizes;
+- per-build manifest with hashes/sizes;
 - range-capable proof server;
 - explicit 206 byte-range gate;
 - `?renderer=rad` application mode;
@@ -64,13 +64,19 @@ Detailed evidence:
 
 ## Successful engineering proof
 
-Dedicated workflow:
+First successful dedicated proof:
 
 - `RAD Pipeline #4`
 - run ID: `36297745202`
-- successful head: `75ae85abefb7b2f16db2559c0764ba65a2d0cc51`
+- head: `75ae85abefb7b2f16db2559c0764ba65a2d0cc51`
 
-Normal CI on the same head also passed.
+Later implementation-complete verification before the final documentation checkpoint:
+
+- normal CI **#75** — green;
+- RAD Pipeline **#11** — green;
+- head: `f531d4c2d354906c97ad9861ab2510c72ec8177c`.
+
+RAD #11 included conversion, manifest generation, staged-manifest artifact packaging, byte-range delivery, and paged Chromium rendering.
 
 ### Source
 
@@ -109,6 +115,17 @@ Repository docs must use the observed working toolchain for this pipeline.
 - generated RAD visibly rendered: **yes**
 
 Hosted-runner LOD/runtime timing is recorded only as engineering evidence, not a production performance claim.
+
+### Reproducibility finding
+
+The asset-processing **inputs, builder commit, toolchain, and options are pinned**, but the generated RAD header is not bit-for-bit stable.
+
+Across successful runs:
+
+- all RADC chunk SHA-256 hashes remained stable;
+- the RAD header hash changed because Spark embeds per-run timing metadata in its header comment.
+
+Every asset build therefore records the exact produced hashes in its manifest. Immutable scene version + manifest is the release identity; a repeated build is not assumed to have the same RAD-header hash.
 
 ## Accepted architecture
 
