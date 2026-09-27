@@ -645,3 +645,9 @@ h1 {
     font-size: 0.61rem;
   }
 }
+
+.prototype-controls a {
+  color: rgba(255, 236, 196, 0.7);
+  text-decoration-color: rgba(255, 236, 196, 0.28);
+  text-underline-offset: 3px;
+}
