@@ -57,3 +57,32 @@ That non-uniform scale correction is intentional because the printable STL's raw
 Therefore this model remains an **artistic/reference geometry**, not survey-grade or capture-derived geometry.
 
 Attribution must remain with any distribution or derivative use that requires it under the source license.
+
+
+## Photographic Boudhanath surroundings
+
+Phase 3P uses a public-domain panorama as optional photographic context around the interactive 3D monument:
+
+- File: `P37275-Kathmandu-Boudhanath.jpg`
+- Author: **Xiquinho**
+- Source: Wikimedia Commons
+- Source page: https://commons.wikimedia.org/wiki/File:P37275-Kathmandu-Boudhanath.jpg
+- Status: **public domain / PD-self**
+- Original dimensions: **12,225 × 2,903**
+- Project runtime preview: Wikimedia 2,560 px derivative
+
+The source description identifies it as a panorama taken from Boudhanath stupa showing surrounding shops and temples.
+
+### How it is used
+
+The image is mapped onto an inward-facing cylindrical environment around the interactive scene.
+
+When the photograph loads successfully:
+
+- the procedural surrounding-building group is hidden;
+- the central Boudhanath monument remains interactive 3D geometry;
+- the courtyard/environment gains real photographic architectural context.
+
+If the photograph fails to load, the procedural surroundings remain visible.
+
+The panorama is contextual imagery only. It is not reconstruction source data and does not convert the synthetic/hybrid monument into a scan or digital twin.
