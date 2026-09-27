@@ -10,10 +10,40 @@ Build a browser-based, photorealistic interactive heritage experience centered o
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Current branch: `feat/phase-3c-partial-boudhanath-capture`
+- Current branch: `main`
 - Working title: `MaybeBoudha`
 
 ## Last completed subphase
+
+**Phase 3C.1 — Field readiness / permission gate**
+
+Status: **complete and merged**
+
+PR:
+
+`#5 — docs: Phase 3C.1 Boudhanath field readiness gate`
+
+Merge SHA:
+
+`be1369876adde2f87c814df8bafb98839f40505e`
+
+Merged-main verification:
+
+`CI #87 — green`
+
+Phase 3C.1 delivered:
+
+- current official heritage/site/drone source review;
+- Department of Archaeology responsibility/permission questions;
+- current Shree Boudhanath Area Development Committee contact;
+- exact systematic-capture description;
+- written evidence requirements;
+- explicit GO / NO-GO rule;
+- capture-day readiness pack;
+- `docs/PHASE_3C_FIELD_READINESS.md`;
+- `docs/CAPTURE_PERMISSION_REQUEST_TEMPLATE.md`.
+
+## Previous completed subphase
 
 **Phase 3B — PLY → paged RAD processing proof**
 
@@ -21,12 +51,9 @@ Merged in PR #4:
 
 `80604179ebe2c3499dffcbf894e070fdc533d28f`
 
-Verified:
+Final Phase 3B main checkpoint:
 
-- PR head: CI #80 + RAD Pipeline #16
-- merged main: CI #81 + RAD Pipeline #17
-- final Phase 3B main checkpoint: `433a727f6d954a57ed18982af445cbd26e226eef`
-- checkpoint CI #85: green
+`433a727f6d954a57ed18982af445cbd26e226eef`
 
 Phase 3B proved:
 
@@ -46,95 +73,64 @@ See `docs/RAD_PIPELINE_PROOF.md`.
 
 ## Current phase
 
-**Phase 3C — Partial Boudhanath Capture**
+**Phase 3 — Boudhanath Capture / Asset Plan**
 
 ### Current subphase
-
-**Phase 3C.1 — Field readiness / permission gate**
-
-Status: **remote implementation complete on branch; verification pending**
-
-## Phase 3C.1 current-source findings
-
-Checked on **2026-09-27**.
-
-### Heritage status
-
-Boudhanath is a Monument Zone of the Kathmandu Valley UNESCO World Heritage property and is nationally protected.
-
-### Department of Archaeology
-
-Current official DoA material:
-
-- lists photography/documentation work for historical and archaeological monuments;
-- lists consent for filming at ancient monuments;
-- says its Photography Unit grants filming permission under applicable rules inside protected monument areas.
-
-The sources do not explicitly classify Gaussian Splatting / photogrammetry.
-
-Therefore a systematic 120–180 image capture for a derived public 3D reconstruction is treated as **permission-determination required**, not assumed casual photography.
-
-### Local site authority
-
-The Shree Boudhanath Area Development Committee is the current local Boudhanath body.
-
-Current public contact:
-
-- phone: `01-4589257`
-- email: `info@boudhanath.gov.np`
-
-No dedicated current public form for photogrammetry / Gaussian Splat capture was found.
-
-### Drone
-
-**No drone in Phase 3C.**
-
-CAAN's published standard UAS conditions prohibit operation over populated areas. Boudhanath's first proof remains ground-only.
-
-## Phase 3C.1 delivered
-
-- `docs/PHASE_3C_FIELD_READINESS.md`
-- `docs/CAPTURE_PERMISSION_REQUEST_TEMPLATE.md`
-- exact project/capture description for authorities;
-- DoA questions;
-- Boudhanath committee questions;
-- evidence rules;
-- capture-day readiness pack;
-- explicit GO / NO-GO gate.
-
-## Next subphase
 
 **Phase 3C.2 — Field clearance**
 
 Status: **blocked on external written determinations**
 
+This is an intentional external gate, not unfinished repository implementation.
+
+## Required clearance evidence
+
 Before any systematic field capture, obtain and privately retain:
 
-1. DoA written determination for the described ground-based systematic capture;
-2. Boudhanath Area Development Committee written determination;
-3. required approval/fee/process evidence, if applicable;
-4. allowed scope and publication conditions.
+1. Department of Archaeology written determination for the exact proposed ground-based systematic photography / derived 3D reconstruction;
+2. Shree Boudhanath Area Development Committee written determination for its site requirements;
+3. any required application, fee, schedule, or conditions;
+4. confirmation that the intended derived 3D/publication scope is allowed;
+5. any date/time or equipment restrictions.
 
-A written statement that no prior permission is required also satisfies the determination requirement if it clearly covers the described activity.
+A clear written determination that no prior permission is required also satisfies the relevant gate if it explicitly covers the described activity.
+
+## Current-source findings
+
+Reviewed on **2026-09-27**:
+
+- Boudhanath is within the protected Kathmandu Valley World Heritage property;
+- DoA publishes photography/documentation and ancient-monument filming/permission responsibilities;
+- no official source found explicitly classifies Gaussian Splatting / photogrammetry;
+- the current local site body is the Shree Boudhanath Area Development Committee;
+- no public dedicated Gaussian-Splat/photogrammetry permit form was found;
+- Phase 3C remains **ground-only**;
+- no drone operation is part of the current capture plan.
+
+Detailed sources/questions:
+
+`docs/PHASE_3C_FIELD_READINESS.md`
 
 ## Field capture remains not started
 
-No Boudhanath source-photo dataset or real reconstruction exists in the repository.
+No real Boudhanath source-photo dataset or Boudhanath reconstruction exists in the repository.
 
 Do not:
 
-- claim permission was obtained;
-- capture a systematic dataset before the gate clears;
+- claim permission has been obtained;
+- capture the systematic dataset before written determinations clear the gate;
 - substitute scraped/web imagery;
 - use a drone;
 - attempt the full monument/plaza.
 
-## After clearance
+## Next executable subphase after clearance
 
-Phase 3C.3 only:
+**Phase 3C.3 — Partial field capture and source reconstruction**
+
+Only after Phase 3C.2 clears:
 
 ```text
-small legitimate ground capture
+one small legitimate ground-accessible capture
         ↓
 private raw archive + provenance
         ↓
@@ -143,22 +139,48 @@ cloud Gaussian Splat reconstruction
 source PLY
 ```
 
-Cleanup/privacy master promotion and real-asset RAD/device proof remain Phase 3D.
+Phase 3D remains responsible for:
+
+- cleanup;
+- privacy review;
+- cleaned master PLY;
+- real-asset RAD build;
+- browser proof;
+- physical desktop/mobile measurements.
+
+## External action package already prepared
+
+Use:
+
+- `docs/CAPTURE_PERMISSION_REQUEST_TEMPLATE.md`
+- `docs/PHASE_3C_FIELD_READINESS.md`
+- `docs/CAPTURE_PROVENANCE_TEMPLATE.md`
+
+Do not commit private authority correspondence to this public repository.
+
+Record only non-sensitive references/status in the public project state after replies are received.
 
 ## Known risks
 
-- the authorities may require a formal application or fee;
+- authorities may require a formal application or fee;
 - approved scope may differ from the current proposal;
-- crowds/ceremonies can make a permitted day a practical no-go;
-- moving prayer flags and people can hurt reconstruction;
-- upper monument coverage remains limited from the ground;
-- cloud export capabilities can change.
+- a verbal response may be insufficient for the project evidence rule;
+- crowds/ceremonies can still make an approved day a practical NO-GO;
+- moving prayer flags and people can degrade reconstruction;
+- upper monument coverage remains limited from ground positions;
+- cloud reconstruction/export capabilities can change.
+
+## Branch hygiene
+
+Merged feature branches currently remain in the repository. Do not delete them automatically.
+
+A later cleanup pass may remove merged/stale branches after explicit approval.
 
 ## Resume rule
 
-1. inspect branch/PR/CI;
+1. inspect actual `main` and CI;
 2. read `PHASE_3C_FIELD_READINESS.md`;
 3. repository state wins over documentation if they differ;
-4. do not advance to field capture until written determinations are available;
-5. once received, record only non-sensitive references in the public repo and keep private correspondence private;
+4. do not advance to field capture until both written determinations are available;
+5. once received, keep private correspondence private and record only non-sensitive references/status publicly;
 6. update this file at every subphase boundary.
