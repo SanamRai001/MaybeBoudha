@@ -4,44 +4,21 @@ The project is deliberately split into small phases. A later phase should not be
 
 ## Phase 0 — Product and architecture foundation
 
-**Goal:** define what is being built before committing to implementation.
-
 **Status: complete.**
 
 ---
 
 ## Phase 1 — Viewer foundation
 
-**Goal:** create the smallest maintainable browser application that can host a replaceable 3D scene.
-
-Delivered:
-
-- Vite + React + TypeScript;
-- application shell;
-- renderer boundary;
-- camera foundation;
-- loading and error fallback;
-- reduced-motion awareness;
-- placeholder scene;
-- tests and locked CI build.
-
 **Status: complete.**
+
+Delivered the React/TypeScript viewer shell, renderer boundary, camera foundation, fallbacks, tests, and locked CI.
 
 ---
 
 ## Phase 2 — Real reconstruction renderer spike
 
-**Goal:** prove real Gaussian Splat rendering, compare credible browser paths, and select the production architecture from evidence.
-
-Delivered:
-
-- Spark 2.2.0 spike;
-- PlayCanvas 2.22.4 spike;
-- real reconstruction fixtures;
-- neutral same-asset compressed-PLY comparison;
-- deterministic browser runtime probes;
-- visual screenshot verification;
-- renderer/scene-format ADR.
+**Status: complete and merged.**
 
 Decision:
 
@@ -51,9 +28,7 @@ Decision:
 - large web delivery: **paged RAD**;
 - PlayCanvas retained as fallback candidate.
 
-Real-device performance is intentionally **not claimed** from CI and remains a Phase 4 / Phase 7 production gate with a realistic Boudhanath-sized asset.
-
-**Status: complete and merged.**
+See ADR-001 and `RENDERER_SPIKE.md`.
 
 ---
 
@@ -61,21 +36,59 @@ Real-device performance is intentionally **not claimed** from CI and remains a P
 
 **Goal:** obtain a legitimate, usable source for the real scene and prove the selected reconstruction-to-web pipeline on a partial capture.
 
-### Work
+### Phase 3A — Capture governance and field plan
 
-- define capture boundary and coverage;
-- define ground and elevated coverage needs;
-- confirm capture permissions;
-- choose capture/reconstruction service/toolchain;
-- record provenance and usage rights;
-- define privacy cleanup;
-- capture or obtain a small partial Boudhanath dataset;
-- produce a cleaned partial PLY;
-- prove partial PLY → paged RAD → browser delivery.
+Deliver:
 
-### Exit criteria
+- ground-first capture boundary;
+- permission/drone guardrails;
+- capture technique;
+- crowd/privacy handling;
+- first cloud reconstruction toolchain;
+- cleanup workflow;
+- provenance template;
+- raw-asset Git exclusions;
+- delivery/storage layout.
 
-A legally usable partial Boudhanath reconstruction loads through the selected Spark/RAD path and gives enough evidence to plan the full capture.
+**Status: in progress.**
+
+### Phase 3B — PLY → RAD processing proof
+
+Use a legal test PLY before touching Boudhanath data.
+
+Deliver:
+
+- reproducible Spark LOD build process;
+- quality/paged RAD output;
+- recorded builder version/commit;
+- output checksums and size;
+- Spark `paged: true` browser load;
+- automated or repeatable verification.
+
+### Phase 3C — Partial Boudhanath capture
+
+Only after Phase 3A rules are satisfied:
+
+- verify current site/heritage requirements;
+- capture one small ground-accessible section;
+- keep raw source private;
+- reconstruct in the selected cloud workflow;
+- export source PLY.
+
+### Phase 3D — Partial asset cleanup and proof
+
+Deliver:
+
+- privacy-reviewed cleaned PLY;
+- provenance record;
+- PLY → paged RAD;
+- browser load through Spark;
+- physical desktop/mobile measurements;
+- decision on whether full-site capture is viable.
+
+### Phase 3 exit criteria
+
+A legally usable **partial Boudhanath** reconstruction loads through the selected Spark/RAD path with sufficient provenance and device evidence to plan a full capture.
 
 ---
 
@@ -83,97 +96,76 @@ A legally usable partial Boudhanath reconstruction loads through the selected Sp
 
 **Goal:** make Boudhanath itself the working experience.
 
-### Build
+Build:
 
 - optimized real scene;
 - progressive RAD delivery;
-- quality profiles / LOD tuning;
+- quality/LOD tuning;
 - CDN/object-storage delivery;
-- home camera preset;
-- stable exploration bounds;
+- home camera;
+- exploration bounds;
 - fallback representation;
-- first real-device desktop/mobile performance measurements.
-
-### Exit criteria
-
-Boudhanath loads reliably on supported desktop and mobile devices with measured performance.
+- real-device performance measurements.
 
 ---
 
 ## Phase 5 — Cinematic introduction
 
-**Goal:** create the first emotional/presentational layer without compromising control or performance.
+**Goal:** create the first presentational layer without compromising control or performance.
 
-### Build
+Build:
 
-- short initial camera sequence;
-- skip control;
-- reduced-motion alternative;
-- transition into user-controlled mode;
-- polished loader / reveal.
-
-### Guardrail
-
-The intro must be short and must never trap the visitor behind animation.
+- short camera sequence;
+- skip;
+- reduced-motion path;
+- transition to user control;
+- polished loader/reveal.
 
 ---
 
 ## Phase 6 — Cultural exploration
 
-**Goal:** add useful contextual information.
+**Goal:** add carefully sourced contextual information.
 
-### Build
+Build:
 
 - 3–5 sourced hotspots;
 - guided camera presets;
-- content panel system;
+- content panels;
 - source references;
 - optional ambient audio;
 - explicit audio controls.
 
-### Guardrail
-
-No gamified scoring, collectibles, or interaction that trivializes religious/cultural meaning.
+No gamified scoring or interaction that trivializes religious/cultural meaning.
 
 ---
 
 ## Phase 7 — Performance, accessibility and resilience
 
-**Goal:** make the experience robust enough for public use.
-
-### Work
+Work:
 
 - broader real-device profiling;
-- quality auto-selection;
-- user quality override;
+- quality auto-selection/override;
 - slow-network behavior;
-- memory-pressure behavior;
-- keyboard accessibility;
-- touch review;
+- memory pressure;
+- keyboard/touch accessibility;
 - reduced motion;
 - WebGL failure paths;
-- asset-cache/version strategy;
+- asset caching/versioning;
 - cross-browser verification.
-
-### Exit criteria
-
-Performance and accessibility are measured and documented.
 
 ---
 
 ## Phase 8 — Public release
 
-**Goal:** ship a polished, credible portfolio-quality experience.
+Work:
 
-### Work
-
-- metadata / SEO;
+- SEO/metadata;
 - final branding;
 - content review;
 - production deployment;
-- analytics only if justified;
 - privacy review;
-- README screenshots/video;
+- README media;
 - project write-up;
 - deployment verification.
 
@@ -184,12 +176,10 @@ Performance and accessibility are measured and documented.
 - first-person walk mode;
 - day/night switching;
 - historic-vs-current comparison;
-- narrated guided tours;
-- Nepali / Newar / Tibetan or other multilingual content;
+- narrated tours;
+- multilingual content;
 - VR/WebXR;
-- dynamic NPC/crowd systems;
+- dynamic crowds;
 - multiple heritage sites;
 - CMS;
 - social/user features.
-
-These become new phases only after a concrete product reason exists.
