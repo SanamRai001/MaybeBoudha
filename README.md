@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3 — Boudhanath Capture / Asset Plan: Phase 3B is complete and merged; Phase 3C is next.**
+**Phase 3 — Boudhanath Capture / Asset Plan: Phase 3C.1 field-readiness work is complete on branch; field clearance is still pending.**
 
 The project now has verified browser evidence for both the renderer choice and the selected large-scene delivery path:
 
@@ -138,6 +138,8 @@ The `?renderer=rad` route expects generated RAD/RADC files under `/rad/`; normal
 - [Asset Pipeline](docs/ASSET_PIPELINE.md)
 - [Phase 3B RAD Pipeline Proof](docs/RAD_PIPELINE_PROOF.md)
 - [Capture Provenance Template](docs/CAPTURE_PROVENANCE_TEMPLATE.md)
+- [Phase 3C Field Readiness](docs/PHASE_3C_FIELD_READINESS.md)
+- [Capture Permission Request Template](docs/CAPTURE_PERMISSION_REQUEST_TEMPLATE.md)
 - [Project State](docs/PROJECT_STATE.md)
 
 ## Development rules
@@ -153,10 +155,10 @@ The `?renderer=rad` route expects generated RAD/RADC files under `/rad/`; normal
 
 ## Immediate next step
 
-**Phase 3C — Partial Boudhanath Capture**
+**Phase 3C.2 — Field clearance**
 
-Before any field capture, reconfirm the current site/heritage requirements for the intended systematic photo pass and create the real provenance record. Then capture only one small ground-accessible section, keep raw imagery private, and produce a source PLY.
+The current official rules and contacts have been rechecked. The next action is external: obtain written determinations from the Department of Archaeology and the Shree Boudhanath Area Development Committee for the exact systematic capture described in the readiness document.
 
-Do not attempt the full monument/plaza yet.
+Do not begin the photo dataset until those determinations are recorded.
 
 See [ROADMAP.md](docs/ROADMAP.md) for phase boundaries.
