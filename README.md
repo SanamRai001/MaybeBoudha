@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3 — Boudhanath Capture / Asset Plan: Phase 3C.1 field-readiness work is complete on branch; field clearance is still pending.**
+**Phase 3 — Boudhanath Capture / Asset Plan: Phase 3C.1 field readiness is complete and merged; Phase 3C.2 field clearance is externally blocked.**
 
 The project now has verified browser evidence for both the renderer choice and the selected large-scene delivery path:
 
@@ -157,7 +157,7 @@ The `?renderer=rad` route expects generated RAD/RADC files under `/rad/`; normal
 
 **Phase 3C.2 — Field clearance**
 
-The current official rules and contacts have been rechecked. The next action is external: obtain written determinations from the Department of Archaeology and the Shree Boudhanath Area Development Committee for the exact systematic capture described in the readiness document.
+The current official rules and contacts have been rechecked and Phase 3C.1 is merged. The next action is external: obtain written determinations from the Department of Archaeology and the Shree Boudhanath Area Development Committee for the exact systematic capture described in the readiness document.
 
 Do not begin the photo dataset until those determinations are recorded.
 
