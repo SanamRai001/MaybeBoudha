@@ -104,7 +104,7 @@ jobs:
           ls -lh .phase3b/input/biker.compressed-lod*
           find .phase3b/input -maxdepth 1 -name 'biker.compressed-lod-*.radc' -print -quit | grep -q .
 
-      - name: Create deterministic RAD manifest
+      - name: Create RAD build manifest
         run: |
           node scripts/rad/create-manifest.mjs \
             .phase3b/input/biker.compressed.ply \
