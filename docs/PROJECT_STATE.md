@@ -10,81 +10,71 @@ Build a browser-based, photorealistic interactive heritage experience centered o
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Current branch: `feat/phase-3-boudhanath-capture-plan`
+- Current branch: `main`
 - Working title: `MaybeBoudha`
 
-## Last completed phase
+## Last completed subphase
 
-**Phase 2 — Real Reconstruction Renderer Spike**
+**Phase 3A — Capture governance and field plan**
 
 Status: **complete and merged**
 
+PR:
+
+`#3 — docs: Phase 3A Boudhanath capture governance`
+
 Merge SHA:
 
-`83b56ac01dad2525098c10902baaa2deccd71aa4`
+`2a0c873d7b2c1019cad82b9cb80510dfec3e90ac`
 
-Final merged-main checkpoint before Phase 3:
+Pre-merge CI:
 
-`23858da663ddefbbb97daed9097f0304fb61ae0e`
+`#60 — fully green`
 
-Main CI #58 passed:
+Verified:
 
-- locked install;
+- locked dependency install;
 - tests;
 - production build;
 - Spark runtime probe;
 - PlayCanvas runtime probe.
 
-## Accepted rendering architecture
-
-- renderer: **Spark 2.2.x**;
-- integration: **React shell + direct Three.js/Spark renderer**;
-- interchange/master direction: **PLY**;
-- production delivery: **paged RAD**;
-- fallback candidate: **PlayCanvas**.
-
-See `docs/ADR-001-RENDERER-AND-SCENE-FORMAT.md`.
-
-## Current phase
-
-**Phase 3 — Boudhanath Capture / Asset Plan**
-
-### Current subphase
-
-**Phase 3A — Capture governance and field plan**
-
-Status: **implementation complete on branch; verification pending**
-
-## Phase 3A changes
-
-Added:
+## Phase 3A delivered
 
 - `docs/CAPTURE_PLAN.md`;
 - `docs/ASSET_PIPELINE.md`;
 - `docs/CAPTURE_PROVENANCE_TEMPLATE.md`;
-- local capture/output Git exclusions;
-- Phase 3A–3D roadmap split.
+- raw/processed capture Git exclusions;
+- ground-first capture policy;
+- site/heritage/drone permission guardrails;
+- privacy/provenance requirements;
+- Polycam → PLY → SuperSplat → cleaned PLY workflow;
+- Phase 3A–3D boundaries.
 
-## Phase 3A decisions
+## Capture decisions
 
-### Capture baseline
+### Baseline
 
 **Ground-only by default.**
 
-Drone/elevated aerial capture is not assumed. Current CAAN rules make normal operation over populated areas inappropriate as a casual baseline, and any aerial plan must be separately permitted.
+Aerial capture is not assumed and requires a separately verified permission path.
 
-### First real scope
+### First real capture
 
-Do **not** scan the whole Stupa first.
+Do not scan the whole Stupa first.
 
-Capture one small, ground-accessible, mostly static exterior section with repeatable overlapping paths.
+Capture one small, ground-accessible, mostly static exterior section using controlled overlapping photo passes.
+
+### Raw data
+
+Private by default and kept outside normal Git history.
 
 ### First reconstruction workflow
 
 ```text
 phone photos
     ↓
-Polycam Gaussian Splat cloud processing
+Polycam Gaussian Splat
     ↓
 source PLY
     ↓
@@ -92,75 +82,103 @@ SuperSplat cleanup
     ↓
 cleaned master PLY
     ↓
-Spark LOD/RAD pipeline
+Spark LOD/RAD processing
 ```
 
-Tool/account capabilities must be rechecked immediately before capture because service limits can change.
+## Accepted rendering architecture
 
-### Privacy
+From ADR-001:
 
-Raw imagery is private by default.
+- Spark 2.2.x;
+- direct Three.js/Spark runtime;
+- PLY as reconstruction interchange/master direction;
+- paged RAD for production delivery;
+- PlayCanvas as fallback candidate.
 
-Public reconstruction requires review of:
+## Current phase
 
-- recognizable people;
-- children;
-- plates;
-- screens/documents;
-- reflections;
-- frozen reconstructed bystanders.
+**Phase 3 — Boudhanath Capture / Asset Plan**
 
-### Asset storage
+### Current subphase
 
-Real capture data stays outside normal Git history under ignored local working directories or private object storage.
+**Phase 3B — PLY → RAD processing proof**
 
-## External/current requirements recorded
+Status: **not started**
 
-Official sources reviewed for Phase 3A include:
+## Phase 3B goal
 
-- CAAN drone/UAS guidance;
-- Nepal Department of Archaeology photography/filming consent information;
-- Polycam Gaussian Splat/PLY export documentation;
-- SuperSplat cleanup/export documentation;
-- Spark RAD/LOD documentation.
+Before any Boudhanath field capture, prove that a legal PLY can be converted reproducibly into Spark's paged RAD delivery and loaded in the browser.
 
-The repo plan does not claim that a specific capture date is already authorized.
+Deliver:
 
-## Next subphase
+1. pin the Spark LOD builder source/version;
+2. create a separate asset-processing workflow;
+3. run the builder against a legal small PLY fixture;
+4. use quality LOD + chunked RAD;
+5. record source/output checksums, file sizes, chunk count, and builder metadata;
+6. serve the generated RAD/RADC files locally in CI;
+7. load the generated RAD through Spark with `paged: true`;
+8. add a deterministic runtime proof;
+9. document the exact process.
 
-### Phase 3B — PLY → RAD processing proof
+## Spark builder facts verified before Phase 3B
 
-Before a Boudhanath capture:
+Spark v2.2.0 defines:
 
-1. make a reproducible Spark LOD/RAD build process;
-2. run it against a legal small PLY fixture;
-3. record builder version/options;
-4. load generated RAD with `paged: true`;
-5. verify runtime behavior;
-6. document output size/chunks/checksums.
+```text
+npm run build-lod -- <args>
+```
 
-Do not begin Phase 3C until Phase 3B is green.
+which invokes:
+
+```text
+cargo run --manifest-path rust/build-lod/Cargo.toml --release --
+```
+
+The workspace requires Rust **1.82**.
+
+The builder accepts PLY/compressed PLY and supports:
+
+- `--quality`;
+- `--rad-chunked`;
+- input validation;
+- optional crop/filter/SH controls.
+
+Phase 3B should pin the Spark source tag/commit rather than depending on a moving branch.
+
+## Phase 3B constraint
+
+Do not install/compile the Rust LOD builder during every ordinary application CI/build.
+
+Asset processing must be isolated from the normal app pipeline.
 
 ## Blocker for Phase 3C
 
-Physical Boudhanath imagery does not exist in the repository and cannot be invented.
+Do not begin a real Boudhanath capture until:
 
-Before field capture, current site/heritage requirements must be reconfirmed for the intended capture method.
+- Phase 3B is green;
+- current on-site/systematic-capture rules are reconfirmed;
+- intended permission/provenance fields can be completed honestly.
 
 ## Known risks
 
-- upper monument cannot be captured completely from ground level;
-- crowds/flags introduce moving geometry;
-- lighting changes harm reconstruction consistency;
-- systematic capture may require site/heritage consent;
-- aerial capture has separate regulatory requirements;
-- cloud reconstruction/export limits can change;
-- full-site data may exceed laptop/browser budgets.
+- Rust LOD build cost;
+- RAD chunk hosting/range behavior;
+- relative chunk URLs;
+- full-site asset size;
+- mobile memory pressure;
+- source PLY quality varying by reconstruction service;
+- physical capture permissions and crowd/privacy constraints.
+
+## Next branch
+
+`feat/phase-3b-rad-pipeline`
 
 ## Resume rule
 
-1. inspect branch and CI;
-2. read ADR-001, CAPTURE_PLAN, and ASSET_PIPELINE;
+1. verify actual `main` and CI;
+2. read ADR-001 and ASSET_PIPELINE;
 3. repository state wins over docs if they differ;
-4. continue Phase 3B only after Phase 3A verifies;
-5. update this file at every subphase boundary.
+4. create Phase 3B from verified main;
+5. keep asset processing separate from normal application CI;
+6. update this file at the Phase 3B boundary.
