@@ -22,14 +22,20 @@ This is an engineering proof with a pinned public test fixture. It is not a Boud
 
 ## Verified proof run
 
-Successful dedicated workflow:
+First successful dedicated proof:
 
 - workflow: `RAD Pipeline`
 - run: **#4**
 - run ID: `36297745202`
 - branch head: `75ae85abefb7b2f16db2559c0764ba65a2d0cc51`
 
-Normal application CI on the same head also passed its locked install, tests, production build, Spark runtime smoke, and PlayCanvas runtime smoke.
+A later implementation-complete head also passed end-to-end before the final documentation checkpoint:
+
+- normal CI: **#75**
+- RAD Pipeline: **#11**
+- head: `f531d4c2d354906c97ad9861ab2510c72ec8177c`
+
+That later run exercised the hardened range server and packaged the staged RAD manifest into the proof artifact.
 
 ## Input fixture
 
@@ -108,7 +114,7 @@ Total generated RAD delivery:
 
 | File | Bytes | SHA-256 |
 | --- | ---: | --- |
-| `biker.compressed-lod.rad` | 1,744 | `a9f72eceee5ba7dd28c4a01d1c60cdfee56da49c92fbe7dccbd66139c5b64bac` |
+| `biker.compressed-lod.rad` | 1,744 | per-build; run #11: `40aebf5d9aa739037eda9a143d1664c47f3b31ad8c15bb81b5c4fc982ee4d22d` |
 | `biker.compressed-lod-0.radc` | 1,355,200 | `b3ad23311dc4a9457cf6b5c7ae5de864e7ecc3c2e8658ad7cb383376c16e2593` |
 | `biker.compressed-lod-1.radc` | 1,281,456 | `80bfaf10a1e90c7f3a9cfcaaeccc913edb5b87a7b9dccffcbdddb1977dfac08e` |
 | `biker.compressed-lod-2.radc` | 1,284,432 | `88732e968a704e463387d27e3e77c1f4cf1e1e07b97a60f5742454a36f1b933a` |
@@ -116,9 +122,29 @@ Total generated RAD delivery:
 
 The RAD delivery is intentionally rebuildable and should not replace the cleaned source/master PLY.
 
+### Bitwise reproducibility
+
+The conversion process is pinned and repeatable, but Spark v2.2.0's generated `.rad` header is **not bit-for-bit deterministic**.
+
+Observed across successful runs:
+
+- all four `.radc` chunk hashes remained identical;
+- the `.rad` header hash changed;
+- run #4 header SHA-256: `a9f72eceee5ba7dd28c4a01d1c60cdfee56da49c92fbe7dccbd66139c5b64bac`;
+- run #11 header SHA-256: `40aebf5d9aa739037eda9a143d1664c47f3b31ad8c15bb81b5c4fc982ee4d22d`.
+
+Spark's builder embeds per-run values such as `lod_duration` and `chunk_duration` in the RAD header comment. That metadata changes even when the source, builder commit, options, and RADC payloads are unchanged.
+
+Therefore:
+
+- the workflow pins the **process and inputs**;
+- every build manifest records the exact output hashes produced by that run;
+- scene releases should use immutable scene versions plus their manifest;
+- MaybeBoudha does not claim bit-identical RAD headers across rebuilds.
+
 ## Manifest
 
-`scripts/rad/create-manifest.mjs` records:
+`scripts/rad/create-manifest.mjs` creates a per-build manifest that records:
 
 - pinned source identity;
 - source byte count and SHA-256;
@@ -253,7 +279,7 @@ Phase 3B engineering criteria are met:
 
 1. pinned legal PLY input — **met**
 2. pinned Spark builder — **met**
-3. reproducible quality LOD + chunked RAD — **met**
+3. pinned/repeatable quality LOD + chunked RAD process — **met**
 4. checksums/sizes/chunk count — **met**
 5. byte-range delivery — **met**
 6. `paged: true` Spark load — **met**
