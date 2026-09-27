@@ -29,13 +29,13 @@ First successful dedicated proof:
 - run ID: `36297745202`
 - branch head: `75ae85abefb7b2f16db2559c0764ba65a2d0cc51`
 
-A later implementation-complete head also passed end-to-end before the final documentation checkpoint:
+Later verification completed the proof:
 
-- normal CI: **#75**
-- RAD Pipeline: **#11**
-- head: `f531d4c2d354906c97ad9861ab2510c72ec8177c`
+- implementation-complete pre-doc head: normal CI **#75**, RAD Pipeline **#11**
+- documentation-complete PR head `85e6abccfa7abdb327258634f2e524f28423211d`: normal CI **#80**, RAD Pipeline **#16**
+- merged main `80604179ebe2c3499dffcbf894e070fdc533d28f`: normal CI **#81**, RAD Pipeline **#17**
 
-That later run exercised the hardened range server and packaged the staged RAD manifest into the proof artifact.
+The merged-main RAD run regenerated the scene, build manifest, range-delivery proof, and paged Chromium render successfully.
 
 ## Input fixture
 
@@ -287,4 +287,4 @@ Phase 3B engineering criteria are met:
 8. visual Chromium confirmation — **met**
 9. asset processing isolated from normal app CI — **met**
 
-Final branch/documentation verification is still required before the PR is merged.
+**Phase 3B status: complete, merged in PR #4, and verified on main.**
