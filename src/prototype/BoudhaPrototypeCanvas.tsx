@@ -864,8 +864,8 @@ export function BoudhaPrototypeCanvas({
     }
 
     let disposed = false
-    let licensedModelDispose: (() => void) | null = null
     const useLicensedModel = licensedModelRequested(window.location.search)
+    let licensedModelReady = !useLicensedModel
     const scene = new Scene()
     scene.fog = new FogExp2('#c8ad86', 0.0034)
     addSky(scene)
@@ -951,26 +951,33 @@ export function BoudhaPrototypeCanvas({
 
     const { stupa, flagTop } = createStupa(scene)
 
+    const licensedEyeOverlay = new Group()
+    licensedEyeOverlay.name = 'licensed-boudhanath-eye-overlay'
+    licensedEyeOverlay.visible = false
+    addEyePanels(licensedEyeOverlay, makeEyeTexture())
+    scene.add(licensedEyeOverlay)
+
     if (useLicensedModel) {
-      void loadLicensedStupaModel('/models/Boudha.STL')
-        .then(({ group, dispose }) => {
+      void loadLicensedStupaModel()
+        .then(({ group, dispose, metadata }) => {
           if (disposed) {
             dispose()
             return
           }
 
-          licensedModelDispose = dispose
           stupa.visible = false
+          licensedEyeOverlay.visible = true
           scene.add(group)
+          licensedModelReady = true
 
-          const eyeOverlay = new Group()
-          eyeOverlay.name = 'licensed-boudhanath-eye-overlay'
-          addEyePanels(eyeOverlay, makeEyeTexture())
-          scene.add(eyeOverlay)
+          console.info(
+            'Licensed Boudhanath model ready',
+            JSON.stringify(metadata),
+          )
         })
         .catch((error: unknown) => {
-          console.warn(
-            'Licensed Boudhanath STL unavailable; using procedural fallback.',
+          console.error(
+            'Licensed Boudhanath model failed to load.',
             error,
           )
         })
@@ -1075,7 +1082,7 @@ export function BoudhaPrototypeCanvas({
 
       renderer.render(scene, camera)
 
-      if (!readyAnnounced) {
+      if (!readyAnnounced && licensedModelReady) {
         readyAnnounced = true
         onReady()
       }
@@ -1090,7 +1097,6 @@ export function BoudhaPrototypeCanvas({
       for (const texture of referenceTextures) {
         texture.dispose()
       }
-      licensedModelDispose?.()
       disposeScene(scene)
       renderer.dispose()
     }
