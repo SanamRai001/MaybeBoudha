@@ -618,20 +618,6 @@ function createStupa(scene: Scene) {
     stupa.add(niche)
   }
 
-  const nicheGeometry = new BoxGeometry(0.72, 0.68, 0.62)
-  for (let index = 0; index < 64; index += 1) {
-    const angle = (index / 64) * Math.PI * 2
-    const niche = new Mesh(nicheGeometry, warmWhite)
-    niche.position.set(
-      Math.cos(angle) * 19.1,
-      5.75,
-      Math.sin(angle) * 19.1,
-    )
-    niche.rotation.y = -angle
-    niche.castShadow = true
-    stupa.add(niche)
-  }
-
   const harmika = new Mesh(new BoxGeometry(7.2, 5.2, 7.2), gold)
   harmika.position.y = 25.8
   harmika.castShadow = true
