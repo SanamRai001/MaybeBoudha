@@ -4,21 +4,44 @@ The project is deliberately split into small phases. A later phase should not be
 
 ## Phase 0 — Product and architecture foundation
 
+**Goal:** define what is being built before committing to implementation.
+
 **Status: complete.**
 
 ---
 
 ## Phase 1 — Viewer foundation
 
-**Status: complete.**
+**Goal:** create the smallest maintainable browser application that can host a replaceable 3D scene.
 
-Delivered the React/TypeScript viewer shell, renderer boundary, camera foundation, fallbacks, tests, and locked CI.
+Delivered:
+
+- Vite + React + TypeScript;
+- application shell;
+- renderer boundary;
+- camera foundation;
+- loading and error fallback;
+- reduced-motion awareness;
+- placeholder scene;
+- tests and locked CI build.
+
+**Status: complete.**
 
 ---
 
 ## Phase 2 — Real reconstruction renderer spike
 
-**Status: complete and merged.**
+**Goal:** prove real Gaussian Splat rendering, compare credible browser paths, and select the production architecture from evidence.
+
+Delivered:
+
+- Spark 2.2.0 spike;
+- PlayCanvas 2.22.4 spike;
+- real reconstruction fixtures;
+- neutral same-asset compressed-PLY comparison;
+- deterministic browser runtime probes;
+- visual screenshot verification;
+- renderer/scene-format ADR.
 
 Decision:
 
@@ -28,7 +51,9 @@ Decision:
 - large web delivery: **paged RAD**;
 - PlayCanvas retained as fallback candidate.
 
-See ADR-001 and `RENDERER_SPIKE.md`.
+Real-device performance is intentionally **not claimed** from CI and remains a Phase 4 / Phase 7 production gate with a realistic Boudhanath-sized asset.
+
+**Status: complete and merged.**
 
 ---
 
@@ -67,7 +92,7 @@ Deliver:
 
 ### Phase 3C — Partial Boudhanath capture
 
-Only after Phase 3A rules are satisfied:
+Only after Phase 3A rules are satisfied and Phase 3B is green:
 
 - verify current site/heritage requirements;
 - capture one small ground-accessible section;
@@ -86,7 +111,7 @@ Deliver:
 - physical desktop/mobile measurements;
 - decision on whether full-site capture is viable.
 
-### Phase 3 exit criteria
+### Exit criteria
 
 A legally usable **partial Boudhanath** reconstruction loads through the selected Spark/RAD path with sufficient provenance and device evidence to plan a full capture.
 
@@ -96,76 +121,97 @@ A legally usable **partial Boudhanath** reconstruction loads through the selecte
 
 **Goal:** make Boudhanath itself the working experience.
 
-Build:
+### Build
 
 - optimized real scene;
 - progressive RAD delivery;
-- quality/LOD tuning;
+- quality profiles / LOD tuning;
 - CDN/object-storage delivery;
-- home camera;
-- exploration bounds;
+- home camera preset;
+- stable exploration bounds;
 - fallback representation;
-- real-device performance measurements.
+- first real-device desktop/mobile performance measurements.
+
+### Exit criteria
+
+Boudhanath loads reliably on supported desktop and mobile devices with measured performance.
 
 ---
 
 ## Phase 5 — Cinematic introduction
 
-**Goal:** create the first presentational layer without compromising control or performance.
+**Goal:** create the first emotional/presentational layer without compromising control or performance.
 
-Build:
+### Build
 
-- short camera sequence;
-- skip;
-- reduced-motion path;
-- transition to user control;
-- polished loader/reveal.
+- short initial camera sequence;
+- skip control;
+- reduced-motion alternative;
+- transition into user-controlled mode;
+- polished loader / reveal.
+
+### Guardrail
+
+The intro must be short and must never trap the visitor behind animation.
 
 ---
 
 ## Phase 6 — Cultural exploration
 
-**Goal:** add carefully sourced contextual information.
+**Goal:** add useful contextual information.
 
-Build:
+### Build
 
 - 3–5 sourced hotspots;
 - guided camera presets;
-- content panels;
+- content panel system;
 - source references;
 - optional ambient audio;
 - explicit audio controls.
 
-No gamified scoring or interaction that trivializes religious/cultural meaning.
+### Guardrail
+
+No gamified scoring, collectibles, or interaction that trivializes religious/cultural meaning.
 
 ---
 
 ## Phase 7 — Performance, accessibility and resilience
 
-Work:
+**Goal:** make the experience robust enough for public use.
+
+### Work
 
 - broader real-device profiling;
-- quality auto-selection/override;
+- quality auto-selection;
+- user quality override;
 - slow-network behavior;
-- memory pressure;
-- keyboard/touch accessibility;
+- memory-pressure behavior;
+- keyboard accessibility;
+- touch review;
 - reduced motion;
 - WebGL failure paths;
-- asset caching/versioning;
+- asset-cache/version strategy;
 - cross-browser verification.
+
+### Exit criteria
+
+Performance and accessibility are measured and documented.
 
 ---
 
 ## Phase 8 — Public release
 
-Work:
+**Goal:** ship a polished, credible portfolio-quality experience.
 
-- SEO/metadata;
+### Work
+
+- metadata / SEO;
 - final branding;
 - content review;
 - production deployment;
+- analytics only if justified;
 - privacy review;
-- README media;
+- README screenshots/video;
 - project write-up;
 - deployment verification.
 
@@ -176,10 +222,12 @@ Work:
 - first-person walk mode;
 - day/night switching;
 - historic-vs-current comparison;
-- narrated tours;
-- multilingual content;
+- narrated guided tours;
+- Nepali / Newar / Tibetan or other multilingual content;
 - VR/WebXR;
-- dynamic crowds;
+- dynamic NPC/crowd systems;
 - multiple heritage sites;
 - CMS;
 - social/user features.
+
+These become new phases only after a concrete product reason exists.
