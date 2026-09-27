@@ -109,7 +109,7 @@ jobs:
           node scripts/rad/create-manifest.mjs \
             .phase3b/input/biker.compressed.ply \
             .phase3b/input \
-            .phase3b/rad-manifest.json
+            dist/rad/manifest.json
 
       - name: Build application bundle
         run: npm run build
