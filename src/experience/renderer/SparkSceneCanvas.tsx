@@ -2,7 +2,7 @@ import {
   SparkRenderer,
   SplatMesh,
 } from '@sparkjsdev/spark'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   Color,
   PerspectiveCamera,
@@ -17,9 +17,12 @@ import {
   formatBytes,
   progressSnapshot,
   SPARK_VERSION,
-  TEST_ASSET,
   type ProgressSnapshot,
 } from './sparkSpike'
+import {
+  sparkSceneConfigFromSearch,
+  type SparkSceneConfig,
+} from './sparkSceneConfig'
 
 type RuntimeMetrics = {
   phase: 'asset' | 'ready' | 'error'
@@ -46,13 +49,48 @@ function toErrorMessage(error: unknown) {
   return error instanceof Error ? error.message : String(error)
 }
 
-function SparkMetrics({ metrics }: { metrics: RuntimeMetrics }) {
+async function waitForPagedScene(
+  splat: SplatMesh,
+  timeoutMs = 30_000,
+): Promise<number> {
+  if (!splat.paged) {
+    throw new Error('Paged Spark scene did not create a PagedSplats source.')
+  }
+
+  const { meta } = await splat.paged.getRadMeta()
+  const deadline = performance.now() + timeoutMs
+
+  while (performance.now() < deadline) {
+    if (splat.paged.getNumSplats() > 0) {
+      return meta.count
+    }
+
+    await new Promise((resolve) => window.setTimeout(resolve, 50))
+  }
+
+  throw new Error(
+    `RAD header decoded, but no splat page became visible within ${timeoutMs / 1000}s.`,
+  )
+}
+
+function SparkMetrics({
+  metrics,
+  config,
+}: {
+  metrics: RuntimeMetrics
+  config: SparkSceneConfig
+}) {
   const progressText =
     metrics.phase === 'ready'
       ? 'Ready'
       : metrics.progress?.percent !== null && metrics.progress
         ? `${metrics.progress.percent.toFixed(0)}%`
-        : 'Loading asset'
+        : config.paged
+          ? 'Streaming scene'
+          : 'Loading asset'
+
+  const assetSize =
+    config.bytes === null ? 'streamed' : formatBytes(config.bytes)
 
   return (
     <aside className="splat-metrics" aria-label="Renderer spike metrics">
@@ -63,7 +101,7 @@ function SparkMetrics({ metrics }: { metrics: RuntimeMetrics }) {
       <div>
         <span>Asset</span>
         <strong>
-          {TEST_ASSET.format} · {formatBytes(TEST_ASSET.bytes)}
+          {config.format} · {assetSize}
         </strong>
       </div>
       <div>
@@ -96,6 +134,10 @@ export function SparkSceneCanvas({ reducedMotion }: SceneRendererProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [attempt, setAttempt] = useState(0)
   const [metrics, setMetrics] = useState<RuntimeMetrics>(INITIAL_METRICS)
+  const sceneConfig = useMemo(
+    () => sparkSceneConfigFromSearch(window.location.search),
+    [],
+  )
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -152,7 +194,8 @@ export function SparkSceneCanvas({ reducedMotion }: SceneRendererProps) {
 
       sparkRenderer = new SparkRenderer({ renderer })
       splat = new SplatMesh({
-        url: TEST_ASSET.url,
+        url: sceneConfig.url,
+        paged: sceneConfig.paged || undefined,
         editable: false,
         raycastable: false,
         onProgress: (event) => {
@@ -218,28 +261,32 @@ export function SparkSceneCanvas({ reducedMotion }: SceneRendererProps) {
         }
       })
 
-      void splat.initialized
-        .then((mesh) => {
-          if (!disposed) {
-            setMetrics((current) => ({
-              ...current,
-              phase: 'ready',
-              loadMs: performance.now() - startedAt,
-              numSplats: mesh.numSplats,
-              error: null,
-            }))
-          }
-        })
-        .catch((error: unknown) => {
-          if (!disposed) {
-            console.error('Spark splat initialization failed', error)
-            setMetrics((current) => ({
-              ...current,
-              phase: 'error',
-              error: toErrorMessage(error),
-            }))
-          }
-        })
+      void (async () => {
+        await splat.initialized
+
+        const numSplats = sceneConfig.paged
+          ? await waitForPagedScene(splat)
+          : splat.numSplats
+
+        if (!disposed) {
+          setMetrics((current) => ({
+            ...current,
+            phase: 'ready',
+            loadMs: performance.now() - startedAt,
+            numSplats,
+            error: null,
+          }))
+        }
+      })().catch((error: unknown) => {
+        if (!disposed) {
+          console.error('Spark scene initialization failed', error)
+          setMetrics((current) => ({
+            ...current,
+            phase: 'error',
+            error: toErrorMessage(error),
+          }))
+        }
+      })
     } catch (error) {
       console.error('Spark Three.js renderer initialization failed', error)
       setMetrics((current) => ({
@@ -258,28 +305,32 @@ export function SparkSceneCanvas({ reducedMotion }: SceneRendererProps) {
       sparkRenderer?.dispose()
       renderer?.dispose()
     }
-  }, [attempt, reducedMotion])
+  }, [attempt, reducedMotion, sceneConfig])
 
   if (metrics.phase === 'error') {
     return (
       <ViewerFallback
-        title="The Spark comparison could not load."
+        title="The Spark scene could not load."
         description={metrics.error ?? 'Unknown Spark runtime error.'}
-        actionLabel="Retry comparison"
+        actionLabel="Retry scene"
         onAction={() => setAttempt((current) => current + 1)}
       />
     )
   }
 
   return (
-    <div className="splat-runtime" data-splat-state={metrics.phase}>
+    <div
+      className="splat-runtime"
+      data-splat-state={metrics.phase}
+      data-splat-mode={sceneConfig.mode}
+    >
       <canvas
         key={attempt}
         ref={canvasRef}
         className="spark-canvas"
-        aria-label="Spark Gaussian Splat comparison"
+        aria-label="Spark Gaussian Splat scene"
       />
-      <SparkMetrics metrics={metrics} />
+      <SparkMetrics metrics={metrics} config={sceneConfig} />
     </div>
   )
 }
