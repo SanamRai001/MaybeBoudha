@@ -82,16 +82,38 @@ function zigZagDecode(value: number) {
   return (value >>> 1) ^ -(value & 1)
 }
 
-function colorForNormalizedHeight(value: number) {
-  if (value >= 0.69) {
-    return new Color('#c99237')
-  }
+function plasterColor(
+  normalizedHeight: number,
+  x: number,
+  y: number,
+  z: number,
+) {
+  const broad =
+    Math.sin(x * 0.083 + z * 0.061) * 0.045 +
+    Math.sin(x * 0.19 - z * 0.137 + y * 0.051) * 0.025
+  const fine =
+    Math.sin(x * 0.71 + z * 0.53 + y * 0.27) * 0.015
 
-  if (value >= 0.57) {
-    return new Color('#b98945')
-  }
+  const lowerStain =
+    Math.max(0, 0.34 - normalizedHeight) *
+    (0.17 + 0.08 * Math.sin(x * 0.11 + z * 0.17))
 
-  return new Color('#e9e2d7')
+  const warmStreak =
+    Math.max(
+      0,
+      Math.sin(x * 0.15 + z * 0.04) * 0.5 +
+        Math.sin(z * 0.09 - y * 0.06) * 0.5,
+    ) *
+    0.035
+
+  const base = new Color('#eee7dc')
+  const shade = 1 + broad + fine - lowerStain
+
+  base.r *= shade
+  base.g *= shade - warmStreak * 0.42
+  base.b *= shade - warmStreak
+
+  return base
 }
 
 function parsePackedModel(bytes: Uint8Array): PackedModel {
@@ -159,9 +181,12 @@ function parsePackedModel(bytes: Uint8Array): PackedModel {
         (quantized[axis] / QUANTIZATION_MAX) * spans[axis]
     }
 
+    const x = positions[vertex * 3]
+    const y = positions[vertex * 3 + 1]
+    const z = positions[vertex * 3 + 2]
     const normalizedHeight =
-      (positions[vertex * 3 + 1] - mins[1]) / spans[1]
-    const color = colorForNormalizedHeight(normalizedHeight)
+      (y - mins[1]) / spans[1]
+    const color = plasterColor(normalizedHeight, x, y, z)
 
     colors[vertex * 3] = color.r
     colors[vertex * 3 + 1] = color.g
@@ -283,11 +308,12 @@ export async function loadLicensedStupaModel() {
   } = await fetchPackedModel()
 
   const material = new MeshPhysicalMaterial({
-    color: '#e9e2d7',
-    roughness: 0.9,
+    color: '#ffffff',
+    vertexColors: true,
+    roughness: 0.94,
     metalness: 0,
-    clearcoat: 0.025,
-    clearcoatRoughness: 0.8,
+    clearcoat: 0.015,
+    clearcoatRoughness: 0.88,
   })
 
   const mesh = new Mesh(geometry, material)
