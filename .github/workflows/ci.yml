@@ -75,6 +75,14 @@ jobs:
           fi
           echo "CHROME=$CHROME" >> "$GITHUB_ENV"
 
+      - name: Probe visual prototype
+        id: prototype-smoke
+        continue-on-error: true
+        run: |
+          timeout 75s xvfb-run -a env MAYBEBOUDHA_HEADFUL=1 node scripts/runtime-smoke.mjs \
+            prototype \
+            /tmp/maybeboudha-visual-prototype.png
+
       - name: Probe Spark runtime
         id: spark-smoke
         continue-on-error: true
@@ -96,13 +104,17 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: phase-2-runtime-smoke
-          path: /tmp/maybeboudha-phase-2-*.png
+          path: |
+            /tmp/maybeboudha-phase-2-*.png
+            /tmp/maybeboudha-visual-prototype.png
           if-no-files-found: warn
 
       - name: Require both renderer probes
         if: always()
         run: |
+          echo "Prototype probe: ${{ steps.prototype-smoke.outcome }}"
           echo "Spark probe: ${{ steps.spark-smoke.outcome }}"
           echo "PlayCanvas probe: ${{ steps.playcanvas-smoke.outcome }}"
+          test "${{ steps.prototype-smoke.outcome }}" = "success"
           test "${{ steps.spark-smoke.outcome }}" = "success"
           test "${{ steps.playcanvas-smoke.outcome }}" = "success"
