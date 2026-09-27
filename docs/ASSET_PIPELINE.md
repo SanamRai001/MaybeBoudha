@@ -105,13 +105,25 @@ Do not manually edit RAD/RADC output.
 
 Spark recommends prebuilding LOD for faster loading/streaming.
 
-Phase 3B should automate a command equivalent to:
+Phase 3B verified the pipeline against Spark **2.2.0** pinned to:
+
+`4eb719afdb5b3655fe0bc290588e4728d9772405`
+
+The reproducible asset job uses:
 
 ```bash
-npm run build-lod -- scene.ply --quality --rad-chunked
+cargo run \
+  --locked \
+  --manifest-path rust/build-lod/Cargo.toml \
+  --release \
+  --no-default-features \
+  -- \
+  --quality \
+  --rad-chunked \
+  <source.ply>
 ```
 
-The Spark tool itself currently requires Rust when built/run from the Spark source tree.
+The pinned Spark lockfile requires Rust **1.88.0** in practice. Earlier 1.82/1.85 attempts failed on locked transitive dependency requirements.
 
 Reference:
 
@@ -253,12 +265,18 @@ The manifest should also record:
 
 ---
 
-## Phase 3B
+## Phase 3B verified
 
-Next engineering step:
+The pinned fixture proof completed:
 
-1. create a reproducible PLY → RAD processing command/job;
-2. test it against a legal small fixture;
-3. load the generated RAD in Spark using `paged: true`;
-4. record output size/chunk count;
-5. only then run it against the real partial Boudhanath master.
+- source: 2,487,573-byte compressed PLY;
+- source splats: 152,746;
+- final quality-LOD splats: 202,475;
+- output: 1 RAD header + 4 RADC chunks;
+- total delivery: 4,033,648 bytes;
+- byte-range response: 206;
+- generated RAD: visibly rendered with `paged: true`.
+
+See `RAD_PIPELINE_PROOF.md` for exact hashes and evidence.
+
+The next real use of this pipeline should be against the privacy-reviewed partial Boudhanath master from Phase 3D, not against unreviewed raw capture output.
