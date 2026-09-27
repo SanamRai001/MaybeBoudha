@@ -10,68 +10,64 @@ Build a browser-based, photorealistic interactive heritage experience centered o
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Current branch: `spike/phase-2-reconstruction-renderer`
-- Pull request: `#2 — spike: Phase 2 real reconstruction renderer`
+- Current branch: `main`
 - Working title: `MaybeBoudha`
 
 ## Last completed phase
 
-**Phase 1 — Viewer Foundation**
-
-Merged SHA:
-
-`3a49774bb389dd42352ae5cbc60978e1add743be`
-
-## Current phase
-
 **Phase 2 — Real Reconstruction Renderer Spike**
 
-Status: **complete on feature branch; pending final CI and merge**
+Status: **complete and merged**
 
-## Phase 2 delivered
+PR:
 
-- real Gaussian Splat rendering;
-- Spark 2.2.0 candidate;
-- PlayCanvas 2.22.4 candidate;
-- renderer switch for direct comparison;
-- pinned legal/public test fixtures;
-- asset metrics;
-- deterministic Chromium/CDP runtime probe;
-- screenshot artifacts;
-- neutral same-asset compressed-PLY comparison;
-- renderer/format ADR.
+`#2 — spike: Phase 2 real reconstruction renderer`
 
-## Final neutral comparison
+Merge SHA:
 
-Pinned fixture:
+`83b56ac01dad2525098c10902baaa2deccd71aa4`
 
-- repository: `playcanvas/engine`;
+Final pre-merge CI:
+
+`#53 — fully green`
+
+That exact PR head passed:
+
+- locked dependency install;
+- automated tests;
+- TypeScript/Vite production build;
+- Spark runtime probe;
+- PlayCanvas runtime probe;
+- screenshot artifact generation;
+- final dual-renderer gate.
+
+## Phase 2 evidence
+
+Neutral comparison fixture:
+
+- source: `playcanvas/engine`;
 - commit: `b5b983982a9860d21e0c1dafb2f85f72e2c01afb`;
 - file: `biker.compressed.ply`;
 - payload: ~2.4 MiB;
 - decoded splats: **152,746**.
 
-Verified CI run:
+Both Spark 2.2.0 and PlayCanvas 2.22.4:
 
-`#49`
+- reached ready;
+- decoded the same splat count;
+- visibly rendered the reconstruction;
+- completed deterministic Chromium/CDP probes.
 
-Results:
+Recorded hosted-runner load metrics on the neutral run:
 
-- locked install: **passed**;
-- tests: **passed**;
-- TypeScript/Vite production build: **passed**;
-- Spark browser probe: **passed**;
-- PlayCanvas browser probe: **passed**;
-- Spark reconstruction visibly rendered: **verified**;
-- PlayCanvas reconstruction visibly rendered: **verified**;
-- Spark hosted-runner load metric: ~**0.19 s**;
-- PlayCanvas hosted-runner load metric: ~**0.24 s**.
+- Spark: ~**0.19 s**;
+- PlayCanvas: ~**0.24 s**.
 
-CI FPS is not a real-device benchmark and is deliberately excluded from the architecture decision.
+Those values are correctness/integration evidence only. CI FPS and software-rendered timing are not real-device performance claims.
 
-## Architecture decision
+## Accepted architecture
 
-Accepted in:
+Decision record:
 
 `docs/ADR-001-RENDERER-AND-SCENE-FORMAT.md`
 
@@ -83,13 +79,9 @@ Accepted in:
 
 **React product shell + directly managed Three.js/Spark rendering layer**
 
-React Three Fiber remains available where useful but is not required for the production splat runtime.
-
 ### Reconstruction interchange
 
 **PLY**
-
-Keep a cleaned/master reconstruction outside ordinary Git history.
 
 ### Production web delivery
 
@@ -98,82 +90,89 @@ Keep a cleaned/master reconstruction outside ordinary Git history.
 Expected flow:
 
 ```text
+capture / licensed imagery
+        ↓
+reconstruction
+        ↓
 cleaned master PLY
-    ↓
+        ↓
 quality LOD build
-    ↓
+        ↓
 paged RAD
-    ↓
+        ↓
 range-capable CDN/object storage
-    ↓
+        ↓
 Spark
 ```
 
 ### Fallback renderer
 
-**PlayCanvas**
-
-Reconsider the renderer decision if the real Boudhanath workload exposes a material Spark limitation.
+**PlayCanvas**, if the real Boudhanath workload exposes a material Spark limitation.
 
 ## Important findings
 
-1. A renderer can decode a scene and still render blank when it uses a separate Three.js runtime.
-2. Build/test success alone is insufficient for graphics work; CI now includes real browser runtime probes.
-3. SPZ generations differed enough across the tested paths that SPZ should not be the project's only master/interchange artifact.
-4. Both candidates rendered the same compressed PLY successfully.
-5. Raw Three.js made Spark lifecycle/error handling more explicit than the R3F spike path and passed the deterministic browser probe.
-6. Large-scene streaming must be tested with a Boudhanath-shaped workload; the small comparison fixture cannot prove production performance.
+1. Build success alone is insufficient for graphics work; runtime browser evidence is required.
+2. A separate Three.js runtime can decode a splat yet render incorrectly.
+3. SPZ generation/version compatibility differed across the evaluated paths; it is not the sole project master format.
+4. Both candidate renderers successfully consumed the same compressed PLY.
+5. Direct Three.js gives the Spark runtime explicit control over context creation, initialization, animation loop, resize, and disposal.
+6. The small benchmark cannot prove monument/plaza-scale performance.
 
-## Unverified / deferred
+## Still unverified
 
-We have **not** verified:
+Do not claim these are solved yet:
 
 - real desktop GPU FPS;
 - real phone FPS;
 - mobile memory pressure;
-- Boudhanath-sized streaming behavior;
-- touch quality on physical devices;
+- full Boudhanath streaming;
+- physical touch quality;
 - production CDN latency;
-- a real Boudhanath capture.
+- capture completeness;
+- reconstruction quality of the actual Stupa.
 
-These remain later gates and must not be inferred from hosted CI.
+These become measurable once a partial real Boudhanath asset exists.
 
-## Known risks
+## Current phase
 
-- incomplete upper-monument coverage from ground-only capture;
-- capture and drone/elevated-access permissions;
-- crowds, moving prayer flags, lighting variation, and occlusion harming reconstruction;
-- a full plaza scene being far larger than the test fixture;
-- mobile memory limits;
-- RAD build/quality settings requiring iteration;
-- privacy cleanup for recognizable people/plates;
-- cultural/historical content accuracy.
+**Phase 3 — Boudhanath Capture / Asset Plan**
 
-## Next phase
+Status: **not started**
 
-### Phase 3 — Boudhanath Capture / Asset Plan
+## Phase 3 scope
 
 Only:
 
-- define what physical area the first capture must cover;
+- define the first physical capture boundary;
 - choose the capture/reconstruction toolchain;
-- define ground/elevated coverage requirements;
-- establish permissions/provenance rules;
+- define ground/elevated coverage;
+- establish permission/provenance rules;
 - define privacy cleanup;
-- produce a small **partial Boudhanath** reconstruction before attempting the full monument/plaza;
-- prove PLY → RAD conversion on that partial reconstruction.
+- obtain/capture a small partial Boudhanath dataset;
+- create a cleaned partial PLY;
+- prove partial PLY → paged RAD → Spark browser delivery.
 
 Do not begin hotspots, audio, cinematic intro, or first-person navigation.
 
 ## Next branch
 
-After PR #2 is merged:
-
 `feat/phase-3-boudhanath-capture-plan`
+
+## Known risks
+
+- upper-monument coverage from ground-only imagery;
+- aerial/elevated capture permissions;
+- moving crowds and prayer flags;
+- changing light/exposure;
+- occlusion from nearby buildings and people;
+- privacy cleanup;
+- cultural/architectural accuracy;
+- a full plaza capture exceeding practical browser/device budgets.
 
 ## Resume rule
 
 1. inspect actual `main` and Git history;
 2. read this file and ADR-001;
 3. repository state wins over documentation if they differ;
-4. update this file at the end of each phase.
+4. create the Phase 3 branch from verified `main`;
+5. update this file at the end of the phase.
