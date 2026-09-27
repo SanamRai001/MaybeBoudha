@@ -92,7 +92,7 @@ See `VISUAL_PROTOTYPE.md`.
 
 ### Phase 3P.2 — Realism and material pass
 
-**Status: complete on PR #6; final documentation-complete CI pending.**
+**Status: complete on PR #6; merge pending.**
 
 Delivered:
 
