@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3 — Boudhanath Capture / Asset Plan: Phase 3C.1 field readiness is complete and merged; Phase 3C.2 field clearance is externally blocked.**
+**Phase 3P.2 — Synthetic realism/material pass: complete on PR #6; merge pending.**
 
 The project now has verified browser evidence for both the renderer choice and the selected large-scene delivery path:
 
@@ -76,6 +76,29 @@ The build process is pinned and repeatable, but Spark embeds per-run timing meta
 
 See [Phase 3B RAD Pipeline Proof](docs/RAD_PIPELINE_PROOF.md).
 
+## Synthetic visual prototype
+
+The default route is now a hybrid Boudhanath visual-feasibility study built before any real field capture.
+
+It combines:
+
+- a user-supplied MiniWorld3D Boudhanath STL, compacted for browser delivery and used for the detailed lower monument;
+- a refined procedural harmika / photographic eye façade / thirteen-stage upper spire;
+- deterministic plaster weathering;
+- prayer wheels and animated prayer flags;
+- a public-domain Boudhanath courtyard panorama for the real surrounding shops/temples;
+- procedural surroundings only as a photo-load fallback;
+- cinematic camera entrance;
+- orbit/zoom interaction;
+- atmospheric lighting/fog;
+- explicit disclosure that the monument is **not scan data**.
+
+This is still a **visual-feasibility study**, not a measured reconstruction or digital twin.
+
+The environment and silhouette are now convincing enough to justify testing a real licensed Boudhanath point cloud, but the monument itself is still visibly synthetic and does **not** yet justify triggering field-clearance outreach.
+
+See [Visual Prototype](docs/VISUAL_PROTOTYPE.md) and [Third-Party Assets](docs/THIRD_PARTY_ASSETS.md).
+
 ## Product direction
 
 The intended experience combines:
@@ -140,6 +163,7 @@ The `?renderer=rad` route expects generated RAD/RADC files under `/rad/`; normal
 - [Capture Provenance Template](docs/CAPTURE_PROVENANCE_TEMPLATE.md)
 - [Phase 3C Field Readiness](docs/PHASE_3C_FIELD_READINESS.md)
 - [Capture Permission Request Template](docs/CAPTURE_PERMISSION_REQUEST_TEMPLATE.md)
+- [Visual Prototype](docs/VISUAL_PROTOTYPE.md)
 - [Project State](docs/PROJECT_STATE.md)
 
 ## Development rules
@@ -155,10 +179,20 @@ The `?renderer=rad` route expects generated RAD/RADC files under `/rad/`; normal
 
 ## Immediate next step
 
-**Phase 3C.2 — Field clearance**
+**Phase 3P.3 — Licensed Boudhanath point-cloud spike**
 
-The current official rules and contacts have been rechecked and Phase 3C.1 is merged. The next action is external: obtain written determinations from the Department of Archaeology and the Shree Boudhanath Area Development Committee for the exact systematic capture described in the readiness document.
+A Sketchfab candidate has been identified:
 
-Do not begin the photo dataset until those determinations are recorded.
+- `BOUDHANATH STUPA - POINTCLOUD`;
+- approximately 100k vertices;
+- CC Attribution;
+- downloadable model;
+- NoAI restriction respected: it will not be used for model training or generative-AI input.
+
+The next engineering task is to obtain that asset with its provenance intact, inspect its actual format/color data, and test whether it can replace the synthetic monument inside the existing viewer.
+
+Field clearance remains prepared and documented, but intentionally deferred.
+
+Do not begin a real systematic Boudhanath photo dataset until Phase 3C.2 is deliberately reactivated and satisfied.
 
 See [ROADMAP.md](docs/ROADMAP.md) for phase boundaries.

@@ -4,183 +4,183 @@ This is the canonical checkpoint for continuing MaybeBoudha work. Repository sta
 
 ## Objective
 
-Build a browser-based, photorealistic interactive heritage experience centered on Boudhanath Stupa, using a legitimate real-scene reconstruction and progressive browser delivery.
+Build a browser-based, photorealistic interactive heritage experience centered on Boudhanath Stupa.
+
+The real reconstruction pipeline is already proven technically. The current product track is validating visual value with licensed/synthetic assets before spending effort on systematic field capture.
 
 ## Repository
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Current branch: `main`
+- Current branch: `feat/phase-3p-visual-prototype`
+- Pull request: `#6 — feat: Phase 3P synthetic Boudhanath visual prototype`
 - Working title: `MaybeBoudha`
 
-## Last completed subphase
+## Current milestone
 
-**Phase 3C.1 — Field readiness / permission gate**
+**Phase 3P.2 — Realism and material pass**
 
-Status: **complete and merged**
+Status: **complete on PR #6; merge pending**
 
-PR:
+Final verified PR head:
 
-`#5 — docs: Phase 3C.1 Boudhanath field readiness gate`
+`27e422c4f2df863ea8d69955c17cc8b1576aba8b`
 
-Merge SHA:
+Verification:
 
-`be1369876adde2f87c814df8bafb98839f40505e`
+- CI #147 — green;
+- locked install — passed;
+- tests — passed;
+- production build — passed;
+- default hybrid visual probe — passed;
+- explicit uploaded-model probe — passed;
+- Spark regression — passed;
+- PlayCanvas regression — passed;
+- final screenshot artifact — directly reviewed;
+- RAD Pipeline #74 — green;
+- generated paged RAD runtime — passed.
 
-Merged-main verification:
+## Phase 3P.2 delivered
 
-`CI #87 — green`
+### Monument
 
-Phase 3C.1 delivered:
+The default scene no longer relies on a fully procedural monument.
 
-- current official heritage/site/drone source review;
-- Department of Archaeology responsibility/permission questions;
-- current Shree Boudhanath Area Development Committee contact;
-- exact systematic-capture description;
-- written evidence requirements;
-- explicit GO / NO-GO rule;
-- capture-day readiness pack;
-- `docs/PHASE_3C_FIELD_READINESS.md`;
-- `docs/CAPTURE_PERMISSION_REQUEST_TEMPLATE.md`.
-
-## Previous completed subphase
-
-**Phase 3B — PLY → paged RAD processing proof**
-
-Merged in PR #4:
-
-`80604179ebe2c3499dffcbf894e070fdc533d28f`
-
-Final Phase 3B main checkpoint:
-
-`433a727f6d954a57ed18982af445cbd26e226eef`
-
-Phase 3B proved:
+It uses:
 
 ```text
-pinned PLY
-    ↓
-Spark quality LOD
-    ↓
-chunked RAD
-    ↓
-HTTP range delivery
-    ↓
-paged Spark runtime
+user-supplied MiniWorld3D Boudha.STL
+        ↓
+compact indexed/quantized MBV2 browser package
+        ↓
+lower monument / dome detail
+        +
+refined procedural harmika + upper spire
 ```
 
-See `docs/RAD_PIPELINE_PROOF.md`.
+Source STL facts:
 
-## Current phase
+- 727,784 bytes;
+- 14,554 triangles;
+- 7,281 indexed vertices in the browser package;
+- watertight source mesh;
+- source SHA-256:
+  `26056855d10d51b9af31bf75cd7eebca0ab161a70c8aeafb664b7e0df621d5e9`.
 
-**Phase 3 — Boudhanath Capture / Asset Plan**
+The STL is artistic 3D-print geometry, not scan data.
 
-### Current subphase
+The hybrid adds:
 
-**Phase 3C.2 — Field clearance**
+- deterministic vertex-color plaster weathering;
+- refined eye/harmika treatment;
+- licensed photographic eye texture;
+- sloped thirteen-stage spire tiers;
+- prayer wheels;
+- animated flags;
+- physical lighting and shadows.
 
-Status: **blocked on external written determinations**
+### Environment
 
-This is an intentional external gate, not unfinished repository implementation.
+The procedural courtyard is now a fallback.
 
-## Required clearance evidence
+Default successful load uses:
 
-Before any systematic field capture, obtain and privately retain:
+`P37275-Kathmandu-Boudhanath.jpg`
 
-1. Department of Archaeology written determination for the exact proposed ground-based systematic photography / derived 3D reconstruction;
-2. Shree Boudhanath Area Development Committee written determination for its site requirements;
-3. any required application, fee, schedule, or conditions;
-4. confirmation that the intended derived 3D/publication scope is allowed;
-5. any date/time or equipment restrictions.
+- author: Xiquinho;
+- Wikimedia Commons;
+- public domain;
+- panorama taken from Boudhanath showing surrounding shops and temples.
 
-A clear written determination that no prior permission is required also satisfies the relevant gate if it explicitly covers the described activity.
+The project bundles a reduced runtime derivative and maps it onto an inward-facing cylindrical environment.
 
-## Current-source findings
+The central monument remains interactive 3D.
 
-Reviewed on **2026-09-27**:
+### Experience
 
-- Boudhanath is within the protected Kathmandu Valley World Heritage property;
-- DoA publishes photography/documentation and ancient-monument filming/permission responsibilities;
-- no official source found explicitly classifies Gaussian Splatting / photogrammetry;
-- the current local site body is the Shree Boudhanath Area Development Committee;
-- no public dedicated Gaussian-Splat/photogrammetry permit form was found;
-- Phase 3C remains **ground-only**;
-- no drone operation is part of the current capture plan.
+- full-screen editorial composition;
+- cinematic entry;
+- orbit / zoom;
+- reduced motion;
+- human-scale camera;
+- contact shadow;
+- explicit `Synthetic study · no scan data` disclosure;
+- engineering Spark/RAD/PlayCanvas routes preserved.
 
-Detailed sources/questions:
+## Visual assessment
 
-`docs/PHASE_3C_FIELD_READINESS.md`
+### Strong
 
-## Field capture remains not started
+- photographic plaza removes most of the synthetic-environment look;
+- Boudhanath silhouette reads immediately;
+- hybrid lower geometry is more detailed than the procedural baseline;
+- eye façade and stepped upper structure read much closer to the real monument;
+- flags create useful depth and motion;
+- scene now demonstrates the intended final product experience rather than only a renderer.
 
-No real Boudhanath source-photo dataset or Boudhanath reconstruction exists in the repository.
+### Still synthetic
 
-Do not:
+- monument is not capture-derived;
+- MiniWorld3D source is a printable interpretation;
+- plaster/weathering remains generated rather than photographed/scanned;
+- upper structure is still procedural;
+- environment photo and 3D monument do not share true camera calibration;
+- no scan-level occlusion/microgeometry;
+- not suitable for survey/conservation claims.
 
-- claim permission has been obtained;
-- capture the systematic dataset before written determinations clear the gate;
-- substitute scraped/web imagery;
-- use a drone;
-- attempt the full monument/plaza.
+## Product verdict
 
-## Next executable subphase after clearance
+**Keep the project.**
 
-**Phase 3C.3 — Partial field capture and source reconstruction**
+The prototype is strong enough to show that a genuinely reconstructed Boudhanath experience could be valuable.
 
-Only after Phase 3C.2 clears:
+However, the current monument is still not realistic enough to justify sending the field-clearance emails yet.
 
-```text
-one small legitimate ground-accessible capture
-        ↓
-private raw archive + provenance
-        ↓
-cloud Gaussian Splat reconstruction
-        ↓
-source PLY
-```
+Before asking authorities or capturing a systematic dataset, test the strongest already-existing licensed real-data candidate we can find.
 
-Phase 3D remains responsible for:
+## Next subphase
 
-- cleanup;
-- privacy review;
-- cleaned master PLY;
-- real-asset RAD build;
-- browser proof;
-- physical desktop/mobile measurements.
+### Phase 3P.3 — Licensed Boudhanath point-cloud spike
 
-## External action package already prepared
+Candidate identified:
 
-Use:
+- title: `BOUDHANATH STUPA - POINTCLOUD`;
+- platform: Sketchfab;
+- author: Enea Le Fons / `@enealefons`;
+- published: 2021;
+- vertices: ~100k;
+- triangles: 0;
+- license: CC Attribution;
+- downloadable;
+- NoAI: do not use the asset for training or as input to generative-AI systems.
 
-- `docs/CAPTURE_PERMISSION_REQUEST_TEMPLATE.md`
-- `docs/PHASE_3C_FIELD_READINESS.md`
-- `docs/CAPTURE_PROVENANCE_TEMPLATE.md`
+Next actions:
 
-Do not commit private authority correspondence to this public repository.
+1. obtain the downloadable point-cloud asset with provenance intact;
+2. record exact license/source/download metadata;
+3. checksum the original archive/file;
+4. inspect file format, point colors, orientation, and completeness;
+5. test direct point rendering and/or convert to PLY;
+6. compare against the Phase 3P.2 hybrid screenshot;
+7. retain the hybrid scene as fallback.
 
-Record only non-sensitive references/status in the public project state after replies are received.
+If direct download requires a Sketchfab login and cannot be obtained through the current toolchain, ask the user to download the model and upload the archive here.
 
-## Known risks
+## Deferred field-clearance path
 
-- authorities may require a formal application or fee;
-- approved scope may differ from the current proposal;
-- a verbal response may be insufficient for the project evidence rule;
-- crowds/ceremonies can still make an approved day a practical NO-GO;
-- moving prayer flags and people can degrade reconstruction;
-- upper monument coverage remains limited from ground positions;
-- cloud reconstruction/export capabilities can change.
+Phase **3C.2 — Field clearance** remains prepared.
 
-## Branch hygiene
+Do not start systematic real Boudhanath photography while that gate is unsatisfied.
 
-Merged feature branches currently remain in the repository. Do not delete them automatically.
+Do not send the prepared permission emails solely because the synthetic prototype exists.
 
-A later cleanup pass may remove merged/stale branches after explicit approval.
+Reactivate clearance only if the point-cloud spike still leaves a clear reason to perform our own real capture.
 
 ## Resume rule
 
-1. inspect actual `main` and CI;
-2. read `PHASE_3C_FIELD_READINESS.md`;
-3. repository state wins over documentation if they differ;
-4. do not advance to field capture until both written determinations are available;
-5. once received, keep private correspondence private and record only non-sensitive references/status publicly;
-6. update this file at every subphase boundary.
+1. merge PR #6 from final green head `27e422c4f2df863ea8d69955c17cc8b1576aba8b`;
+2. checkpoint actual merge SHA on `main`;
+3. create Phase 3P.3 from verified `main`;
+5. obtain/inspect the licensed point-cloud asset;
+6. keep all provenance/licensing facts explicit;
+7. do not claim a digital twin or real scan without supporting source evidence.

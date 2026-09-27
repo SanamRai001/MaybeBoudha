@@ -57,6 +57,92 @@ Real-device performance is intentionally **not claimed** from CI and remains a P
 
 ---
 
+## Phase 3P — Synthetic visual feasibility
+
+**Goal:** prove the visual/product direction before spending effort on real-world capture clearance and source acquisition.
+
+This phase runs as a deliberate product-validation track alongside the prepared Phase 3C clearance path.
+
+### Phase 3P.1 — Composition baseline
+
+**Status: complete on PR #6.**
+
+Delivered:
+
+- full-screen synthetic Boudhanath experience;
+- procedural monument at approximate real-world scale;
+- dome / harmika / eyes / thirteen-tier spire;
+- prayer wheels and animated flags;
+- courtyard and surrounding façades;
+- cinematic camera entrance;
+- orbit / zoom;
+- reduced motion;
+- responsive editorial overlay;
+- explicit synthetic/no-scan disclosure;
+- default-route Chromium screenshot gate;
+- existing Spark/PlayCanvas/RAD regressions preserved.
+
+Verdict:
+
+- strong enough to continue synthetic visual development;
+- still visibly synthetic;
+- **not yet sufficient to trigger field-clearance work**.
+
+See `VISUAL_PROTOTYPE.md`.
+
+### Phase 3P.2 — Realism and material pass
+
+**Status: complete on PR #6; merge pending.**
+
+Delivered:
+
+- compact browser import of the user-supplied MiniWorld3D Boudhanath STL;
+- hybrid geometry: imported lower monument + refined procedural upper monument;
+- licensed photographic eye treatment;
+- deterministic imported-plaster weathering;
+- sloped thirteen-stage spire tiers;
+- public-domain photographic Boudhanath courtyard environment;
+- procedural environment fallback;
+- tighter human-scale camera framing;
+- contact shadow / environment blending;
+- repeated Chromium screenshot review;
+- Spark / PlayCanvas / RAD regressions preserved.
+
+Verdict:
+
+- major improvement over the procedural-only baseline;
+- strong proof that the product direction works;
+- still not a true photorealistic reconstruction;
+- field-clearance outreach remains deferred.
+
+### Phase 3P.3 — Licensed point-cloud spike
+
+**Status: next.**
+
+Candidate:
+
+- Sketchfab `BOUDHANATH STUPA - POINTCLOUD`;
+- about 100k vertices;
+- CC Attribution;
+- downloadable;
+- NoAI restriction must be respected.
+
+Deliver:
+
+- obtain the original asset with license/provenance evidence;
+- inspect file format, per-point color, scale, orientation, and completeness;
+- preserve an immutable source checksum;
+- test direct point rendering and/or conversion to PLY;
+- compare visually against the Phase 3P.2 hybrid;
+- keep the existing hybrid scene as fallback;
+- do not claim survey accuracy unless the source itself supports it.
+
+Exit decision:
+
+If the point cloud produces a substantial realism jump, use it as the next prototype source. If it does not, decide whether the expected improvement from a controlled real capture is sufficient to reactivate **Phase 3C.2 — Field clearance**.
+
+---
+
 ## Phase 3 — Boudhanath capture / asset plan
 
 **Goal:** obtain a legitimate, usable source for the real scene and prove the selected reconstruction-to-web pipeline on a partial capture.
@@ -120,7 +206,7 @@ Deliver:
 
 #### Phase 3C.2 — Field clearance
 
-**Status: blocked on external written determinations.**
+**Status: prepared but intentionally deferred while Phase 3P validates product value.**
 
 Require:
 
