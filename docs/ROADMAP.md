@@ -79,7 +79,7 @@ Deliver:
 
 ### Phase 3B — PLY → RAD processing proof
 
-**Status: engineering proof complete; final PR verification pending.**
+**Status: complete and merged in PR #4.**
 
 Verified on the pinned legal fixture:
 
@@ -106,7 +106,9 @@ Deliver:
 
 ### Phase 3C — Partial Boudhanath capture
 
-Only after Phase 3A rules are satisfied and Phase 3B is green:
+**Status: next; field capture not started.**
+
+Only after Phase 3A rules are satisfied, Phase 3B is green, and current site/heritage requirements are reconfirmed:
 
 - verify current site/heritage requirements;
 - capture one small ground-accessible section;
