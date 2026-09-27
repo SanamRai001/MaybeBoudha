@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3 — Boudhanath Capture / Asset Plan: Phase 3B engineering proof is green; final PR verification is pending.**
+**Phase 3 — Boudhanath Capture / Asset Plan: Phase 3B is complete and merged; Phase 3C is next.**
 
 The project now has verified browser evidence for both the renderer choice and the selected large-scene delivery path:
 
@@ -153,8 +153,10 @@ The `?renderer=rad` route expects generated RAD/RADC files under `/rad/`; normal
 
 ## Immediate next step
 
-Finish the final Phase 3B branch verification and merge PR #4.
+**Phase 3C — Partial Boudhanath Capture**
 
-After that, **Phase 3C — Partial Boudhanath Capture** may begin only after current site/heritage requirements for the intended systematic capture are reconfirmed.
+Before any field capture, reconfirm the current site/heritage requirements for the intended systematic photo pass and create the real provenance record. Then capture only one small ground-accessible section, keep raw imagery private, and produce a source PLY.
+
+Do not attempt the full monument/plaza yet.
 
 See [ROADMAP.md](docs/ROADMAP.md) for phase boundaries.
