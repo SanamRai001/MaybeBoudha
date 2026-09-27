@@ -61,7 +61,7 @@ const manifest = {
     repository: 'sparkjsdev/spark',
     commit: builderCommit,
     sparkVersion: '2.2.0',
-    rustToolchain: process.env.RUST_TOOLCHAIN || '1.85.0',
+    rustToolchain: process.env.RUST_TOOLCHAIN || '1.88.0',
     command:
       'cargo run --manifest-path rust/build-lod/Cargo.toml --release --no-default-features -- --quality --rad-chunked <source>',
     method: 'quality',
