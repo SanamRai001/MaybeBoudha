@@ -75,6 +75,12 @@ const manifest = {
     output: 'rad-chunked',
     defaultFeatures: false,
   },
+  reproducibility: {
+    processPinned: true,
+    radHeaderBitwiseStable: false,
+    note:
+      'Spark v2.2.0 build-lod embeds per-run timing metadata in the RAD header comment; hashes identify the exact build artifact.',
+  },
   output: {
     fileCount: outputFiles.length,
     chunkCount: outputFiles.filter((file) => file.name.endsWith('.radc')).length,
