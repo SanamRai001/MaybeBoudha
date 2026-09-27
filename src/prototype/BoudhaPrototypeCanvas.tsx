@@ -37,6 +37,9 @@ import {
 } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
+import { loadLicensedStupaModel } from './licensedStupaModel'
+import { licensedModelRequested } from './prototypeModelMode'
+
 type BoudhaPrototypeCanvasProps = {
   reducedMotion: boolean
   onReady: () => void
@@ -861,6 +864,8 @@ export function BoudhaPrototypeCanvas({
     }
 
     let disposed = false
+    let licensedModelDispose: (() => void) | null = null
+    const useLicensedModel = licensedModelRequested(window.location.search)
     const scene = new Scene()
     scene.fog = new FogExp2('#c8ad86', 0.0034)
     addSky(scene)
@@ -944,7 +949,33 @@ export function BoudhaPrototypeCanvas({
     koraPath.receiveShadow = true
     scene.add(koraPath)
 
-    const { flagTop } = createStupa(scene)
+    const { stupa, flagTop } = createStupa(scene)
+
+    if (useLicensedModel) {
+      void loadLicensedStupaModel('/models/Boudha.STL')
+        .then(({ group, dispose }) => {
+          if (disposed) {
+            dispose()
+            return
+          }
+
+          licensedModelDispose = dispose
+          stupa.visible = false
+          scene.add(group)
+
+          const eyeOverlay = new Group()
+          eyeOverlay.name = 'licensed-boudhanath-eye-overlay'
+          addEyePanels(eyeOverlay, makeEyeTexture())
+          scene.add(eyeOverlay)
+        })
+        .catch((error: unknown) => {
+          console.warn(
+            'Licensed Boudhanath STL unavailable; using procedural fallback.',
+            error,
+          )
+        })
+    }
+
     addPrayerWheelRing(scene)
     addSurroundingBuildings(scene)
     addScaleFigures(scene)
@@ -1059,6 +1090,7 @@ export function BoudhaPrototypeCanvas({
       for (const texture of referenceTextures) {
         texture.dispose()
       }
+      licensedModelDispose?.()
       disposeScene(scene)
       renderer.dispose()
     }
