@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3P.2 — Synthetic realism/material pass: complete on PR #6; merge pending.**
+**Phase 3P.2 — Synthetic realism/material pass: complete and merged in PR #6. Phase 3P.3 is next.**
 
 The project now has verified browser evidence for both the renderer choice and the selected large-scene delivery path:
 
