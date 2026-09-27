@@ -58,15 +58,15 @@ function makePlasterTexture() {
     return null
   }
 
-  context.fillStyle = '#eee7da'
-  context.fillRect(0, 0, canvas.width, canvas.height)
+  ctx.fillStyle = '#eee7da'
+  ctx.fillRect(0, 0, canvas.width, canvas.height)
 
   for (let i = 0; i < 4800; i += 1) {
     const value = 214 + Math.floor(Math.random() * 34)
     const alpha = 0.02 + Math.random() * 0.06
-    context.fillStyle = `rgba(${value}, ${Math.max(198, value - 10)}, ${Math.max(182, value - 23)}, ${alpha})`
+    ctx.fillStyle = `rgba(${value}, ${Math.max(198, value - 10)}, ${Math.max(182, value - 23)}, ${alpha})`
     const size = 0.5 + Math.random() * 2
-    context.fillRect(
+    ctx.fillRect(
       Math.random() * canvas.width,
       Math.random() * canvas.height,
       size,
@@ -76,11 +76,11 @@ function makePlasterTexture() {
 
   for (let i = 0; i < 26; i += 1) {
     const x = Math.random() * canvas.width
-    context.strokeStyle = `rgba(177, 145, 99, ${0.025 + Math.random() * 0.04})`
-    context.lineWidth = 2 + Math.random() * 5
-    context.beginPath()
-    context.moveTo(x, 0)
-    context.bezierCurveTo(
+    ctx.strokeStyle = `rgba(177, 145, 99, ${0.025 + Math.random() * 0.04})`
+    ctx.lineWidth = 2 + Math.random() * 5
+    ctx.beginPath()
+    ctx.moveTo(x, 0)
+    ctx.bezierCurveTo(
       x - 20 + Math.random() * 40,
       160,
       x - 18 + Math.random() * 36,
@@ -88,7 +88,7 @@ function makePlasterTexture() {
       x + 12 - Math.random() * 24,
       512,
     )
-    context.stroke()
+    ctx.stroke()
   }
 
   const texture = new CanvasTexture(canvas)
@@ -110,24 +110,24 @@ function makeCourtyardTexture() {
     return null
   }
 
-  context.fillStyle = '#b8aa94'
-  context.fillRect(0, 0, 512, 512)
+  ctx.fillStyle = '#b8aa94'
+  ctx.fillRect(0, 0, 512, 512)
 
   const cell = 64
   for (let y = 0; y < 512; y += cell) {
     for (let x = 0; x < 512; x += cell) {
       const lightness = 158 + ((x / cell + y / cell) % 3) * 7
-      context.fillStyle = `rgb(${lightness + 22}, ${lightness + 12}, ${lightness})`
-      context.fillRect(x + 2, y + 2, cell - 4, cell - 4)
-      context.strokeStyle = 'rgba(70, 56, 43, 0.22)'
-      context.lineWidth = 2
-      context.strokeRect(x + 1, y + 1, cell - 2, cell - 2)
+      ctx.fillStyle = `rgb(${lightness + 22}, ${lightness + 12}, ${lightness})`
+      ctx.fillRect(x + 2, y + 2, cell - 4, cell - 4)
+      ctx.strokeStyle = 'rgba(70, 56, 43, 0.22)'
+      ctx.lineWidth = 2
+      ctx.strokeRect(x + 1, y + 1, cell - 2, cell - 2)
     }
   }
 
   for (let i = 0; i < 1300; i += 1) {
-    context.fillStyle = `rgba(65, 55, 45, ${0.02 + Math.random() * 0.04})`
-    context.fillRect(
+    ctx.fillStyle = `rgba(65, 55, 45, ${0.02 + Math.random() * 0.04})`
+    ctx.fillRect(
       Math.random() * 512,
       Math.random() * 512,
       1 + Math.random() * 2,
@@ -154,75 +154,76 @@ function makeEyeTexture() {
     return null
   }
 
-  const gradient = context.createLinearGradient(0, 0, 0, 512)
+  const ctx = context
+  const gradient = ctx.createLinearGradient(0, 0, 0, 512)
   gradient.addColorStop(0, '#bd8a3b')
   gradient.addColorStop(0.55, '#d8ad59')
   gradient.addColorStop(1, '#b77b31')
-  context.fillStyle = gradient
-  context.fillRect(0, 0, 1024, 512)
+  ctx.fillStyle = gradient
+  ctx.fillRect(0, 0, 1024, 512)
 
-  context.strokeStyle = 'rgba(93, 55, 20, 0.18)'
-  context.lineWidth = 2
+  ctx.strokeStyle = 'rgba(93, 55, 20, 0.18)'
+  ctx.lineWidth = 2
   for (let x = 0; x < 1024; x += 128) {
-    context.beginPath()
-    context.moveTo(x, 0)
-    context.lineTo(x, 512)
-    context.stroke()
+    ctx.beginPath()
+    ctx.moveTo(x, 0)
+    ctx.lineTo(x, 512)
+    ctx.stroke()
   }
   for (let y = 0; y < 512; y += 96) {
-    context.beginPath()
-    context.moveTo(0, y)
-    context.lineTo(1024, y)
-    context.stroke()
+    ctx.beginPath()
+    ctx.moveTo(0, y)
+    ctx.lineTo(1024, y)
+    ctx.stroke()
   }
 
   function drawEye(cx: number) {
-    context.fillStyle = '#efe9d8'
-    context.strokeStyle = '#351d18'
-    context.lineWidth = 18
-    context.beginPath()
-    context.moveTo(cx - 180, 265)
-    context.quadraticCurveTo(cx, 130, cx + 180, 265)
-    context.quadraticCurveTo(cx, 390, cx - 180, 265)
-    context.closePath()
-    context.fill()
-    context.stroke()
+    ctx.fillStyle = '#efe9d8'
+    ctx.strokeStyle = '#351d18'
+    ctx.lineWidth = 18
+    ctx.beginPath()
+    ctx.moveTo(cx - 180, 265)
+    ctx.quadraticCurveTo(cx, 130, cx + 180, 265)
+    ctx.quadraticCurveTo(cx, 390, cx - 180, 265)
+    ctx.closePath()
+    ctx.fill()
+    ctx.stroke()
 
-    context.fillStyle = '#4d85a7'
-    context.beginPath()
-    context.arc(cx, 268, 78, 0, Math.PI * 2)
-    context.fill()
+    ctx.fillStyle = '#4d85a7'
+    ctx.beginPath()
+    ctx.arc(cx, 268, 78, 0, Math.PI * 2)
+    ctx.fill()
 
-    context.fillStyle = '#d5a84a'
-    context.beginPath()
-    context.arc(cx, 268, 49, 0, Math.PI * 2)
-    context.fill()
+    ctx.fillStyle = '#d5a84a'
+    ctx.beginPath()
+    ctx.arc(cx, 268, 49, 0, Math.PI * 2)
+    ctx.fill()
 
-    context.fillStyle = '#171716'
-    context.beginPath()
-    context.arc(cx, 268, 27, 0, Math.PI * 2)
-    context.fill()
+    ctx.fillStyle = '#171716'
+    ctx.beginPath()
+    ctx.arc(cx, 268, 27, 0, Math.PI * 2)
+    ctx.fill()
 
-    context.strokeStyle = '#2d1714'
-    context.lineWidth = 22
-    context.beginPath()
-    context.moveTo(cx - 188, 180)
-    context.quadraticCurveTo(cx, 110, cx + 188, 178)
-    context.stroke()
+    ctx.strokeStyle = '#2d1714'
+    ctx.lineWidth = 22
+    ctx.beginPath()
+    ctx.moveTo(cx - 188, 180)
+    ctx.quadraticCurveTo(cx, 110, cx + 188, 178)
+    ctx.stroke()
   }
 
   drawEye(270)
   drawEye(754)
 
-  context.strokeStyle = '#8d2b24'
-  context.lineWidth = 14
-  context.lineCap = 'round'
-  context.beginPath()
-  context.moveTo(512, 320)
-  context.bezierCurveTo(560, 320, 574, 358, 540, 382)
-  context.bezierCurveTo(496, 412, 468, 375, 493, 351)
-  context.bezierCurveTo(512, 335, 530, 350, 520, 363)
-  context.stroke()
+  ctx.strokeStyle = '#8d2b24'
+  ctx.lineWidth = 14
+  ctx.lineCap = 'round'
+  ctx.beginPath()
+  ctx.moveTo(512, 320)
+  ctx.bezierCurveTo(560, 320, 574, 358, 540, 382)
+  ctx.bezierCurveTo(496, 412, 468, 375, 493, 351)
+  ctx.bezierCurveTo(512, 335, 530, 350, 520, 363)
+  ctx.stroke()
 
   const texture = new CanvasTexture(canvas)
   texture.colorSpace = SRGBColorSpace
