@@ -118,9 +118,24 @@ This provides real Boudhanath context without pretending the photo is reconstruc
 
 ## Verification
 
-Final verified code head:
+Final visual implementation head:
 
 `27e422c4f2df863ea8d69955c17cc8b1576aba8b`
+
+Final documentation-complete PR head:
+
+`8be8bcc74642b6fffc82147b63823718ebeedabf`
+
+Merged as:
+
+`3ff3d7bbeb4175f02f5fdcde758ca30864e43643`
+
+Final PR verification:
+
+- CI #153 — green
+- RAD Pipeline #80 — green
+
+The direct visual artifact reviewed for the final material pass came from CI #147.
 
 CI #147:
 
