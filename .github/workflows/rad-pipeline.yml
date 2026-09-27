@@ -36,7 +36,7 @@ permissions:
 
 env:
   SPARK_BUILDER_COMMIT: 4eb719afdb5b3655fe0bc290588e4728d9772405
-  RUST_TOOLCHAIN: 1.85.0
+  RUST_TOOLCHAIN: 1.88.0
   FIXTURE_COMMIT: b5b983982a9860d21e0c1dafb2f85f72e2c01afb
   FIXTURE_PATH: examples/assets/splats/biker.compressed.ply
 
