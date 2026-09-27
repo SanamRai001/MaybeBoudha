@@ -71,11 +71,11 @@ export function BoudhaPrototypeExperience() {
         <span>{reducedMotion ? 'Reduced motion' : 'Cinematic entry'}</span>
         <span aria-hidden="true">·</span>
         <a
-          href="https://commons.wikimedia.org/wiki/File:20110725_Budha_eyes_closeup_Bodhnath_Stupa_Kathmandu_Nepal.jpg"
+          href="https://commons.wikimedia.org/wiki/File:Boudha_eyes.jpg"
           target="_blank"
           rel="noreferrer"
         >
-          Photo texture: Ggia · CC BY-SA 3.0
+          Eye texture: Christopher J. Fynn · CC BY-SA 4.0
         </a>
       </footer>
     </main>
