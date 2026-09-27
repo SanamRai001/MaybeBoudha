@@ -3,8 +3,8 @@ import { writeFile } from 'node:fs/promises'
 
 const [renderer, outputPath] = process.argv.slice(2)
 
-if (!['spark', 'playcanvas', 'rad', 'prototype'].includes(renderer) || !outputPath) {
-  console.error('Usage: node scripts/runtime-smoke.mjs <spark|playcanvas|rad|prototype> <output.png>')
+if (!['spark', 'playcanvas', 'rad', 'prototype', 'licensed'].includes(renderer) || !outputPath) {
+  console.error('Usage: node scripts/runtime-smoke.mjs <spark|playcanvas|rad|prototype|licensed> <output.png>')
   process.exit(2)
 }
 
@@ -14,8 +14,12 @@ if (!chrome) {
   process.exit(2)
 }
 
-const port = renderer === 'spark' ? 9222 : renderer === 'playcanvas' ? 9223 : renderer === 'rad' ? 9224 : 9225
-const targetUrl = renderer === 'prototype' ? 'http://127.0.0.1:4173/' : `http://127.0.0.1:4173/?renderer=${renderer}`
+const port = renderer === 'spark' ? 9222 : renderer === 'playcanvas' ? 9223 : renderer === 'rad' ? 9224 : renderer === 'prototype' ? 9225 : 9226
+const targetUrl = renderer === 'prototype'
+  ? 'http://127.0.0.1:4173/'
+  : renderer === 'licensed'
+    ? 'http://127.0.0.1:4173/?model=licensed'
+    : `http://127.0.0.1:4173/?renderer=${renderer}`
 const headful = process.env.MAYBEBOUDHA_HEADFUL === '1'
 const browserArgs = [
   '--no-sandbox',
