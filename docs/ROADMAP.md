@@ -97,7 +97,7 @@ Use a legal test PLY before touching Boudhanath data.
 
 Deliver:
 
-- reproducible Spark LOD build process;
+- pinned/repeatable Spark LOD build process;
 - quality/paged RAD output;
 - recorded builder version/commit;
 - output checksums and size;
