@@ -86,3 +86,28 @@ When the photograph loads successfully:
 If the photograph fails to load, the procedural surroundings remain visible.
 
 The panorama is contextual imagery only. It is not reconstruction source data and does not convert the synthetic/hybrid monument into a scan or digital twin.
+
+
+## Point-cloud candidate — not yet imported
+
+A Phase 3P.3 candidate has been identified:
+
+- title: `BOUDHANATH STUPA - POINTCLOUD`
+- author: Enea Le Fons / `@enealefons`
+- source: Sketchfab
+- model page: https://sketchfab.com/3d-models/boudhanath-stupa-pointcloud-ba7da7bbf6cc4ce9ab17ce66bc9597a1
+- public listing: approximately **100k vertices**, **0 triangles**
+- license: **Creative Commons Attribution**
+- status: downloadable
+- restriction: **NoAI**
+
+This asset is **not yet included** in MaybeBoudha.
+
+If imported:
+
+1. preserve the original archive/file and source metadata outside derived browser assets;
+2. record SHA-256;
+3. retain author attribution;
+4. do not use it for AI training, model development, or generative-AI input;
+5. document all format/scale/color conversions;
+6. do not assume it is survey-grade simply because it is a point cloud.
