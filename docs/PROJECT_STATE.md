@@ -4,104 +4,176 @@ This is the canonical checkpoint for continuing MaybeBoudha work. Repository sta
 
 ## Objective
 
-Build a browser-based, photorealistic interactive heritage experience centered on Boudhanath Stupa in Kathmandu, using a real-scene reconstruction pipeline and a web architecture that can progressively serve different device capabilities.
+Build a browser-based, photorealistic interactive heritage experience centered on Boudhanath Stupa in Kathmandu, using a real-scene reconstruction pipeline and progressive browser delivery.
 
 ## Repository
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Completed implementation branch: `feat/phase-1-viewer-foundation`
-- Pull request: `#1`
-- Phase 1 merge SHA: `3a49774bb389dd42352ae5cbc60978e1add743be`
+- Current branch: `spike/phase-2-reconstruction-renderer`
+- Pull request: `#2 — spike: Phase 2 real reconstruction renderer`
 - Working title: `MaybeBoudha`
 
-## Completed phase
+## Last completed phase
 
 **Phase 1 — Viewer Foundation**
 
-Status: **complete and merged to `main`**
+Merged SHA:
 
-## Changes
+`3a49774bb389dd42352ae5cbc60978e1add743be`
 
-- added Vite + React + TypeScript application foundation;
-- added Three.js + React Three Fiber placeholder renderer;
-- added an injectable scene-renderer boundary;
-- added orbit / zoom camera controls through Three.js OrbitControls;
-- added loading, renderer-failure, and recoverable scene-load states;
-- added `?scene=fail` as an intentional recovery-path check;
-- added reduced-motion preference handling;
-- added responsive foundation UI with an explicit placeholder disclaimer;
-- added Vitest + React Testing Library coverage for loading/failure/retry behavior;
-- added Node 24 GitHub Actions CI;
-- committed `package-lock.json` generated from the CI environment;
-- CI uses read-only repository permissions and `npm ci`.
+## Current phase
 
-## Verification
+**Phase 2 — Real Reconstruction Renderer Spike**
 
-Verified before merge and required again on `main`:
+Status: **complete on feature branch; pending final CI and merge**
 
-- automated tests pass: **3/3**;
-- `tsc --noEmit` passes as part of the production build;
-- Vite production build passes;
-- forced preparation failure renders the recovery UI and retry path in tests;
-- renderer injection is exercised by tests;
-- dependencies resolve from the committed lockfile.
+## Phase 2 delivered
 
-Not yet claimed as verified:
+- real Gaussian Splat rendering;
+- Spark 2.2.0 candidate;
+- PlayCanvas 2.22.4 candidate;
+- renderer switch for direct comparison;
+- pinned legal/public test fixtures;
+- asset metrics;
+- deterministic Chromium/CDP runtime probe;
+- screenshot artifacts;
+- neutral same-asset compressed-PLY comparison;
+- renderer/format ADR.
 
-- visual fidelity of a real reconstruction;
-- actual Gaussian Splat rendering;
-- real-device frame rate or memory;
-- cross-browser gesture quality;
-- mobile GPU behavior.
+## Final neutral comparison
 
-Those belong to later phases.
+Pinned fixture:
 
-## Decisions
+- repository: `playcanvas/engine`;
+- commit: `b5b983982a9860d21e0c1dafb2f85f72e2c01afb`;
+- file: `biker.compressed.ply`;
+- payload: ~2.4 MiB;
+- decoded splats: **152,746**.
 
-1. React/UI state is kept independent from the concrete 3D renderer.
-2. React Three Fiber is the Phase 1 renderer only; it is **not yet the production renderer decision**.
-3. The real renderer will be selected from measured Phase 2 results.
-4. The current geometry is only a fixture and must not evolve into a manually modeled production Boudhanath.
-5. Loading and failure behavior exist before real scene assets are introduced.
-6. Dependencies are locked and CI uses `npm ci`.
-7. Large reconstruction assets remain outside normal Git history.
+Verified CI run:
 
-## Risks
+`#49`
 
-- obtaining sufficiently complete and legally usable reconstruction input;
-- upper-monument coverage from ground-only capture;
-- real splat payload size and decoding cost;
-- mobile GPU/memory limits;
-- renderer/library churn;
-- reconstruction artifacts from crowds, flags, lighting, and movement;
-- cultural accuracy and respectful presentation.
+Results:
+
+- locked install: **passed**;
+- tests: **passed**;
+- TypeScript/Vite production build: **passed**;
+- Spark browser probe: **passed**;
+- PlayCanvas browser probe: **passed**;
+- Spark reconstruction visibly rendered: **verified**;
+- PlayCanvas reconstruction visibly rendered: **verified**;
+- Spark hosted-runner load metric: ~**0.19 s**;
+- PlayCanvas hosted-runner load metric: ~**0.24 s**.
+
+CI FPS is not a real-device benchmark and is deliberately excluded from the architecture decision.
+
+## Architecture decision
+
+Accepted in:
+
+`docs/ADR-001-RENDERER-AND-SCENE-FORMAT.md`
+
+### Renderer
+
+**Spark 2.2.x**
+
+### Runtime integration
+
+**React product shell + directly managed Three.js/Spark rendering layer**
+
+React Three Fiber remains available where useful but is not required for the production splat runtime.
+
+### Reconstruction interchange
+
+**PLY**
+
+Keep a cleaned/master reconstruction outside ordinary Git history.
+
+### Production web delivery
+
+**Prebuilt paged RAD**
+
+Expected flow:
+
+```text
+cleaned master PLY
+    ↓
+quality LOD build
+    ↓
+paged RAD
+    ↓
+range-capable CDN/object storage
+    ↓
+Spark
+```
+
+### Fallback renderer
+
+**PlayCanvas**
+
+Reconsider the renderer decision if the real Boudhanath workload exposes a material Spark limitation.
+
+## Important findings
+
+1. A renderer can decode a scene and still render blank when it uses a separate Three.js runtime.
+2. Build/test success alone is insufficient for graphics work; CI now includes real browser runtime probes.
+3. SPZ generations differed enough across the tested paths that SPZ should not be the project's only master/interchange artifact.
+4. Both candidates rendered the same compressed PLY successfully.
+5. Raw Three.js made Spark lifecycle/error handling more explicit than the R3F spike path and passed the deterministic browser probe.
+6. Large-scene streaming must be tested with a Boudhanath-shaped workload; the small comparison fixture cannot prove production performance.
+
+## Unverified / deferred
+
+We have **not** verified:
+
+- real desktop GPU FPS;
+- real phone FPS;
+- mobile memory pressure;
+- Boudhanath-sized streaming behavior;
+- touch quality on physical devices;
+- production CDN latency;
+- a real Boudhanath capture.
+
+These remain later gates and must not be inferred from hosted CI.
+
+## Known risks
+
+- incomplete upper-monument coverage from ground-only capture;
+- capture and drone/elevated-access permissions;
+- crowds, moving prayer flags, lighting variation, and occlusion harming reconstruction;
+- a full plaza scene being far larger than the test fixture;
+- mobile memory limits;
+- RAD build/quality settings requiring iteration;
+- privacy cleanup for recognizable people/plates;
+- cultural/historical content accuracy.
 
 ## Next phase
 
-### Phase 2 — Real Reconstruction Renderer Spike
-
-Goal: prove the rendering approach with a **small legally usable real reconstruction** before touching a production Boudhanath asset.
+### Phase 3 — Boudhanath Capture / Asset Plan
 
 Only:
 
-- obtain/generate one small test reconstruction;
-- integrate the leading renderer candidate behind the existing renderer boundary;
-- compare at least the credible rendering paths;
-- measure asset size, load behavior, memory, frame rate, camera behavior, mobile behavior, and integration complexity;
-- choose and document the production renderer + scene format from evidence.
+- define what physical area the first capture must cover;
+- choose the capture/reconstruction toolchain;
+- define ground/elevated coverage requirements;
+- establish permissions/provenance rules;
+- define privacy cleanup;
+- produce a small **partial Boudhanath** reconstruction before attempting the full monument/plaza;
+- prove PLY → RAD conversion on that partial reconstruction.
 
-Do **not** start the production Boudhanath capture, hotspots, audio, or cinematic intro in Phase 2.
+Do not begin hotspots, audio, cinematic intro, or first-person navigation.
 
 ## Next branch
 
-Recommended:
+After PR #2 is merged:
 
-`spike/phase-2-reconstruction-renderer`
+`feat/phase-3-boudhanath-capture-plan`
 
 ## Resume rule
 
-1. inspect `main` and Git history;
-2. verify this checkpoint against the repository;
-3. begin Phase 2 from the current `main`;
-4. update this file at the end of the next completed phase.
+1. inspect actual `main` and Git history;
+2. read this file and ADR-001;
+3. repository state wins over documentation if they differ;
+4. update this file at the end of each phase.

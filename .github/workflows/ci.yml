@@ -35,3 +35,74 @@ jobs:
 
       - name: Build production bundle
         run: npm run build
+
+  runtime-smoke:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Build production bundle
+        run: npm run build
+
+      - name: Start preview server
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/maybeboudha-preview.log 2>&1 &
+          echo $! > /tmp/maybeboudha-preview.pid
+
+      - name: Install Chromium
+        run: npx --yes playwright@1.55.0 install --with-deps chromium
+
+      - name: Resolve full Chromium binary
+        run: |
+          CHROME="$(find "$HOME/.cache/ms-playwright" -type f -path "*/chromium-*/chrome-linux/chrome" | head -n 1)"
+          if [ -z "$CHROME" ]; then
+            echo "Unable to locate full Playwright Chromium binary."
+            exit 1
+          fi
+          echo "CHROME=$CHROME" >> "$GITHUB_ENV"
+
+      - name: Probe Spark runtime
+        id: spark-smoke
+        continue-on-error: true
+        run: |
+          timeout 75s node scripts/runtime-smoke.mjs \
+            spark \
+            /tmp/maybeboudha-phase-2-spark.png
+
+      - name: Probe PlayCanvas runtime
+        id: playcanvas-smoke
+        continue-on-error: true
+        run: |
+          timeout 75s node scripts/runtime-smoke.mjs \
+            playcanvas \
+            /tmp/maybeboudha-phase-2-playcanvas.png
+
+      - name: Upload runtime screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase-2-runtime-smoke
+          path: /tmp/maybeboudha-phase-2-*.png
+          if-no-files-found: warn
+
+      - name: Require both renderer probes
+        if: always()
+        run: |
+          echo "Spark probe: ${{ steps.spark-smoke.outcome }}"
+          echo "PlayCanvas probe: ${{ steps.playcanvas-smoke.outcome }}"
+          test "${{ steps.spark-smoke.outcome }}" = "success"
+          test "${{ steps.playcanvas-smoke.outcome }}" = "success"
