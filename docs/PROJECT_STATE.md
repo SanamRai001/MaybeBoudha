@@ -10,7 +10,8 @@ Build a browser-based, photorealistic interactive heritage experience centered o
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Current branch: `main`
+- Current branch: `feat/phase-3b-rad-pipeline`
+- Pull request: `#4 — feat: Phase 3B paged RAD processing proof`
 - Working title: `MaybeBoudha`
 
 ## Last completed subphase
@@ -19,166 +20,184 @@ Build a browser-based, photorealistic interactive heritage experience centered o
 
 Status: **complete and merged**
 
-PR:
-
-`#3 — docs: Phase 3A Boudhanath capture governance`
-
 Merge SHA:
 
 `2a0c873d7b2c1019cad82b9cb80510dfec3e90ac`
 
-Pre-merge CI:
+Final merged-main checkpoint before Phase 3B:
 
-`#60 — fully green`
+`0d9bc4dc90bbf0fe9e1618a7b6c6ad501c477be7`
 
-Verified:
+Main CI #64 passed:
 
-- locked dependency install;
+- locked install;
 - tests;
 - production build;
 - Spark runtime probe;
 - PlayCanvas runtime probe.
 
-## Phase 3A delivered
+## Current subphase
 
-- `docs/CAPTURE_PLAN.md`;
-- `docs/ASSET_PIPELINE.md`;
-- `docs/CAPTURE_PROVENANCE_TEMPLATE.md`;
-- raw/processed capture Git exclusions;
-- ground-first capture policy;
-- site/heritage/drone permission guardrails;
-- privacy/provenance requirements;
-- Polycam → PLY → SuperSplat → cleaned PLY workflow;
-- Phase 3A–3D boundaries.
+**Phase 3B — PLY → paged RAD processing proof**
 
-## Capture decisions
+Status: **implementation/proof complete on branch; final branch verification pending**
 
-### Baseline
+## Phase 3B delivered
 
-**Ground-only by default.**
+- separate `RAD Pipeline` workflow;
+- pinned legal compressed-PLY input;
+- pinned Spark v2.2.0 builder source;
+- pinned practical Rust toolchain;
+- quality LOD build;
+- chunked RAD/RADC output;
+- deterministic manifest with hashes/sizes;
+- range-capable proof server;
+- explicit 206 byte-range gate;
+- `?renderer=rad` application mode;
+- Spark `paged: true` runtime;
+- paged-ready condition that requires RAD metadata + non-zero streamed splats;
+- Chromium screenshot proof.
 
-Aerial capture is not assumed and requires a separately verified permission path.
+Detailed evidence:
 
-### First real capture
+`docs/RAD_PIPELINE_PROOF.md`
 
-Do not scan the whole Stupa first.
+## Successful engineering proof
 
-Capture one small, ground-accessible, mostly static exterior section using controlled overlapping photo passes.
+Dedicated workflow:
 
-### Raw data
+- `RAD Pipeline #4`
+- run ID: `36297745202`
+- successful head: `75ae85abefb7b2f16db2559c0764ba65a2d0cc51`
 
-Private by default and kept outside normal Git history.
+Normal CI on the same head also passed.
 
-### First reconstruction workflow
+### Source
 
-```text
-phone photos
-    ↓
-Polycam Gaussian Splat
-    ↓
-source PLY
-    ↓
-SuperSplat cleanup
-    ↓
-cleaned master PLY
-    ↓
-Spark LOD/RAD processing
-```
+- repository: `playcanvas/engine`
+- commit: `b5b983982a9860d21e0c1dafb2f85f72e2c01afb`
+- file: `biker.compressed.ply`
+- bytes: **2,487,573**
+- source splats: **152,746**
+- SHA-256: `ad906646017096ef6613cdbd1e575104e90403dc79116a9c6af749433ca1e8a1`
 
-## Accepted rendering architecture
+### Builder
 
-From ADR-001:
+- Spark: **2.2.0**
+- source commit: `4eb719afdb5b3655fe0bc290588e4728d9772405`
+- actual working Rust toolchain: **1.88.0**
+- LOD method: `BhattLod { lod_base: 1.75 }`
+- output: `--rad-chunked`
 
-- Spark 2.2.x;
-- direct Three.js/Spark runtime;
-- PLY as reconstruction interchange/master direction;
-- paged RAD for production delivery;
-- PlayCanvas as fallback candidate.
+### Toolchain finding
 
-## Current phase
+The upstream workspace declaration of Rust 1.82 is not sufficient for the pinned v2.2.0 dependency lock:
 
-**Phase 3 — Boudhanath Capture / Asset Plan**
+- Cargo 1.82 could not parse an Edition 2024 dependency;
+- Rust 1.85 then failed because `image@0.25.10` requires 1.88;
+- Rust **1.88.0** completed the pinned build.
 
-### Current subphase
+Repository docs must use the observed working toolchain for this pipeline.
 
-**Phase 3B — PLY → RAD processing proof**
+### Output
 
-Status: **not started**
+- final LOD splats: **202,475**
+- RAD header: **1,744 bytes**
+- RADC chunks: **4**
+- total delivery: **4,033,648 bytes**
+- byte-range response: **206**
+- generated RAD visibly rendered: **yes**
 
-## Phase 3B goal
+Hosted-runner LOD/runtime timing is recorded only as engineering evidence, not a production performance claim.
 
-Before any Boudhanath field capture, prove that a legal PLY can be converted reproducibly into Spark's paged RAD delivery and loaded in the browser.
+## Accepted architecture
 
-Deliver:
-
-1. pin the Spark LOD builder source/version;
-2. create a separate asset-processing workflow;
-3. run the builder against a legal small PLY fixture;
-4. use quality LOD + chunked RAD;
-5. record source/output checksums, file sizes, chunk count, and builder metadata;
-6. serve the generated RAD/RADC files locally in CI;
-7. load the generated RAD through Spark with `paged: true`;
-8. add a deterministic runtime proof;
-9. document the exact process.
-
-## Spark builder facts verified before Phase 3B
-
-Spark v2.2.0 defines:
+Still unchanged from ADR-001:
 
 ```text
-npm run build-lod -- <args>
+approved cleaned PLY
+        ↓
+Spark quality LOD build
+        ↓
+chunked RAD
+        ↓
+range-capable object storage/CDN
+        ↓
+Spark paged runtime
 ```
 
-which invokes:
+PlayCanvas remains the fallback renderer candidate.
 
-```text
-cargo run --manifest-path rust/build-lod/Cargo.toml --release --
-```
+## CI architecture
 
-The workspace requires Rust **1.82**.
+### Normal app CI
 
-The builder accepts PLY/compressed PLY and supports:
+Remains Node/web-only:
 
-- `--quality`;
-- `--rad-chunked`;
-- input validation;
-- optional crop/filter/SH controls.
+- locked install;
+- tests;
+- production build;
+- existing Spark/PlayCanvas runtime smoke.
 
-Phase 3B should pin the Spark source tag/commit rather than depending on a moving branch.
+It does **not** compile the Rust asset builder.
 
-## Phase 3B constraint
+### RAD Pipeline
 
-Do not install/compile the Rust LOD builder during every ordinary application CI/build.
+Runs separately when asset-pipeline/runtime proof files change or when manually dispatched.
 
-Asset processing must be isolated from the normal app pipeline.
+It owns:
 
-## Blocker for Phase 3C
+- Rust;
+- Spark builder source;
+- fixture download;
+- RAD generation;
+- manifest;
+- range server;
+- RAD browser proof.
 
-Do not begin a real Boudhanath capture until:
+## Still unverified
 
-- Phase 3B is green;
-- current on-site/systematic-capture rules are reconfirmed;
-- intended permission/provenance fields can be completed honestly.
+Do not claim these are solved:
+
+- real Boudhanath reconstruction quality;
+- capture permission for a specific field session;
+- upper-monument coverage;
+- full plaza delivery size;
+- physical desktop/mobile FPS;
+- physical mobile memory pressure;
+- real CDN/cache behavior;
+- privacy cleanup of an actual capture.
+
+## Next subphase after merge
+
+**Phase 3C — Partial Boudhanath Capture**
+
+Before capture:
+
+1. reconfirm current on-site/systematic-capture rules;
+2. determine whether written site/heritage consent is required;
+3. choose one small ground-accessible section;
+4. create the real capture provenance record;
+5. keep raw imagery private;
+6. reconstruct/export the source PLY only after the capture is legitimate.
+
+Do not attempt the full monument/plaza in Phase 3C.
 
 ## Known risks
 
-- Rust LOD build cost;
-- RAD chunk hosting/range behavior;
-- relative chunk URLs;
-- full-site asset size;
-- mobile memory pressure;
-- source PLY quality varying by reconstruction service;
-- physical capture permissions and crowd/privacy constraints.
-
-## Next branch
-
-`feat/phase-3b-rad-pipeline`
+- real-source PLY characteristics may differ from the small fixture;
+- quality LOD can make delivery larger than the original PLY;
+- full-site chunk count may be large;
+- range/CDN configuration must remain correct in production;
+- mobile memory still requires physical-device measurement;
+- capture crowds/flags/light can degrade reconstruction;
+- permissions must be checked for the actual capture method/date.
 
 ## Resume rule
 
-1. verify actual `main` and CI;
-2. read ADR-001 and ASSET_PIPELINE;
+1. inspect PR #4 head and both workflow results;
+2. read ADR-001, ASSET_PIPELINE, and RAD_PIPELINE_PROOF;
 3. repository state wins over docs if they differ;
-4. create Phase 3B from verified main;
-5. keep asset processing separate from normal application CI;
-6. update this file at the Phase 3B boundary.
+4. merge only after normal CI and RAD Pipeline are green on the documentation-complete head;
+5. post-merge, checkpoint the actual merge SHA on `main`;
+6. only then create the Phase 3C branch.
