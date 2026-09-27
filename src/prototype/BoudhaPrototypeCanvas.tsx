@@ -19,6 +19,7 @@ import {
   LineBasicMaterial,
   MathUtils,
   Mesh,
+  MeshBasicMaterial,
   MeshPhysicalMaterial,
   MeshStandardMaterial,
   PCFSoftShadowMap,
@@ -55,6 +56,9 @@ const DOME_RADIUS = 18.3
 const MONUMENT_HEIGHT = 43.25
 const BOUDHA_REFERENCE_TEXTURE_URL =
   'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Boudha_eyes.jpg/960px-Boudha_eyes.jpg'
+
+const BOUDHA_SURROUNDINGS_PANORAMA_URL =
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/P37275-Kathmandu-Boudhanath.jpg/2560px-P37275-Kathmandu-Boudhanath.jpg'
 
 function makePlasterTexture() {
   const canvas = document.createElement('canvas')
@@ -379,7 +383,7 @@ function addPrayerWheelRing(scene: Scene) {
   }
 }
 
-function addSurroundingBuildings(scene: Scene) {
+function addSurroundingBuildings(scene: Group) {
   const facadePalette = ['#88624d', '#9a704f', '#6d5143', '#ad815b', '#765c4d']
   const trimMaterial = new MeshStandardMaterial({
     color: '#402d24',
@@ -985,12 +989,75 @@ export function BoudhaPrototypeCanvas({
     }
 
     addPrayerWheelRing(scene)
-    addSurroundingBuildings(scene)
-    addScaleFigures(scene)
+
+    const syntheticSurroundings = new Group()
+    syntheticSurroundings.name = 'synthetic-surroundings-fallback'
+    scene.add(syntheticSurroundings)
+    addSurroundingBuildings(syntheticSurroundings)
+    addScaleFigures(syntheticSurroundings)
+
+    const photographicEnvironment = new Group()
+    photographicEnvironment.name = 'photographic-boudhanath-environment'
+    scene.add(photographicEnvironment)
+
+    const panoramaGeometry = new CylinderGeometry(
+      145,
+      145,
+      78,
+      160,
+      1,
+      true,
+    )
+    const panoramaMaterial = new MeshBasicMaterial({
+      color: '#ffffff',
+      side: BackSide,
+      transparent: true,
+      opacity: 0,
+      fog: false,
+      toneMapped: false,
+    })
+    const panoramaMesh = new Mesh(panoramaGeometry, panoramaMaterial)
+    panoramaMesh.position.y = 31
+    panoramaMesh.rotation.y = Math.PI * 0.18
+    photographicEnvironment.add(panoramaMesh)
 
     const referenceTextures: Texture[] = []
     const textureLoader = new TextureLoader()
     textureLoader.setCrossOrigin('anonymous')
+    textureLoader.load(
+      BOUDHA_SURROUNDINGS_PANORAMA_URL,
+      (panoramaTexture) => {
+        if (disposed) {
+          panoramaTexture.dispose()
+          return
+        }
+
+        panoramaTexture.colorSpace = SRGBColorSpace
+        panoramaTexture.anisotropy = Math.min(
+          8,
+          renderer.capabilities.getMaxAnisotropy(),
+        )
+        panoramaTexture.wrapS = RepeatWrapping
+        panoramaTexture.repeat.x = -1
+        panoramaTexture.offset.x = 1
+        panoramaTexture.needsUpdate = true
+        referenceTextures.push(panoramaTexture)
+
+        panoramaMaterial.map = panoramaTexture
+        panoramaMaterial.opacity = 1
+        panoramaMaterial.needsUpdate = true
+
+        syntheticSurroundings.visible = false
+        console.info('Photographic Boudhanath surroundings ready')
+      },
+      undefined,
+      () => {
+        console.warn(
+          'Photographic surroundings unavailable; keeping synthetic fallback.',
+        )
+      },
+    )
+
     textureLoader.load(
       BOUDHA_REFERENCE_TEXTURE_URL,
       (sourceTexture) => {
