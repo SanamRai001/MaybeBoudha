@@ -51,7 +51,7 @@ type AnimatedFlag = {
 const DOME_RADIUS = 18.3
 const MONUMENT_HEIGHT = 43.25
 const BOUDHA_REFERENCE_TEXTURE_URL =
-  'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/20110725_Budha_eyes_closeup_Bodhnath_Stupa_Kathmandu_Nepal.jpg/960px-20110725_Budha_eyes_closeup_Bodhnath_Stupa_Kathmandu_Nepal.jpg'
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Boudha_eyes.jpg/960px-Boudha_eyes.jpg'
 
 function makePlasterTexture() {
   const canvas = document.createElement('canvas')
@@ -965,17 +965,11 @@ export function BoudhaPrototypeCanvas({
 
         const eyeTexture = sourceTexture.clone()
         eyeTexture.colorSpace = SRGBColorSpace
-        eyeTexture.repeat.set(0.54, 0.18)
-        eyeTexture.offset.set(0.23, 0.14)
+        eyeTexture.repeat.set(0.73, 0.52)
+        eyeTexture.offset.set(0.135, 0.18)
         eyeTexture.needsUpdate = true
 
-        const spireTexture = sourceTexture.clone()
-        spireTexture.colorSpace = SRGBColorSpace
-        spireTexture.repeat.set(0.29, 0.37)
-        spireTexture.offset.set(0.355, 0.34)
-        spireTexture.needsUpdate = true
-
-        referenceTextures.push(sourceTexture, eyeTexture, spireTexture)
+        referenceTextures.push(sourceTexture, eyeTexture)
 
         scene.traverse((object) => {
           if (!(object instanceof Mesh)) {
@@ -991,14 +985,6 @@ export function BoudhaPrototypeCanvas({
             material.needsUpdate = true
           }
 
-          if (object.name === 'boudha-spire-tier') {
-            const material = object.material as MeshPhysicalMaterial
-            material.map = spireTexture
-            material.color.set('#c99a46')
-            material.roughness = 0.48
-            material.metalness = 0.3
-            material.needsUpdate = true
-          }
         })
       },
       undefined,
