@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { BoudhaPrototypeCanvas } from './BoudhaPrototypeCanvas'
@@ -6,6 +6,7 @@ import { BoudhaPrototypeCanvas } from './BoudhaPrototypeCanvas'
 export function BoudhaPrototypeExperience() {
   const reducedMotion = useReducedMotion()
   const [ready, setReady] = useState(false)
+  const handleReady = useCallback(() => setReady(true), [])
 
   return (
     <main
@@ -14,7 +15,7 @@ export function BoudhaPrototypeExperience() {
     >
       <BoudhaPrototypeCanvas
         reducedMotion={reducedMotion}
-        onReady={() => setReady(true)}
+        onReady={handleReady}
       />
 
       <div className="prototype-vignette" aria-hidden="true" />
