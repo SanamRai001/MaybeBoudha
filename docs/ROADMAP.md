@@ -65,7 +65,7 @@ This phase runs as a deliberate product-validation track alongside the prepared 
 
 ### Phase 3P.1 — Composition baseline
 
-**Status: implemented and visually verified on PR #6; final documentation verification pending.**
+**Status: complete on PR #6.**
 
 Delivered:
 
@@ -92,22 +92,54 @@ See `VISUAL_PROTOTYPE.md`.
 
 ### Phase 3P.2 — Realism and material pass
 
+**Status: complete on PR #6; final documentation-complete CI pending.**
+
+Delivered:
+
+- compact browser import of the user-supplied MiniWorld3D Boudhanath STL;
+- hybrid geometry: imported lower monument + refined procedural upper monument;
+- licensed photographic eye treatment;
+- deterministic imported-plaster weathering;
+- sloped thirteen-stage spire tiers;
+- public-domain photographic Boudhanath courtyard environment;
+- procedural environment fallback;
+- tighter human-scale camera framing;
+- contact shadow / environment blending;
+- repeated Chromium screenshot review;
+- Spark / PlayCanvas / RAD regressions preserved.
+
+Verdict:
+
+- major improvement over the procedural-only baseline;
+- strong proof that the product direction works;
+- still not a true photorealistic reconstruction;
+- field-clearance outreach remains deferred.
+
+### Phase 3P.3 — Licensed point-cloud spike
+
 **Status: next.**
 
-Focus:
+Candidate:
 
-- richer plaster/weathering;
-- improved gold/copper material response;
-- more detailed architectural façades;
-- more accurate harmika/eye treatment;
-- controlled imperfections;
-- stronger environment lighting;
-- more convincing atmospheric depth;
-- another desktop/mobile screenshot review.
+- Sketchfab `BOUDHANATH STUPA - POINTCLOUD`;
+- about 100k vertices;
+- CC Attribution;
+- downloadable;
+- NoAI restriction must be respected.
+
+Deliver:
+
+- obtain the original asset with license/provenance evidence;
+- inspect file format, per-point color, scale, orientation, and completeness;
+- preserve an immutable source checksum;
+- test direct point rendering and/or conversion to PLY;
+- compare visually against the Phase 3P.2 hybrid;
+- keep the existing hybrid scene as fallback;
+- do not claim survey accuracy unless the source itself supports it.
 
 Exit decision:
 
-If the synthetic result becomes compelling enough that a real reconstruction would clearly justify the effort, reactivate **Phase 3C.2 — Field clearance**.
+If the point cloud produces a substantial realism jump, use it as the next prototype source. If it does not, decide whether the expected improvement from a controlled real capture is sufficient to reactivate **Phase 3C.2 — Field clearance**.
 
 ---
 
