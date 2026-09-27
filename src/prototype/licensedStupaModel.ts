@@ -6,13 +6,14 @@ import {
   Float32BufferAttribute,
   Group,
   Mesh,
-  MeshStandardMaterial,
+  MeshPhysicalMaterial,
   Vector3,
 } from 'three'
 
 const TARGET_HEIGHT_METERS = 43.25
 const TARGET_FOOTPRINT_METERS = 43.5
 const QUANTIZATION_MAX = 65_535
+const LOWER_MODEL_HEIGHT_FRACTION = 0.55
 
 const MODEL_PART_URLS = [
   '/models/boudha/mbv2-0.b64',
@@ -211,6 +212,41 @@ function parsePackedModel(bytes: Uint8Array): PackedModel {
 
   geometry.translate(-center.x, -sourceBounds.min.y, -center.z)
 
+  const translatedPositions = geometry.getAttribute('position') as BufferAttribute
+  const translatedIndex = geometry.getIndex()
+  const lowerIndices: number[] = []
+  const cutoffY = sourceSize.y * LOWER_MODEL_HEIGHT_FRACTION
+
+  if (!translatedIndex) {
+    geometry.dispose()
+    throw new Error('Packed Boudhanath model has no triangle index.')
+  }
+
+  for (let offset = 0; offset < translatedIndex.count; offset += 3) {
+    const a = translatedIndex.getX(offset)
+    const b = translatedIndex.getX(offset + 1)
+    const c = translatedIndex.getX(offset + 2)
+    const averageY =
+      (translatedPositions.getY(a) +
+        translatedPositions.getY(b) +
+        translatedPositions.getY(c)) /
+      3
+
+    if (averageY <= cutoffY) {
+      lowerIndices.push(a, b, c)
+    }
+  }
+
+  if (lowerIndices.length === 0) {
+    geometry.dispose()
+    throw new Error('Packed Boudhanath lower-structure crop is empty.')
+  }
+
+  geometry.setIndex(
+    new BufferAttribute(new Uint16Array(lowerIndices), 1),
+  )
+  geometry.computeVertexNormals()
+
   return {
     geometry,
     vertexCount,
@@ -246,10 +282,12 @@ export async function loadLicensedStupaModel() {
     sourceSize,
   } = await fetchPackedModel()
 
-  const material = new MeshStandardMaterial({
-    vertexColors: true,
-    roughness: 0.78,
-    metalness: 0.08,
+  const material = new MeshPhysicalMaterial({
+    color: '#e9e2d7',
+    roughness: 0.9,
+    metalness: 0,
+    clearcoat: 0.025,
+    clearcoatRoughness: 0.8,
   })
 
   const mesh = new Mesh(geometry, material)
@@ -272,12 +310,15 @@ export async function loadLicensedStupaModel() {
   group.add(mesh)
 
   const scaledBounds = new Box3().setFromObject(group)
+  const renderedTriangleCount =
+    (geometry.getIndex()?.count ?? 0) / 3
 
   return {
     group,
     metadata: {
       vertexCount,
       triangleCount,
+      renderedTriangleCount,
       heightMeters: scaledBounds.getSize(new Vector3()).y,
       footprintMeters: {
         x: scaledBounds.getSize(new Vector3()).x,
