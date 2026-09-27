@@ -30,6 +30,8 @@ import {
   ShaderMaterial,
   SphereGeometry,
   SRGBColorSpace,
+  Texture,
+  TextureLoader,
   Vector3,
   WebGLRenderer,
 } from 'three'
@@ -48,6 +50,8 @@ type AnimatedFlag = {
 
 const DOME_RADIUS = 18.3
 const MONUMENT_HEIGHT = 43.25
+const BOUDHA_REFERENCE_TEXTURE_URL =
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/20110725_Budha_eyes_closeup_Bodhnath_Stupa_Kathmandu_Nepal.jpg/960px-20110725_Budha_eyes_closeup_Bodhnath_Stupa_Kathmandu_Nepal.jpg'
 
 function makePlasterTexture() {
   const canvas = document.createElement('canvas')
@@ -245,20 +249,24 @@ function addEyePanels(group: Group, eyeTexture: CanvasTexture | null) {
   const offset = 3.66
 
   const front = new Mesh(geometry, material)
+  front.name = 'boudha-eye-panel'
   front.position.set(0, y, offset)
   group.add(front)
 
   const back = new Mesh(geometry, material)
+  back.name = 'boudha-eye-panel'
   back.position.set(0, y, -offset)
   back.rotation.y = Math.PI
   group.add(back)
 
   const right = new Mesh(geometry, material)
+  right.name = 'boudha-eye-panel'
   right.position.set(offset, y, 0)
   right.rotation.y = Math.PI / 2
   group.add(right)
 
   const left = new Mesh(geometry, material)
+  left.name = 'boudha-eye-panel'
   left.position.set(-offset, y, 0)
   left.rotation.y = -Math.PI / 2
   group.add(left)
@@ -642,8 +650,17 @@ function createStupa(scene: Scene) {
 
   addEyePanels(stupa, eyeTexture)
 
-  const redBand = new Mesh(new BoxGeometry(7.6, 0.58, 7.6), red)
-  redBand.position.y = 28.75
+  const green = new MeshStandardMaterial({
+    color: '#285b3d',
+    roughness: 0.9,
+  })
+  const greenSkirt = new Mesh(new BoxGeometry(7.72, 0.74, 7.72), green)
+  greenSkirt.position.y = 28.45
+  greenSkirt.castShadow = true
+  stupa.add(greenSkirt)
+
+  const redBand = new Mesh(new BoxGeometry(7.78, 0.28, 7.78), red)
+  redBand.position.y = 28.9
   stupa.add(redBand)
 
   const blueBand = new Mesh(new BoxGeometry(7.42, 0.24, 7.42), blue)
@@ -658,6 +675,7 @@ function createStupa(scene: Scene) {
       new BoxGeometry(width, 0.54, width),
       i % 4 === 0 ? darkGold : gold,
     )
+    tier.name = 'boudha-spire-tier'
     tier.position.y = tierY
     tier.castShadow = true
     stupa.add(tier)
@@ -715,6 +733,28 @@ function createStupa(scene: Scene) {
   )
   jewel.position.y = MONUMENT_HEIGHT
   stupa.add(jewel)
+
+  const pigeonMaterial = new MeshStandardMaterial({
+    color: '#292826',
+    roughness: 0.95,
+  })
+  const pigeonGeometry = new ConeGeometry(0.065, 0.2, 6)
+  for (let i = 0; i < 42; i += 1) {
+    const angle = (i * 2.399963229728653) % (Math.PI * 2)
+    const normalized = 0.24 + ((i * 37) % 61) / 100
+    const polar = normalized * 1.05
+    const radius = DOME_RADIUS + 0.08
+    const pigeon = new Mesh(pigeonGeometry, pigeonMaterial)
+    pigeon.position.set(
+      Math.sin(polar) * Math.cos(angle) * radius,
+      5.15 + Math.cos(polar) * radius,
+      Math.sin(polar) * Math.sin(angle) * radius,
+    )
+    pigeon.rotation.z = Math.PI
+    pigeon.rotation.y = angle
+    pigeon.castShadow = true
+    stupa.add(pigeon)
+  }
 
   scene.add(stupa)
 
@@ -909,6 +949,65 @@ export function BoudhaPrototypeCanvas({
     addSurroundingBuildings(scene)
     addScaleFigures(scene)
 
+    const referenceTextures: Texture[] = []
+    const textureLoader = new TextureLoader()
+    textureLoader.setCrossOrigin('anonymous')
+    textureLoader.load(
+      BOUDHA_REFERENCE_TEXTURE_URL,
+      (sourceTexture) => {
+        if (disposed) {
+          sourceTexture.dispose()
+          return
+        }
+
+        sourceTexture.colorSpace = SRGBColorSpace
+        sourceTexture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy())
+
+        const eyeTexture = sourceTexture.clone()
+        eyeTexture.colorSpace = SRGBColorSpace
+        eyeTexture.repeat.set(0.54, 0.18)
+        eyeTexture.offset.set(0.23, 0.14)
+        eyeTexture.needsUpdate = true
+
+        const spireTexture = sourceTexture.clone()
+        spireTexture.colorSpace = SRGBColorSpace
+        spireTexture.repeat.set(0.29, 0.37)
+        spireTexture.offset.set(0.355, 0.34)
+        spireTexture.needsUpdate = true
+
+        referenceTextures.push(sourceTexture, eyeTexture, spireTexture)
+
+        scene.traverse((object) => {
+          if (!(object instanceof Mesh)) {
+            return
+          }
+
+          if (object.name === 'boudha-eye-panel') {
+            const material = object.material as MeshStandardMaterial
+            material.map = eyeTexture
+            material.color.set('#ffffff')
+            material.roughness = 0.68
+            material.metalness = 0.04
+            material.needsUpdate = true
+          }
+
+          if (object.name === 'boudha-spire-tier') {
+            const material = object.material as MeshPhysicalMaterial
+            material.map = spireTexture
+            material.color.set('#c99a46')
+            material.roughness = 0.48
+            material.metalness = 0.3
+            material.needsUpdate = true
+          }
+        })
+      },
+      undefined,
+      () => {
+        // The prototype keeps its procedural fallback if the optional licensed
+        // reference texture is unavailable.
+      },
+    )
+
     const animatedFlags: AnimatedFlag[] = []
     addPrayerFlags(scene, animatedFlags, flagTop)
 
@@ -971,6 +1070,9 @@ export function BoudhaPrototypeCanvas({
       renderer.setAnimationLoop(null)
       controls.dispose()
       courtyardTexture?.dispose()
+      for (const texture of referenceTextures) {
+        texture.dispose()
+      }
       disposeScene(scene)
       renderer.dispose()
     }
