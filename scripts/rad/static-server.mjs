@@ -1,7 +1,7 @@
 import { createReadStream } from 'node:fs'
 import { stat } from 'node:fs/promises'
 import { createServer } from 'node:http'
-import { extname, join, normalize, resolve } from 'node:path'
+import { extname, join, normalize, resolve, sep } from 'node:path'
 
 const root = resolve(process.argv[2] || 'dist')
 const port = Number(process.argv[3] || 4173)
@@ -21,7 +21,7 @@ function resolveRequestPath(urlPath) {
   const normalized = normalize(decoded).replace(/^[/\\]+/, '')
   const path = resolve(join(root, normalized || 'index.html'))
 
-  if (!path.startsWith(root)) {
+  if (path !== root && !path.startsWith(`${root}${sep}`)) {
     throw new Error('Path escapes static root.')
   }
 
@@ -45,7 +45,7 @@ async function serveFile(request, response, path) {
     return
   }
 
-  const match = /^bytes=(\d*)-(\d*)$/.exec(range)
+  const match = /^bytes=(\d+)-(\d*)$/.exec(range)
 
   if (!match) {
     response.statusCode = 416
