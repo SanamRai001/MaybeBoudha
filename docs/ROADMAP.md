@@ -57,6 +57,60 @@ Real-device performance is intentionally **not claimed** from CI and remains a P
 
 ---
 
+## Phase 3P — Synthetic visual feasibility
+
+**Goal:** prove the visual/product direction before spending effort on real-world capture clearance and source acquisition.
+
+This phase runs as a deliberate product-validation track alongside the prepared Phase 3C clearance path.
+
+### Phase 3P.1 — Composition baseline
+
+**Status: implemented and visually verified on PR #6; final documentation verification pending.**
+
+Delivered:
+
+- full-screen synthetic Boudhanath experience;
+- procedural monument at approximate real-world scale;
+- dome / harmika / eyes / thirteen-tier spire;
+- prayer wheels and animated flags;
+- courtyard and surrounding façades;
+- cinematic camera entrance;
+- orbit / zoom;
+- reduced motion;
+- responsive editorial overlay;
+- explicit synthetic/no-scan disclosure;
+- default-route Chromium screenshot gate;
+- existing Spark/PlayCanvas/RAD regressions preserved.
+
+Verdict:
+
+- strong enough to continue synthetic visual development;
+- still visibly synthetic;
+- **not yet sufficient to trigger field-clearance work**.
+
+See `VISUAL_PROTOTYPE.md`.
+
+### Phase 3P.2 — Realism and material pass
+
+**Status: next.**
+
+Focus:
+
+- richer plaster/weathering;
+- improved gold/copper material response;
+- more detailed architectural façades;
+- more accurate harmika/eye treatment;
+- controlled imperfections;
+- stronger environment lighting;
+- more convincing atmospheric depth;
+- another desktop/mobile screenshot review.
+
+Exit decision:
+
+If the synthetic result becomes compelling enough that a real reconstruction would clearly justify the effort, reactivate **Phase 3C.2 — Field clearance**.
+
+---
+
 ## Phase 3 — Boudhanath capture / asset plan
 
 **Goal:** obtain a legitimate, usable source for the real scene and prove the selected reconstruction-to-web pipeline on a partial capture.
@@ -120,7 +174,7 @@ Deliver:
 
 #### Phase 3C.2 — Field clearance
 
-**Status: blocked on external written determinations.**
+**Status: prepared but intentionally deferred while Phase 3P validates product value.**
 
 Require:
 
