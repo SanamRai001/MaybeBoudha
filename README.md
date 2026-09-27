@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3 — Boudhanath Capture / Asset Plan: in progress (Phase 3A).**
+**Phase 3 — Boudhanath Capture / Asset Plan: in progress (Phase 3B).**
 
 The project has moved beyond placeholder geometry. Two real Gaussian Splat renderer paths were implemented and browser-tested:
 
