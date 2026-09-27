@@ -5,13 +5,16 @@ import {
   rendererCandidateFromSearch,
 } from './experience/renderer/playcanvasSpike'
 import { SparkSceneCanvas } from './experience/renderer/SparkSceneCanvas'
-import { SPARK_VERSION, TEST_ASSET } from './experience/renderer/sparkSpike'
+import { sparkSceneConfigFromSearch } from './experience/renderer/sparkSceneConfig'
+import { SPARK_VERSION } from './experience/renderer/sparkSpike'
 import { useReducedMotion } from './hooks/useReducedMotion'
 
 function App() {
   const reducedMotion = useReducedMotion()
   const rendererCandidate = rendererCandidateFromSearch(window.location.search)
+  const sparkScene = sparkSceneConfigFromSearch(window.location.search)
   const isPlayCanvas = rendererCandidate === 'playcanvas'
+  const isRad = rendererCandidate === 'rad'
   const Renderer = isPlayCanvas ? PlayCanvasSceneCanvas : SparkSceneCanvas
 
   return (
@@ -20,16 +23,17 @@ function App() {
         <a className="brand" href="/" aria-label="MaybeBoudha home">
           MaybeBoudha
         </a>
-        <span className="phase-badge">Phase 2 · Reconstruction renderer spike</span>
+        <span className="phase-badge">Phase 3B · PLY → paged RAD proof</span>
       </header>
 
       <section className="hero" aria-labelledby="page-title">
         <div className="hero-copy">
           <p className="eyebrow">Boudhanath · Kathmandu, Nepal</p>
-          <h1 id="page-title">Proving the photorealistic rendering path.</h1>
+          <h1 id="page-title">Proving the reconstruction delivery pipeline.</h1>
           <p className="hero-description">
-            The viewer loads the same Gaussian Splat reconstruction through two candidate engines
-            so we can compare integration and delivery behavior before capturing Boudhanath.
+            The renderer spike is complete. This phase proves that a portable
+            reconstruction can be converted into Spark&apos;s paged RAD format
+            and streamed through the same Three.js runtime planned for Boudhanath.
           </p>
 
           <dl className="prototype-notes">
@@ -42,17 +46,28 @@ function App() {
               </dd>
             </div>
             <div>
-              <dt>Fixture</dt>
-              <dd>{TEST_ASSET.label} · pinned compressed PLY</dd>
+              <dt>Asset</dt>
+              <dd>
+                {isPlayCanvas
+                  ? 'PlayCanvas biker · pinned compressed PLY'
+                  : `${sparkScene.label} · ${sparkScene.format}`}
+              </dd>
             </div>
             <div>
-              <dt>Compare</dt>
+              <dt>Proof</dt>
               <dd className="renderer-links">
                 <a
                   href="?renderer=spark"
-                  aria-current={isPlayCanvas ? undefined : 'page'}
+                  aria-current={rendererCandidate === 'spark' ? 'page' : undefined}
                 >
-                  Spark
+                  PLY
+                </a>
+                <span aria-hidden="true">·</span>
+                <a
+                  href="?renderer=rad"
+                  aria-current={isRad ? 'page' : undefined}
+                >
+                  Paged RAD
                 </a>
                 <span aria-hidden="true">·</span>
                 <a
@@ -65,21 +80,26 @@ function App() {
             </div>
             <div>
               <dt>Motion</dt>
-              <dd>{reducedMotion ? 'Reduced motion respected' : 'Standard interaction enabled'}</dd>
+              <dd>
+                {reducedMotion
+                  ? 'Reduced motion respected'
+                  : 'Standard interaction enabled'}
+              </dd>
             </div>
           </dl>
         </div>
 
         <div className="viewer-column">
-          <div className="viewer-frame" aria-label="Gaussian Splat renderer spike">
+          <div className="viewer-frame" aria-label="Gaussian Splat delivery proof">
             <ExperienceViewport
               reducedMotion={reducedMotion}
               renderer={Renderer}
             />
           </div>
           <p className="viewer-caption">
-            Technical test asset only — this is not Boudhanath. Both candidates use the same
-            compressed PLY source so renderer differences are easier to isolate.
+            Technical test asset only — this is not Boudhanath. The RAD mode is
+            generated from the same pinned legal fixture so the asset-processing
+            path can be proven before any field capture.
           </p>
         </div>
       </section>
