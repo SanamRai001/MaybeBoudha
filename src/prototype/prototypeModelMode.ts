@@ -1,3 +1,3 @@
 export function licensedModelRequested(search: string) {
-  return new URLSearchParams(search).get('model') === 'licensed'
+  return new URLSearchParams(search).get('model') !== 'procedural'
 }
