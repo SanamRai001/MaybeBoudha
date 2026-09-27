@@ -82,7 +82,6 @@ jobs:
           timeout 75s node scripts/runtime-smoke.mjs \
             prototype \
             /tmp/maybeboudha-visual-prototype.png
-            /tmp/maybeboudha-licensed-model.png
 
       - name: Probe uploaded Boudhanath model
         id: licensed-model-smoke
@@ -116,6 +115,7 @@ jobs:
           path: |
             /tmp/maybeboudha-phase-2-*.png
             /tmp/maybeboudha-visual-prototype.png
+            /tmp/maybeboudha-licensed-model.png
           if-no-files-found: warn
 
       - name: Require runtime probes
