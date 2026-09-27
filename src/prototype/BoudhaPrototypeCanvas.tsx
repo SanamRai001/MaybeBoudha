@@ -537,6 +537,11 @@ function addScaleFigures(scene: Scene) {
 
 function createStupa(scene: Scene) {
   const stupa = new Group()
+  const lower = new Group()
+  const upper = new Group()
+  stupa.add(lower)
+  stupa.add(upper)
+
   const plasterTexture = makePlasterTexture()
   const eyeTexture = makeEyeTexture()
 
@@ -582,7 +587,7 @@ function createStupa(scene: Scene) {
     mesh.position.y = platform.y
     mesh.receiveShadow = true
     mesh.castShadow = true
-    stupa.add(mesh)
+    lower.add(mesh)
   }
 
   const drum = new Mesh(
@@ -592,7 +597,7 @@ function createStupa(scene: Scene) {
   drum.position.y = 4.2
   drum.receiveShadow = true
   drum.castShadow = true
-  stupa.add(drum)
+  lower.add(drum)
 
   const dome = new Mesh(
     new SphereGeometry(DOME_RADIUS, 128, 64, 0, Math.PI * 2, 0, Math.PI / 2),
@@ -601,14 +606,14 @@ function createStupa(scene: Scene) {
   dome.position.y = 5.15
   dome.castShadow = true
   dome.receiveShadow = true
-  stupa.add(dome)
+  lower.add(dome)
 
   const domeBand = new Mesh(
     new CylinderGeometry(18.95, 18.95, 0.58, 96),
     warmWhite,
   )
   domeBand.position.y = 5.12
-  stupa.add(domeBand)
+  lower.add(domeBand)
 
   const nicheMaterial = new MeshStandardMaterial({
     color: '#b38858',
@@ -626,13 +631,13 @@ function createStupa(scene: Scene) {
     )
     niche.rotation.y = -angle + Math.PI / 2
     niche.castShadow = true
-    stupa.add(niche)
+    lower.add(niche)
   }
 
   const harmika = new Mesh(new BoxGeometry(7.2, 5.2, 7.2), gold)
   harmika.position.y = 25.8
   harmika.castShadow = true
-  stupa.add(harmika)
+  upper.add(harmika)
 
   for (let seam = -2; seam <= 2; seam += 1) {
     const seamY = 24.2 + seam * 0.82
@@ -641,17 +646,17 @@ function createStupa(scene: Scene) {
       darkGold,
     )
     frontSeam.position.set(0, seamY, 3.64)
-    stupa.add(frontSeam)
+    upper.add(frontSeam)
 
     const sideSeam = new Mesh(
       new BoxGeometry(0.06, 0.055, 7.28),
       darkGold,
     )
     sideSeam.position.set(3.64, seamY, 0)
-    stupa.add(sideSeam)
+    upper.add(sideSeam)
   }
 
-  addEyePanels(stupa, eyeTexture)
+  addEyePanels(upper, eyeTexture)
 
   const green = new MeshStandardMaterial({
     color: '#285b3d',
@@ -660,15 +665,15 @@ function createStupa(scene: Scene) {
   const greenSkirt = new Mesh(new BoxGeometry(7.72, 0.74, 7.72), green)
   greenSkirt.position.y = 28.45
   greenSkirt.castShadow = true
-  stupa.add(greenSkirt)
+  upper.add(greenSkirt)
 
   const redBand = new Mesh(new BoxGeometry(7.78, 0.28, 7.78), red)
   redBand.position.y = 28.9
-  stupa.add(redBand)
+  upper.add(redBand)
 
   const blueBand = new Mesh(new BoxGeometry(7.42, 0.24, 7.42), blue)
   blueBand.position.y = 29.05
-  stupa.add(blueBand)
+  upper.add(blueBand)
 
   let tierY = 29.55
   for (let i = 0; i < 13; i += 1) {
@@ -681,7 +686,7 @@ function createStupa(scene: Scene) {
     tier.name = 'boudha-spire-tier'
     tier.position.y = tierY
     tier.castShadow = true
-    stupa.add(tier)
+    upper.add(tier)
     tierY += 0.6
   }
 
@@ -690,21 +695,21 @@ function createStupa(scene: Scene) {
     blue,
   )
   umbrellaBlue.position.y = 37.5
-  stupa.add(umbrellaBlue)
+  upper.add(umbrellaBlue)
 
   const umbrellaRed = new Mesh(
     new CylinderGeometry(2.68, 2.9, 0.28, 64),
     red,
   )
   umbrellaRed.position.y = 37.8
-  stupa.add(umbrellaRed)
+  upper.add(umbrellaRed)
 
   const umbrellaYellow = new Mesh(
     new CylinderGeometry(2.85, 3.08, 0.52, 64),
     yellow,
   )
   umbrellaYellow.position.y = 38.18
-  stupa.add(umbrellaYellow)
+  upper.add(umbrellaYellow)
 
   const canopy = new Mesh(
     new CylinderGeometry(3.15, 2.75, 0.48, 64),
@@ -712,7 +717,7 @@ function createStupa(scene: Scene) {
   )
   canopy.position.y = 38.7
   canopy.castShadow = true
-  stupa.add(canopy)
+  upper.add(canopy)
 
   const crown = new Mesh(
     new CylinderGeometry(2.0, 2.45, 1.35, 64),
@@ -720,7 +725,7 @@ function createStupa(scene: Scene) {
   )
   crown.position.y = 39.65
   crown.castShadow = true
-  stupa.add(crown)
+  upper.add(crown)
 
   const pinnacle = new Mesh(
     new ConeGeometry(0.92, 2.55, 32),
@@ -728,14 +733,14 @@ function createStupa(scene: Scene) {
   )
   pinnacle.position.y = 41.5
   pinnacle.castShadow = true
-  stupa.add(pinnacle)
+  upper.add(pinnacle)
 
   const jewel = new Mesh(
     new SphereGeometry(0.58, 24, 16),
     gold,
   )
   jewel.position.y = MONUMENT_HEIGHT
-  stupa.add(jewel)
+  upper.add(jewel)
 
   const pigeonMaterial = new MeshStandardMaterial({
     color: '#292826',
@@ -756,13 +761,14 @@ function createStupa(scene: Scene) {
     pigeon.rotation.z = Math.PI
     pigeon.rotation.y = angle
     pigeon.castShadow = true
-    stupa.add(pigeon)
+    lower.add(pigeon)
   }
 
   scene.add(stupa)
 
   return {
     stupa,
+    lower,
     flagTop: new Vector3(0, 39.65, 0),
   }
 }
@@ -950,13 +956,7 @@ export function BoudhaPrototypeCanvas({
     koraPath.receiveShadow = true
     scene.add(koraPath)
 
-    const { stupa, flagTop } = createStupa(scene)
-
-    const licensedEyeOverlay = new Group()
-    licensedEyeOverlay.name = 'licensed-boudhanath-eye-overlay'
-    licensedEyeOverlay.visible = false
-    addEyePanels(licensedEyeOverlay, makeEyeTexture())
-    scene.add(licensedEyeOverlay)
+    const { lower, flagTop } = createStupa(scene)
 
     if (useLicensedModel) {
       void loadLicensedStupaModel()
@@ -967,8 +967,7 @@ export function BoudhaPrototypeCanvas({
           }
 
           licensedModelDispose = dispose
-          stupa.visible = false
-          licensedEyeOverlay.visible = true
+          lower.visible = false
           scene.add(group)
           licensedModelReady = true
 
