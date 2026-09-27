@@ -57,8 +57,7 @@ const MONUMENT_HEIGHT = 43.25
 const BOUDHA_REFERENCE_TEXTURE_URL =
   'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Boudha_eyes.jpg/960px-Boudha_eyes.jpg'
 
-const BOUDHA_SURROUNDINGS_PANORAMA_URL =
-  'https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/P37275-Kathmandu-Boudhanath.jpg/2560px-P37275-Kathmandu-Boudhanath.jpg'
+const BOUDHA_SURROUNDINGS_PANORAMA_URL = '/images/boudha-surroundings.jpg'
 
 function makePlasterTexture() {
   const canvas = document.createElement('canvas')
