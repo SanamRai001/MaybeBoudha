@@ -61,21 +61,59 @@ Real-device performance is intentionally **not claimed** from CI and remains a P
 
 **Goal:** obtain a legitimate, usable source for the real scene and prove the selected reconstruction-to-web pipeline on a partial capture.
 
-### Work
+### Phase 3A — Capture governance and field plan
 
-- define capture boundary and coverage;
-- define ground and elevated coverage needs;
-- confirm capture permissions;
-- choose capture/reconstruction service/toolchain;
-- record provenance and usage rights;
-- define privacy cleanup;
-- capture or obtain a small partial Boudhanath dataset;
-- produce a cleaned partial PLY;
-- prove partial PLY → paged RAD → browser delivery.
+Deliver:
+
+- ground-first capture boundary;
+- permission/drone guardrails;
+- capture technique;
+- crowd/privacy handling;
+- first cloud reconstruction toolchain;
+- cleanup workflow;
+- provenance template;
+- raw-asset Git exclusions;
+- delivery/storage layout.
+
+**Status: in progress.**
+
+### Phase 3B — PLY → RAD processing proof
+
+Use a legal test PLY before touching Boudhanath data.
+
+Deliver:
+
+- reproducible Spark LOD build process;
+- quality/paged RAD output;
+- recorded builder version/commit;
+- output checksums and size;
+- Spark `paged: true` browser load;
+- automated or repeatable verification.
+
+### Phase 3C — Partial Boudhanath capture
+
+Only after Phase 3A rules are satisfied and Phase 3B is green:
+
+- verify current site/heritage requirements;
+- capture one small ground-accessible section;
+- keep raw source private;
+- reconstruct in the selected cloud workflow;
+- export source PLY.
+
+### Phase 3D — Partial asset cleanup and proof
+
+Deliver:
+
+- privacy-reviewed cleaned PLY;
+- provenance record;
+- PLY → paged RAD;
+- browser load through Spark;
+- physical desktop/mobile measurements;
+- decision on whether full-site capture is viable.
 
 ### Exit criteria
 
-A legally usable partial Boudhanath reconstruction loads through the selected Spark/RAD path and gives enough evidence to plan the full capture.
+A legally usable **partial Boudhanath** reconstruction loads through the selected Spark/RAD path with sufficient provenance and device evidence to plan a full capture.
 
 ---
 

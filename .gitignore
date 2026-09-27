@@ -7,6 +7,10 @@ coverage/
 .env.*
 !.env.example
 
+# Real capture/reconstruction assets stay outside normal Git history.
+local-assets/
+capture-output/
+
 .DS_Store
 Thumbs.db
 .vscode/*
