@@ -58,15 +58,15 @@ function makePlasterTexture() {
     return null
   }
 
-  ctx.fillStyle = '#eee7da'
-  ctx.fillRect(0, 0, canvas.width, canvas.height)
+  context.fillStyle = '#eee7da'
+  context.fillRect(0, 0, canvas.width, canvas.height)
 
   for (let i = 0; i < 4800; i += 1) {
     const value = 214 + Math.floor(Math.random() * 34)
     const alpha = 0.02 + Math.random() * 0.06
-    ctx.fillStyle = `rgba(${value}, ${Math.max(198, value - 10)}, ${Math.max(182, value - 23)}, ${alpha})`
+    context.fillStyle = `rgba(${value}, ${Math.max(198, value - 10)}, ${Math.max(182, value - 23)}, ${alpha})`
     const size = 0.5 + Math.random() * 2
-    ctx.fillRect(
+    context.fillRect(
       Math.random() * canvas.width,
       Math.random() * canvas.height,
       size,
@@ -76,11 +76,11 @@ function makePlasterTexture() {
 
   for (let i = 0; i < 26; i += 1) {
     const x = Math.random() * canvas.width
-    ctx.strokeStyle = `rgba(177, 145, 99, ${0.025 + Math.random() * 0.04})`
-    ctx.lineWidth = 2 + Math.random() * 5
-    ctx.beginPath()
-    ctx.moveTo(x, 0)
-    ctx.bezierCurveTo(
+    context.strokeStyle = `rgba(177, 145, 99, ${0.025 + Math.random() * 0.04})`
+    context.lineWidth = 2 + Math.random() * 5
+    context.beginPath()
+    context.moveTo(x, 0)
+    context.bezierCurveTo(
       x - 20 + Math.random() * 40,
       160,
       x - 18 + Math.random() * 36,
@@ -88,7 +88,7 @@ function makePlasterTexture() {
       x + 12 - Math.random() * 24,
       512,
     )
-    ctx.stroke()
+    context.stroke()
   }
 
   const texture = new CanvasTexture(canvas)
@@ -110,24 +110,24 @@ function makeCourtyardTexture() {
     return null
   }
 
-  ctx.fillStyle = '#b8aa94'
-  ctx.fillRect(0, 0, 512, 512)
+  context.fillStyle = '#b8aa94'
+  context.fillRect(0, 0, 512, 512)
 
   const cell = 64
   for (let y = 0; y < 512; y += cell) {
     for (let x = 0; x < 512; x += cell) {
       const lightness = 158 + ((x / cell + y / cell) % 3) * 7
-      ctx.fillStyle = `rgb(${lightness + 22}, ${lightness + 12}, ${lightness})`
-      ctx.fillRect(x + 2, y + 2, cell - 4, cell - 4)
-      ctx.strokeStyle = 'rgba(70, 56, 43, 0.22)'
-      ctx.lineWidth = 2
-      ctx.strokeRect(x + 1, y + 1, cell - 2, cell - 2)
+      context.fillStyle = `rgb(${lightness + 22}, ${lightness + 12}, ${lightness})`
+      context.fillRect(x + 2, y + 2, cell - 4, cell - 4)
+      context.strokeStyle = 'rgba(70, 56, 43, 0.22)'
+      context.lineWidth = 2
+      context.strokeRect(x + 1, y + 1, cell - 2, cell - 2)
     }
   }
 
   for (let i = 0; i < 1300; i += 1) {
-    ctx.fillStyle = `rgba(65, 55, 45, ${0.02 + Math.random() * 0.04})`
-    ctx.fillRect(
+    context.fillStyle = `rgba(65, 55, 45, ${0.02 + Math.random() * 0.04})`
+    context.fillRect(
       Math.random() * 512,
       Math.random() * 512,
       1 + Math.random() * 2,
