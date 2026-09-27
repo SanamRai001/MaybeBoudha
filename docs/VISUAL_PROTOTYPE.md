@@ -118,11 +118,11 @@ This provides real Boudhanath context without pretending the photo is reconstruc
 
 ## Verification
 
-Latest reviewed code head:
+Final verified code head:
 
-`13e593c637f4f83e85eb57dbd67e06c3f49e57a7`
+`27e422c4f2df863ea8d69955c17cc8b1576aba8b`
 
-CI #145:
+CI #147:
 
 - tests — passed;
 - production build — passed;
@@ -130,9 +130,9 @@ CI #145:
 - explicit licensed-model probe — passed;
 - Spark regression — passed;
 - PlayCanvas regression — passed;
-- screenshot artifact — inspected directly.
+- final material-balanced screenshot artifact — inspected directly.
 
-RAD Pipeline #72:
+RAD Pipeline #74:
 
 - application tests — passed;
 - Spark LOD build — passed;
