@@ -33,10 +33,27 @@ Any extracted/cropped texture derived from the image remains subject to CC BY-SA
 
 Do not copy that texture into a differently licensed proprietary asset package without preserving the required attribution/share-alike terms.
 
-## MiniWorld3D model research
+## MiniWorld3D Boudhanath geometry
 
-During Phase 3P research, a separate Boudhanath STL by MiniWorld3D was identified on Pinshape under **CC BY**.
+Phase 3P uses the Boudhanath STL supplied from the MiniWorld3D Pinshape listing as the default visual-study monument geometry.
 
-That model is **not currently included in MaybeBoudha**.
+- Creator: **MiniWorld3D / Dany Sánchez**
+- Source listing: https://pinshape.com/items/5106-3d-printed-boudhanath-stupa
+- License shown by the source listing: **Creative Commons Attribution (CC BY)**
+- Original file: `Boudha.STL`
+- Original bytes: **727,784**
+- Original SHA-256: `26056855d10d51b9af31bf75cd7eebca0ab161a70c8aeafb664b7e0df621d5e9`
+- Triangles: **14,554**
+- Indexed vertices used by the browser package: **7,281**
 
-If it is ever imported, its exact downloaded file, license evidence, author attribution, and any modifications must be recorded here before merging.
+### Transformation
+
+The original printable mesh is converted into a compact browser package.
+
+The browser representation preserves the mesh topology but quantizes positions and adapts the model's X/Z footprint and Y height independently for this visual-feasibility scene.
+
+That non-uniform scale correction is intentional because the printable STL's raw 108 × 54.4 × 108 proportions do not correspond to the real monument's intended visual scale.
+
+Therefore this model remains an **artistic/reference geometry**, not survey-grade or capture-derived geometry.
+
+Attribution must remain with any distribution or derivative use that requires it under the source license.
