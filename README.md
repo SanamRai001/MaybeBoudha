@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3P.1 — Synthetic Boudhanath Visual Feasibility Prototype: implemented and visually verified on PR #6; final documentation verification is pending.**
+**Phase 3P.2 — Synthetic realism/material pass: implemented and visually verified on PR #6; final documentation verification is pending.**
 
 The project now has verified browser evidence for both the renderer choice and the selected large-scene delivery path:
 
@@ -78,23 +78,26 @@ See [Phase 3B RAD Pipeline Proof](docs/RAD_PIPELINE_PROOF.md).
 
 ## Synthetic visual prototype
 
-The default route now renders a procedural Boudhanath architectural study before any real field capture is attempted.
+The default route is now a hybrid Boudhanath visual-feasibility study built before any real field capture.
 
-It includes:
+It combines:
 
-- approximate monument-scale massing;
-- procedural dome, harmika/eyes, gilded spire, prayer wheels, and flags;
-- courtyard architecture and shopfront rhythm;
+- a user-supplied MiniWorld3D Boudhanath STL, compacted for browser delivery and used for the detailed lower monument;
+- a refined procedural harmika / photographic eye façade / thirteen-stage upper spire;
+- deterministic plaster weathering;
+- prayer wheels and animated prayer flags;
+- a public-domain Boudhanath courtyard panorama for the real surrounding shops/temples;
+- procedural surroundings only as a photo-load fallback;
 - cinematic camera entrance;
 - orbit/zoom interaction;
 - atmospheric lighting/fog;
-- explicit disclosure that the scene is synthetic and contains no scan data.
+- explicit disclosure that the monument is **not scan data**.
 
-This is a **visual-feasibility study**, not a reconstruction claim.
+This is still a **visual-feasibility study**, not a measured reconstruction or digital twin.
 
-The current result is strong enough to justify a deeper synthetic realism pass, but it is not yet realistic enough to justify triggering the field-clearance process.
+The environment and silhouette are now convincing enough to justify testing a real licensed Boudhanath point cloud, but the monument itself is still visibly synthetic and does **not** yet justify triggering field-clearance outreach.
 
-See [Visual Prototype](docs/VISUAL_PROTOTYPE.md).
+See [Visual Prototype](docs/VISUAL_PROTOTYPE.md) and [Third-Party Assets](docs/THIRD_PARTY_ASSETS.md).
 
 ## Product direction
 
@@ -176,12 +179,20 @@ The `?renderer=rad` route expects generated RAD/RADC files under `/rad/`; normal
 
 ## Immediate next step
 
-**Phase 3P.2 — Realism and material pass**
+**Phase 3P.3 — Licensed Boudhanath point-cloud spike**
 
-Continue improving the synthetic visual prototype first.
+A Sketchfab candidate has been identified:
 
-Field clearance remains prepared and documented, but it is intentionally deferred until the prototype is strong enough to justify the real capture/reconstruction effort.
+- `BOUDHANATH STUPA - POINTCLOUD`;
+- approximately 100k vertices;
+- CC Attribution;
+- downloadable model;
+- NoAI restriction respected: it will not be used for model training or generative-AI input.
 
-Do not begin a real systematic Boudhanath photo dataset until the Phase 3C.2 clearance gate is deliberately reactivated and satisfied.
+The next engineering task is to obtain that asset with its provenance intact, inspect its actual format/color data, and test whether it can replace the synthetic monument inside the existing viewer.
+
+Field clearance remains prepared and documented, but intentionally deferred.
+
+Do not begin a real systematic Boudhanath photo dataset until Phase 3C.2 is deliberately reactivated and satisfied.
 
 See [ROADMAP.md](docs/ROADMAP.md) for phase boundaries.
