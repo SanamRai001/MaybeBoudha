@@ -53,7 +53,7 @@ Decision:
 
 Real-device performance is intentionally **not claimed** from CI and remains a Phase 4 / Phase 7 production gate with a realistic Boudhanath-sized asset.
 
-**Status: complete, pending PR #2 merge.**
+**Status: complete and merged.**
 
 ---
 
