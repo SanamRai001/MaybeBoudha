@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 2 — Real Reconstruction Renderer Spike: complete and merged in PR #2.**
+**Phase 3 — Boudhanath Capture / Asset Plan: in progress (Phase 3A).**
 
 The project has moved beyond placeholder geometry. Two real Gaussian Splat renderer paths were implemented and browser-tested:
 
@@ -116,6 +116,9 @@ The Phase 1 recoverable preparation failure path remains available with:
 - [Roadmap](docs/ROADMAP.md)
 - [Renderer Spike](docs/RENDERER_SPIKE.md)
 - [ADR-001 — Renderer and Scene Format](docs/ADR-001-RENDERER-AND-SCENE-FORMAT.md)
+- [Capture Plan](docs/CAPTURE_PLAN.md)
+- [Asset Pipeline](docs/ASSET_PIPELINE.md)
+- [Capture Provenance Template](docs/CAPTURE_PROVENANCE_TEMPLATE.md)
 - [Project State](docs/PROJECT_STATE.md)
 
 ## Development rules
