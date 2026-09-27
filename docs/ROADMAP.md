@@ -106,15 +106,39 @@ Deliver:
 
 ### Phase 3C — Partial Boudhanath capture
 
-**Status: next; field capture not started.**
+#### Phase 3C.1 — Field readiness / permission gate
 
-Only after Phase 3A rules are satisfied, Phase 3B is green, and current site/heritage requirements are reconfirmed:
+**Status: remote readiness complete on branch; written clearance pending.**
 
-- verify current site/heritage requirements;
+Deliver:
+
+- recheck current official heritage/site/drone sources;
+- identify responsible authorities;
+- prepare exact systematic-capture description;
+- prepare written permission/determination questions;
+- define evidence-based go/no-go rule.
+
+#### Phase 3C.2 — Field clearance
+
+**Status: blocked on external written determinations.**
+
+Require:
+
+- Department of Archaeology written determination;
+- Boudhanath Area Development Committee written determination;
+- any required fee/process/conditions completed;
+- approved scope recorded in provenance.
+
+#### Phase 3C.3 — Partial field capture and source reconstruction
+
+Only after clearance:
+
 - capture one small ground-accessible section;
 - keep raw source private;
 - reconstruct in the selected cloud workflow;
 - export source PLY.
+
+No full monument/plaza capture in Phase 3C.
 
 ### Phase 3D — Partial asset cleanup and proof
 
