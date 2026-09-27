@@ -1,16 +1,16 @@
 # Project State
 
-This is the canonical checkpoint for continuing MaybeBoudha work. Repository state wins if this file ever becomes stale.
+This is the canonical checkpoint for continuing MaybeBoudha work. Repository state wins if this file becomes stale.
 
 ## Objective
 
-Build a browser-based, photorealistic interactive heritage experience centered on Boudhanath Stupa in Kathmandu, using a real-scene reconstruction pipeline and progressive browser delivery.
+Build a browser-based, photorealistic interactive heritage experience centered on Boudhanath Stupa, using a legitimate real-scene reconstruction and progressive browser delivery.
 
 ## Repository
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Current branch: `main`
+- Current branch: `feat/phase-3-boudhanath-capture-plan`
 - Working title: `MaybeBoudha`
 
 ## Last completed phase
@@ -19,160 +19,148 @@ Build a browser-based, photorealistic interactive heritage experience centered o
 
 Status: **complete and merged**
 
-PR:
-
-`#2 — spike: Phase 2 real reconstruction renderer`
-
 Merge SHA:
 
 `83b56ac01dad2525098c10902baaa2deccd71aa4`
 
-Final pre-merge CI:
+Final merged-main checkpoint before Phase 3:
 
-`#53 — fully green`
+`23858da663ddefbbb97daed9097f0304fb61ae0e`
 
-That exact PR head passed:
+Main CI #58 passed:
 
-- locked dependency install;
-- automated tests;
-- TypeScript/Vite production build;
+- locked install;
+- tests;
+- production build;
 - Spark runtime probe;
-- PlayCanvas runtime probe;
-- screenshot artifact generation;
-- final dual-renderer gate.
+- PlayCanvas runtime probe.
 
-## Phase 2 evidence
+## Accepted rendering architecture
 
-Neutral comparison fixture:
+- renderer: **Spark 2.2.x**;
+- integration: **React shell + direct Three.js/Spark renderer**;
+- interchange/master direction: **PLY**;
+- production delivery: **paged RAD**;
+- fallback candidate: **PlayCanvas**.
 
-- source: `playcanvas/engine`;
-- commit: `b5b983982a9860d21e0c1dafb2f85f72e2c01afb`;
-- file: `biker.compressed.ply`;
-- payload: ~2.4 MiB;
-- decoded splats: **152,746**.
-
-Both Spark 2.2.0 and PlayCanvas 2.22.4:
-
-- reached ready;
-- decoded the same splat count;
-- visibly rendered the reconstruction;
-- completed deterministic Chromium/CDP probes.
-
-Recorded hosted-runner load metrics on the neutral run:
-
-- Spark: ~**0.19 s**;
-- PlayCanvas: ~**0.24 s**.
-
-Those values are correctness/integration evidence only. CI FPS and software-rendered timing are not real-device performance claims.
-
-## Accepted architecture
-
-Decision record:
-
-`docs/ADR-001-RENDERER-AND-SCENE-FORMAT.md`
-
-### Renderer
-
-**Spark 2.2.x**
-
-### Runtime integration
-
-**React product shell + directly managed Three.js/Spark rendering layer**
-
-### Reconstruction interchange
-
-**PLY**
-
-### Production web delivery
-
-**Prebuilt paged RAD**
-
-Expected flow:
-
-```text
-capture / licensed imagery
-        ↓
-reconstruction
-        ↓
-cleaned master PLY
-        ↓
-quality LOD build
-        ↓
-paged RAD
-        ↓
-range-capable CDN/object storage
-        ↓
-Spark
-```
-
-### Fallback renderer
-
-**PlayCanvas**, if the real Boudhanath workload exposes a material Spark limitation.
-
-## Important findings
-
-1. Build success alone is insufficient for graphics work; runtime browser evidence is required.
-2. A separate Three.js runtime can decode a splat yet render incorrectly.
-3. SPZ generation/version compatibility differed across the evaluated paths; it is not the sole project master format.
-4. Both candidate renderers successfully consumed the same compressed PLY.
-5. Direct Three.js gives the Spark runtime explicit control over context creation, initialization, animation loop, resize, and disposal.
-6. The small benchmark cannot prove monument/plaza-scale performance.
-
-## Still unverified
-
-Do not claim these are solved yet:
-
-- real desktop GPU FPS;
-- real phone FPS;
-- mobile memory pressure;
-- full Boudhanath streaming;
-- physical touch quality;
-- production CDN latency;
-- capture completeness;
-- reconstruction quality of the actual Stupa.
-
-These become measurable once a partial real Boudhanath asset exists.
+See `docs/ADR-001-RENDERER-AND-SCENE-FORMAT.md`.
 
 ## Current phase
 
 **Phase 3 — Boudhanath Capture / Asset Plan**
 
-Status: **not started**
+### Current subphase
 
-## Phase 3 scope
+**Phase 3A — Capture governance and field plan**
 
-Only:
+Status: **implementation complete on branch; verification pending**
 
-- define the first physical capture boundary;
-- choose the capture/reconstruction toolchain;
-- define ground/elevated coverage;
-- establish permission/provenance rules;
-- define privacy cleanup;
-- obtain/capture a small partial Boudhanath dataset;
-- create a cleaned partial PLY;
-- prove partial PLY → paged RAD → Spark browser delivery.
+## Phase 3A changes
 
-Do not begin hotspots, audio, cinematic intro, or first-person navigation.
+Added:
 
-## Next branch
+- `docs/CAPTURE_PLAN.md`;
+- `docs/ASSET_PIPELINE.md`;
+- `docs/CAPTURE_PROVENANCE_TEMPLATE.md`;
+- local capture/output Git exclusions;
+- Phase 3A–3D roadmap split.
 
-`feat/phase-3-boudhanath-capture-plan`
+## Phase 3A decisions
+
+### Capture baseline
+
+**Ground-only by default.**
+
+Drone/elevated aerial capture is not assumed. Current CAAN rules make normal operation over populated areas inappropriate as a casual baseline, and any aerial plan must be separately permitted.
+
+### First real scope
+
+Do **not** scan the whole Stupa first.
+
+Capture one small, ground-accessible, mostly static exterior section with repeatable overlapping paths.
+
+### First reconstruction workflow
+
+```text
+phone photos
+    ↓
+Polycam Gaussian Splat cloud processing
+    ↓
+source PLY
+    ↓
+SuperSplat cleanup
+    ↓
+cleaned master PLY
+    ↓
+Spark LOD/RAD pipeline
+```
+
+Tool/account capabilities must be rechecked immediately before capture because service limits can change.
+
+### Privacy
+
+Raw imagery is private by default.
+
+Public reconstruction requires review of:
+
+- recognizable people;
+- children;
+- plates;
+- screens/documents;
+- reflections;
+- frozen reconstructed bystanders.
+
+### Asset storage
+
+Real capture data stays outside normal Git history under ignored local working directories or private object storage.
+
+## External/current requirements recorded
+
+Official sources reviewed for Phase 3A include:
+
+- CAAN drone/UAS guidance;
+- Nepal Department of Archaeology photography/filming consent information;
+- Polycam Gaussian Splat/PLY export documentation;
+- SuperSplat cleanup/export documentation;
+- Spark RAD/LOD documentation.
+
+The repo plan does not claim that a specific capture date is already authorized.
+
+## Next subphase
+
+### Phase 3B — PLY → RAD processing proof
+
+Before a Boudhanath capture:
+
+1. make a reproducible Spark LOD/RAD build process;
+2. run it against a legal small PLY fixture;
+3. record builder version/options;
+4. load generated RAD with `paged: true`;
+5. verify runtime behavior;
+6. document output size/chunks/checksums.
+
+Do not begin Phase 3C until Phase 3B is green.
+
+## Blocker for Phase 3C
+
+Physical Boudhanath imagery does not exist in the repository and cannot be invented.
+
+Before field capture, current site/heritage requirements must be reconfirmed for the intended capture method.
 
 ## Known risks
 
-- upper-monument coverage from ground-only imagery;
-- aerial/elevated capture permissions;
-- moving crowds and prayer flags;
-- changing light/exposure;
-- occlusion from nearby buildings and people;
-- privacy cleanup;
-- cultural/architectural accuracy;
-- a full plaza capture exceeding practical browser/device budgets.
+- upper monument cannot be captured completely from ground level;
+- crowds/flags introduce moving geometry;
+- lighting changes harm reconstruction consistency;
+- systematic capture may require site/heritage consent;
+- aerial capture has separate regulatory requirements;
+- cloud reconstruction/export limits can change;
+- full-site data may exceed laptop/browser budgets.
 
 ## Resume rule
 
-1. inspect actual `main` and Git history;
-2. read this file and ADR-001;
-3. repository state wins over documentation if they differ;
-4. create the Phase 3 branch from verified `main`;
-5. update this file at the end of the phase.
+1. inspect branch and CI;
+2. read ADR-001, CAPTURE_PLAN, and ASSET_PIPELINE;
+3. repository state wins over docs if they differ;
+4. continue Phase 3B only after Phase 3A verifies;
+5. update this file at every subphase boundary.
