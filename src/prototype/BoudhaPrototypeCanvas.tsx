@@ -59,6 +59,28 @@ const BOUDHA_REFERENCE_TEXTURE_URL =
 
 const BOUDHA_SURROUNDINGS_PANORAMA_URL = '/images/boudha-surroundings.jpg'
 
+function makeContactShadowTexture() {
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 512
+  const context = canvas.getContext('2d')
+
+  if (!context) {
+    return null
+  }
+
+  const gradient = context.createRadialGradient(256, 256, 20, 256, 256, 245)
+  gradient.addColorStop(0, 'rgba(28, 20, 14, 0.42)')
+  gradient.addColorStop(0.42, 'rgba(28, 20, 14, 0.24)')
+  gradient.addColorStop(0.78, 'rgba(28, 20, 14, 0.08)')
+  gradient.addColorStop(1, 'rgba(28, 20, 14, 0)')
+
+  context.fillStyle = gradient
+  context.fillRect(0, 0, 512, 512)
+
+  return new CanvasTexture(canvas)
+}
+
 function makePlasterTexture() {
   const canvas = document.createElement('canvas')
   canvas.width = 512
@@ -772,6 +794,7 @@ function createStupa(scene: Scene) {
   return {
     stupa,
     lower,
+    plasterTexture,
     flagTop: new Vector3(0, 39.65, 0),
   }
 }
@@ -893,11 +916,11 @@ export function BoudhaPrototypeCanvas({
     renderer.shadowMap.type = PCFSoftShadowMap
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.7))
 
-    const camera = new PerspectiveCamera(35, 1, 0.1, 420)
-    const finalCamera = new Vector3(58, 11.5, 67)
+    const camera = new PerspectiveCamera(34, 1, 0.1, 420)
+    const finalCamera = new Vector3(48, 10.25, 57)
     const startCamera = reducedMotion
       ? finalCamera.clone()
-      : new Vector3(92, 22, 110)
+      : new Vector3(78, 18, 92)
 
     camera.position.copy(startCamera)
 
@@ -905,11 +928,11 @@ export function BoudhaPrototypeCanvas({
     controls.enableDamping = true
     controls.dampingFactor = 0.055
     controls.enablePan = false
-    controls.minDistance = 32
+    controls.minDistance = 28
     controls.maxDistance = 125
     controls.minPolarAngle = 0.35
     controls.maxPolarAngle = Math.PI * 0.49
-    controls.target.set(0, 15.5, 0)
+    controls.target.set(0, 15.2, 0)
     controls.enabled = reducedMotion
     controls.update()
 
@@ -959,7 +982,22 @@ export function BoudhaPrototypeCanvas({
     koraPath.receiveShadow = true
     scene.add(koraPath)
 
-    const { lower, flagTop } = createStupa(scene)
+    const contactShadowTexture = makeContactShadowTexture()
+    const contactShadow = new Mesh(
+      new PlaneGeometry(56, 56),
+      new MeshBasicMaterial({
+        map: contactShadowTexture,
+        transparent: true,
+        depthWrite: false,
+        toneMapped: false,
+      }),
+    )
+    contactShadow.name = 'boudha-contact-shadow'
+    contactShadow.rotation.x = -Math.PI / 2
+    contactShadow.position.y = 0.055
+    scene.add(contactShadow)
+
+    const { lower, plasterTexture, flagTop } = createStupa(scene)
 
     if (useLicensedModel) {
       void loadLicensedStupaModel()
@@ -970,6 +1008,24 @@ export function BoudhaPrototypeCanvas({
           }
 
           licensedModelDispose = dispose
+
+          group.traverse((object) => {
+            if (!(object instanceof Mesh)) {
+              return
+            }
+
+            if (object.name === 'miniworld3d-boudhanath-mesh') {
+              const material = object.material as MeshPhysicalMaterial
+              material.map = plasterTexture
+              material.bumpMap = plasterTexture
+              material.bumpScale = 0.085
+              material.color.set('#eee8dc')
+              material.roughness = 0.92
+              material.clearcoat = 0.018
+              material.needsUpdate = true
+            }
+          })
+
           lower.visible = false
           scene.add(group)
           licensedModelReady = true
@@ -1000,15 +1056,15 @@ export function BoudhaPrototypeCanvas({
     scene.add(photographicEnvironment)
 
     const panoramaGeometry = new CylinderGeometry(
-      145,
-      145,
-      78,
+      142,
+      142,
+      132,
       160,
       1,
       true,
     )
     const panoramaMaterial = new MeshBasicMaterial({
-      color: '#ffffff',
+      color: '#d8cec2',
       side: BackSide,
       transparent: true,
       opacity: 0,
@@ -1016,7 +1072,7 @@ export function BoudhaPrototypeCanvas({
       toneMapped: false,
     })
     const panoramaMesh = new Mesh(panoramaGeometry, panoramaMaterial)
-    panoramaMesh.position.y = 31
+    panoramaMesh.position.y = 43
     panoramaMesh.rotation.y = Math.PI * 0.18
     photographicEnvironment.add(panoramaMesh)
 
@@ -1039,6 +1095,8 @@ export function BoudhaPrototypeCanvas({
         panoramaTexture.wrapS = RepeatWrapping
         panoramaTexture.repeat.x = -1
         panoramaTexture.offset.x = 1
+        panoramaTexture.repeat.y = 0.88
+        panoramaTexture.offset.y = 0.07
         panoramaTexture.needsUpdate = true
         referenceTextures.push(panoramaTexture)
 
@@ -1161,6 +1219,7 @@ export function BoudhaPrototypeCanvas({
       renderer.setAnimationLoop(null)
       controls.dispose()
       courtyardTexture?.dispose()
+      contactShadowTexture?.dispose()
       for (const texture of referenceTextures) {
         texture.dispose()
       }
