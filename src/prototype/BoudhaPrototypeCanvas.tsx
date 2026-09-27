@@ -506,7 +506,7 @@ function addSurroundingBuildings(scene: Group) {
   }
 }
 
-function addScaleFigures(scene: Scene) {
+function addScaleFigures(scene: Group) {
   const bodyGeometry = new CylinderGeometry(0.16, 0.22, 1.25, 10)
   const headGeometry = new SphereGeometry(0.16, 10, 8)
   const colors = ['#5d302a', '#3e4851', '#6c4b35', '#7e2f29', '#2e4241']
