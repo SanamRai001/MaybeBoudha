@@ -3,8 +3,8 @@ import { writeFile } from 'node:fs/promises'
 
 const [renderer, outputPath] = process.argv.slice(2)
 
-if (!['spark', 'playcanvas', 'rad'].includes(renderer) || !outputPath) {
-  console.error('Usage: node scripts/runtime-smoke.mjs <spark|playcanvas|rad> <output.png>')
+if (!['spark', 'playcanvas', 'rad', 'prototype'].includes(renderer) || !outputPath) {
+  console.error('Usage: node scripts/runtime-smoke.mjs <spark|playcanvas|rad|prototype> <output.png>')
   process.exit(2)
 }
 
@@ -14,8 +14,8 @@ if (!chrome) {
   process.exit(2)
 }
 
-const port = renderer === 'spark' ? 9222 : renderer === 'playcanvas' ? 9223 : 9224
-const targetUrl = `http://127.0.0.1:4173/?renderer=${renderer}`
+const port = renderer === 'spark' ? 9222 : renderer === 'playcanvas' ? 9223 : renderer === 'rad' ? 9224 : 9225
+const targetUrl = renderer === 'prototype' ? 'http://127.0.0.1:4173/' : `http://127.0.0.1:4173/?renderer=${renderer}`
 const headful = process.env.MAYBEBOUDHA_HEADFUL === '1'
 const browserArgs = [
   '--no-sandbox',
@@ -166,9 +166,10 @@ async function waitForRenderer(client, timeoutMs = 45_000) {
       `(() => {
         const spark = document.querySelector('[data-splat-state]')?.getAttribute('data-splat-state')
         const playcanvas = document.querySelector('[data-playcanvas-state]')?.getAttribute('data-playcanvas-state')
+        const prototype = document.querySelector('[data-prototype-state]')?.getAttribute('data-prototype-state')
         const error = document.querySelector('.viewer-state-error')?.innerText ?? null
         return {
-          state: spark ?? playcanvas ?? null,
+          state: spark ?? playcanvas ?? prototype ?? null,
           error,
           mode: document.querySelector('[data-splat-mode]')?.getAttribute('data-splat-mode') ?? null,
           title: document.title,
