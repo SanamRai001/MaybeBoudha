@@ -1003,7 +1003,7 @@ export function BoudhaPrototypeCanvas({
     contactShadow.position.y = 0.055
     scene.add(contactShadow)
 
-    const { lower, plasterTexture, flagTop } = createStupa(scene)
+    const { lower, flagTop } = createStupa(scene)
 
     if (useLicensedModel) {
       void loadLicensedStupaModel()
