@@ -8,26 +8,20 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3 — Boudhanath Capture / Asset Plan: in progress (Phase 3B).**
+**Phase 3 — Boudhanath Capture / Asset Plan: Phase 3B engineering proof is green; final PR verification is pending.**
 
-The project has moved beyond placeholder geometry. Two real Gaussian Splat renderer paths were implemented and browser-tested:
+The project now has verified browser evidence for both the renderer choice and the selected large-scene delivery path:
 
-- Spark 2.2.0;
-- PlayCanvas 2.22.4.
+- Spark 2.2.0 is the production renderer direction;
+- PlayCanvas 2.22.4 remains the fallback candidate;
+- a pinned compressed PLY was converted with Spark's pinned Rust builder;
+- quality LOD + chunked RAD was generated successfully;
+- HTTP byte-range delivery was verified;
+- the generated RAD visibly rendered through Spark with `paged: true`.
 
-The final neutral test used the same compressed PLY in both renderers:
-
-- 2.4 MiB;
-- 152,746 splats;
-- both reached ready;
-- both visibly rendered in deterministic Chromium captures;
-- locked tests and production build passed.
-
-CI FPS is not treated as a device benchmark.
+CI FPS and hosted-runner timing are not treated as physical-device benchmarks.
 
 ## Selected architecture
-
-The accepted production direction is:
 
 ```text
 React product shell
@@ -52,7 +46,7 @@ prebuilt quality LOD
         ↓
 paged RAD
         ↓
-CDN / object storage
+range-capable CDN / object storage
         ↓
 browser
 ```
@@ -60,6 +54,27 @@ browser
 PlayCanvas remains the fallback renderer candidate if the real Boudhanath workload exposes a material limitation in Spark.
 
 See [ADR-001](docs/ADR-001-RENDERER-AND-SCENE-FORMAT.md).
+
+## Phase 3B proof
+
+The pinned engineering fixture produced:
+
+- source PLY: **2,487,573 bytes**, **152,746 splats**;
+- quality LOD: **202,475 splats**;
+- chunked RAD: **4 RADC chunks + 1 RAD header**;
+- total RAD delivery: **4,033,648 bytes**;
+- range request: **206 Partial Content**;
+- generated paged RAD: **visibly rendered in Chromium**.
+
+The Spark source is pinned to commit:
+
+`4eb719afdb5b3655fe0bc290588e4728d9772405`
+
+The practical pinned Rust toolchain for that exact lockfile is **1.88.0**.
+
+The build process is pinned and repeatable, but Spark embeds per-run timing metadata in the small RAD header, so the header hash is not expected to be bit-for-bit identical across rebuilds. Each build manifest records the exact artifact hashes.
+
+See [Phase 3B RAD Pipeline Proof](docs/RAD_PIPELINE_PROOF.md).
 
 ## Product direction
 
@@ -96,11 +111,12 @@ npm test
 npm run build
 ```
 
-Renderer comparison:
+Technical renderer/delivery modes:
 
 ```text
-?renderer=spark
-?renderer=playcanvas
+?renderer=spark       # pinned compressed PLY through Spark
+?renderer=rad         # generated paged RAD proof
+?renderer=playcanvas  # Phase 2 fallback comparison
 ```
 
 The Phase 1 recoverable preparation failure path remains available with:
@@ -108,6 +124,8 @@ The Phase 1 recoverable preparation failure path remains available with:
 ```text
 ?scene=fail
 ```
+
+The `?renderer=rad` route expects generated RAD/RADC files under `/rad/`; normal local development does not build those assets automatically.
 
 ## Documentation
 
@@ -118,6 +136,7 @@ The Phase 1 recoverable preparation failure path remains available with:
 - [ADR-001 — Renderer and Scene Format](docs/ADR-001-RENDERER-AND-SCENE-FORMAT.md)
 - [Capture Plan](docs/CAPTURE_PLAN.md)
 - [Asset Pipeline](docs/ASSET_PIPELINE.md)
+- [Phase 3B RAD Pipeline Proof](docs/RAD_PIPELINE_PROOF.md)
 - [Capture Provenance Template](docs/CAPTURE_PROVENANCE_TEMPLATE.md)
 - [Project State](docs/PROJECT_STATE.md)
 
@@ -129,12 +148,13 @@ The Phase 1 recoverable preparation failure path remains available with:
 4. Test on physical mobile/desktop hardware before production claims.
 5. Treat cultural accuracy, source licensing, privacy, and capture permissions as product requirements.
 6. Keep raw/large reconstruction files outside ordinary Git.
-7. Record architecture changes in an ADR when they materially alter the production path.
+7. Keep reconstruction processing separate from ordinary web-app builds.
+8. Record architecture changes in an ADR when they materially alter the production path.
 
 ## Immediate next step
 
-**Phase 3 — Boudhanath Capture / Asset Plan**
+Finish the final Phase 3B branch verification and merge PR #4.
 
-The next goal is not UI polish. It is to obtain a small, legitimate **partial Boudhanath reconstruction**, clean it to PLY, convert it to paged RAD, and prove the selected pipeline before attempting the entire monument/plaza.
+After that, **Phase 3C — Partial Boudhanath Capture** may begin only after current site/heritage requirements for the intended systematic capture are reconfirmed.
 
 See [ROADMAP.md](docs/ROADMAP.md) for phase boundaries.

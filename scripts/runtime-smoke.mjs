@@ -3,8 +3,8 @@ import { writeFile } from 'node:fs/promises'
 
 const [renderer, outputPath] = process.argv.slice(2)
 
-if (!['spark', 'playcanvas'].includes(renderer) || !outputPath) {
-  console.error('Usage: node scripts/runtime-smoke.mjs <spark|playcanvas> <output.png>')
+if (!['spark', 'playcanvas', 'rad'].includes(renderer) || !outputPath) {
+  console.error('Usage: node scripts/runtime-smoke.mjs <spark|playcanvas|rad> <output.png>')
   process.exit(2)
 }
 
@@ -14,7 +14,7 @@ if (!chrome) {
   process.exit(2)
 }
 
-const port = renderer === 'spark' ? 9222 : 9223
+const port = renderer === 'spark' ? 9222 : renderer === 'playcanvas' ? 9223 : 9224
 const targetUrl = `http://127.0.0.1:4173/?renderer=${renderer}`
 const headful = process.env.MAYBEBOUDHA_HEADFUL === '1'
 const browserArgs = [
@@ -170,6 +170,7 @@ async function waitForRenderer(client, timeoutMs = 45_000) {
         return {
           state: spark ?? playcanvas ?? null,
           error,
+          mode: document.querySelector('[data-splat-mode]')?.getAttribute('data-splat-mode') ?? null,
           title: document.title,
         }
       })()`,

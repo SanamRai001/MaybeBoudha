@@ -79,13 +79,25 @@ Deliver:
 
 ### Phase 3B — PLY → RAD processing proof
 
-**Status: next.**
+**Status: engineering proof complete; final PR verification pending.**
+
+Verified on the pinned legal fixture:
+
+- Spark v2.2.0 builder commit `4eb719afdb5b3655fe0bc290588e4728d9772405`;
+- practical pinned Rust toolchain 1.88.0;
+- quality Bhatt LOD;
+- chunked RAD output;
+- manifest/checksums/sizes;
+- 206 byte-range delivery;
+- `paged: true` Spark runtime;
+- non-zero streamed splats;
+- visual Chromium confirmation.
 
 Use a legal test PLY before touching Boudhanath data.
 
 Deliver:
 
-- reproducible Spark LOD build process;
+- pinned/repeatable Spark LOD build process;
 - quality/paged RAD output;
 - recorded builder version/commit;
 - output checksums and size;

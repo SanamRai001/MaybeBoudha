@@ -1,0 +1,181 @@
+name: RAD Pipeline
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/rad-pipeline.yml"
+      - "scripts/rad/**"
+      - "scripts/runtime-smoke.mjs"
+      - "src/App.tsx"
+      - "src/experience/renderer/SparkSceneCanvas.tsx"
+      - "src/experience/renderer/sparkSceneConfig.ts"
+      - "src/experience/renderer/sparkSceneConfig.test.ts"
+      - "src/experience/renderer/playcanvasSpike.ts"
+      - "package.json"
+      - "package-lock.json"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/rad-pipeline.yml"
+      - "scripts/rad/**"
+      - "scripts/runtime-smoke.mjs"
+      - "src/App.tsx"
+      - "src/experience/renderer/SparkSceneCanvas.tsx"
+      - "src/experience/renderer/sparkSceneConfig.ts"
+      - "src/experience/renderer/sparkSceneConfig.test.ts"
+      - "src/experience/renderer/playcanvasSpike.ts"
+      - "package.json"
+      - "package-lock.json"
+
+permissions:
+  contents: read
+
+env:
+  SPARK_BUILDER_COMMIT: 4eb719afdb5b3655fe0bc290588e4728d9772405
+  RUST_TOOLCHAIN: 1.88.0
+  FIXTURE_COMMIT: b5b983982a9860d21e0c1dafb2f85f72e2c01afb
+  FIXTURE_PATH: examples/assets/splats/biker.compressed.ply
+
+jobs:
+  rad-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout MaybeBoudha
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install locked application dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Run application tests
+        run: npm test
+
+      - name: Install pinned Rust toolchain
+        run: |
+          rustup toolchain install "$RUST_TOOLCHAIN" --profile minimal
+          rustup override set "$RUST_TOOLCHAIN"
+          rustc --version
+          cargo --version
+
+      - name: Checkout pinned Spark builder source
+        run: |
+          git clone --filter=blob:none https://github.com/sparkjsdev/spark.git .phase3b/spark
+          git -C .phase3b/spark checkout "$SPARK_BUILDER_COMMIT"
+          test "$(git -C .phase3b/spark rev-parse HEAD)" = "$SPARK_BUILDER_COMMIT"
+
+      - name: Download pinned legal PLY fixture
+        run: |
+          mkdir -p .phase3b/input
+          curl --fail --location --retry 3 \
+            "https://raw.githubusercontent.com/playcanvas/engine/$FIXTURE_COMMIT/$FIXTURE_PATH" \
+            --output .phase3b/input/biker.compressed.ply
+          test -s .phase3b/input/biker.compressed.ply
+          wc -c .phase3b/input/biker.compressed.ply
+          sha256sum .phase3b/input/biker.compressed.ply
+
+      - name: Build quality chunked RAD
+        working-directory: .phase3b/spark
+        run: |
+          cargo run \
+            --locked \
+            --manifest-path rust/build-lod/Cargo.toml \
+            --release \
+            --no-default-features \
+            -- \
+            --quality \
+            --rad-chunked \
+            "$GITHUB_WORKSPACE/.phase3b/input/biker.compressed.ply"
+
+      - name: Require RAD output
+        run: |
+          test -s .phase3b/input/biker.compressed-lod.rad
+          ls -lh .phase3b/input/biker.compressed-lod*
+          find .phase3b/input -maxdepth 1 -name 'biker.compressed-lod-*.radc' -print -quit | grep -q .
+
+      - name: Create RAD build manifest
+        run: |
+          node scripts/rad/create-manifest.mjs \
+            .phase3b/input/biker.compressed.ply \
+            .phase3b/input \
+            .phase3b/rad-manifest.json
+
+      - name: Build application bundle
+        run: npm run build
+
+      - name: Stage generated RAD delivery
+        run: |
+          mkdir -p dist/rad
+          cp .phase3b/input/biker.compressed-lod.rad dist/rad/
+          cp .phase3b/input/biker.compressed-lod-*.radc dist/rad/
+          cp .phase3b/rad-manifest.json dist/rad/manifest.json
+          ls -lh dist/rad
+
+      - name: Start range-capable static server
+        run: |
+          node scripts/rad/static-server.mjs dist 4173 > /tmp/maybeboudha-rad-server.log 2>&1 &
+          echo $! > /tmp/maybeboudha-rad-server.pid
+
+          for attempt in $(seq 1 40); do
+            if curl --silent --fail http://127.0.0.1:4173/ > /dev/null; then
+              exit 0
+            fi
+            sleep 0.25
+          done
+
+          cat /tmp/maybeboudha-rad-server.log
+          exit 1
+
+      - name: Verify byte-range delivery
+        run: |
+          curl --silent --show-error \
+            --header "Range: bytes=0-63" \
+            --dump-header /tmp/rad-range-headers.txt \
+            --output /tmp/rad-range.bin \
+            http://127.0.0.1:4173/rad/biker.compressed-lod.rad
+
+          cat /tmp/rad-range-headers.txt
+          grep -q "206" /tmp/rad-range-headers.txt
+          grep -qi "^accept-ranges: bytes" /tmp/rad-range-headers.txt
+          test "$(wc -c < /tmp/rad-range.bin)" -eq 64
+
+      - name: Install Chromium
+        run: npx --yes playwright@1.55.0 install --with-deps chromium
+
+      - name: Resolve full Chromium binary
+        run: |
+          CHROME="$(find "$HOME/.cache/ms-playwright" -type f -path "*/chromium-*/chrome-linux/chrome" | head -n 1)"
+          if [ -z "$CHROME" ]; then
+            echo "Unable to locate full Playwright Chromium binary."
+            exit 1
+          fi
+          echo "CHROME=$CHROME" >> "$GITHUB_ENV"
+
+      - name: Probe generated paged RAD runtime
+        run: |
+          timeout 90s node scripts/runtime-smoke.mjs \
+            rad \
+            /tmp/maybeboudha-phase-3b-rad.png
+
+      - name: Upload Phase 3B proof artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase-3b-rad-proof
+          path: |
+            dist/rad/manifest.json
+            /tmp/maybeboudha-phase-3b-rad.png
+            /tmp/rad-range-headers.txt
+            /tmp/maybeboudha-rad-server.log
+          if-no-files-found: warn
