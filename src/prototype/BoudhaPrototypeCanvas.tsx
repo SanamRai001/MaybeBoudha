@@ -241,7 +241,7 @@ function addEyePanels(group: Group, eyeTexture: CanvasTexture | null) {
     metalness: 0.08,
   })
 
-  const y = 26.25
+  const y = 26.05
   const offset = 3.66
 
   const front = new Mesh(geometry, material)
@@ -301,12 +301,12 @@ function addPrayerFlags(
         'position',
         new Float32BufferAttribute(
           [
-            -0.44, 0.18, 0,
-            0.44, 0.18, 0,
-            -0.35, -0.28, 0,
-            0.44, 0.18, 0,
-            0.33, -0.22, 0,
-            -0.35, -0.28, 0,
+            -0.58, 0.24, 0,
+            0.58, 0.24, 0,
+            -0.46, -0.34, 0,
+            0.58, 0.24, 0,
+            0.43, -0.29, 0,
+            -0.46, -0.34, 0,
           ],
           3,
         ),
@@ -369,26 +369,21 @@ function addPrayerWheelRing(scene: Scene) {
 }
 
 function addSurroundingBuildings(scene: Scene) {
-  const facadePalette = ['#8d6b53', '#a17a57', '#705849', '#b08b63', '#7c6655']
+  const facadePalette = ['#88624d', '#9a704f', '#6d5143', '#ad815b', '#765c4d']
+  const trimMaterial = new MeshStandardMaterial({
+    color: '#402d24',
+    roughness: 0.82,
+  })
   const windowMaterial = new MeshStandardMaterial({
-    color: '#34251b',
-    emissive: '#7c4e27',
-    emissiveIntensity: 0.3,
-    roughness: 0.72,
+    color: '#271f1c',
+    emissive: '#6a3e1c',
+    emissiveIntensity: 0.28,
+    roughness: 0.66,
   })
-  const frameMaterial = new MeshStandardMaterial({
-    color: '#4f3524',
-    roughness: 0.84,
+  const balconyMaterial = new MeshStandardMaterial({
+    color: '#4b352a',
+    roughness: 0.9,
   })
-  const roofMaterial = new MeshStandardMaterial({
-    color: '#5f4637',
-    roughness: 0.94,
-  })
-  const awningMaterials = [
-    new MeshStandardMaterial({ color: '#7e2c26', roughness: 0.86 }),
-    new MeshStandardMaterial({ color: '#b48938', roughness: 0.86 }),
-    new MeshStandardMaterial({ color: '#315747', roughness: 0.86 }),
-  ]
 
   const strips: Array<{
     origin: Vector3
@@ -400,38 +395,14 @@ function addSurroundingBuildings(scene: Scene) {
     { origin: new Vector3(57, 0, -34), axis: 'z', rotation: -Math.PI / 2 },
   ]
 
-  const placeOnFacade = (
-    object: Mesh,
-    strip: (typeof strips)[number],
-    building: Mesh,
-    localX: number,
-    y: number,
-    depthOffset: number,
-  ) => {
-    if (strip.axis === 'x') {
-      object.position.set(
-        building.position.x + localX,
-        y,
-        strip.origin.z + depthOffset,
-      )
-    } else {
-      object.position.set(
-        strip.origin.x - Math.sign(strip.origin.x) * depthOffset,
-        y,
-        building.position.z + localX,
-      )
-      object.rotation.y = strip.origin.x > 0 ? -Math.PI / 2 : Math.PI / 2
-    }
-  }
-
   for (const strip of strips) {
     for (let i = 0; i < 9; i += 1) {
-      const width = 6.8 + (i % 3) * 0.55
-      const height = 11.5 + ((i * 7) % 5) * 1.15
-      const depth = 7.5 + (i % 2) * 0.65
+      const width = 7.1 + (i % 3) * 0.45
+      const height = 11.5 + ((i * 7) % 5) * 1.35
+      const depth = 8.2
       const facadeMaterial = new MeshStandardMaterial({
         color: facadePalette[i % facadePalette.length],
-        roughness: 0.91,
+        roughness: 0.93,
       })
 
       const building = new Mesh(
@@ -441,7 +412,7 @@ function addSurroundingBuildings(scene: Scene) {
 
       if (strip.axis === 'x') {
         building.position.set(
-          strip.origin.x + i * 8.15,
+          strip.origin.x + i * 8.25,
           height / 2,
           strip.origin.z,
         )
@@ -449,7 +420,7 @@ function addSurroundingBuildings(scene: Scene) {
         building.position.set(
           strip.origin.x,
           height / 2,
-          strip.origin.z + i * 8.15,
+          strip.origin.z + i * 8.25,
         )
       }
 
@@ -459,75 +430,97 @@ function addSurroundingBuildings(scene: Scene) {
       scene.add(building)
 
       const roof = new Mesh(
-        new BoxGeometry(width + 0.35, 0.48, depth + 0.35),
-        roofMaterial,
+        new BoxGeometry(width + 0.7, 0.32, depth + 0.7),
+        trimMaterial,
       )
       roof.position.copy(building.position)
-      roof.position.y = height + 0.24
+      roof.position.y = height + 0.16
       roof.rotation.y = strip.rotation
       roof.castShadow = true
       scene.add(roof)
 
       for (let floor = 0; floor < 3; floor += 1) {
-        for (const column of [-1, 1]) {
-          const localX = column * width * 0.23
-          const frame = new Mesh(
-            new BoxGeometry(1.52, 1.92, 0.11),
-            frameMaterial,
-          )
+        for (let bay = -1; bay <= 1; bay += 1) {
           const window = new Mesh(
-            new PlaneGeometry(1.15, 1.55),
+            new PlaneGeometry(0.9, 1.38),
             windowMaterial,
           )
-          const floorY = 4.0 + floor * 2.7
+          const bayOffset = bay * 1.65
 
-          placeOnFacade(frame, strip, building, localX, floorY, depth / 2 + 0.045)
-          placeOnFacade(window, strip, building, localX, floorY, depth / 2 + 0.115)
-          scene.add(frame)
+          if (strip.axis === 'x') {
+            window.position.set(
+              building.position.x + bayOffset,
+              3.0 + floor * 2.55,
+              strip.origin.z + 4.12,
+            )
+          } else {
+            window.position.set(
+              strip.origin.x - Math.sign(strip.origin.x) * 4.12,
+              3.0 + floor * 2.55,
+              building.position.z + bayOffset,
+            )
+            window.rotation.y = strip.origin.x > 0 ? -Math.PI / 2 : Math.PI / 2
+          }
           scene.add(window)
         }
-      }
 
-      const awning = new Mesh(
-        new BoxGeometry(width * 0.78, 0.18, 1.05),
-        awningMaterials[i % awningMaterials.length],
-      )
-      placeOnFacade(
-        awning,
-        strip,
-        building,
-        0,
-        2.5,
-        depth / 2 + 0.48,
-      )
-      awning.castShadow = true
-      scene.add(awning)
+        if (floor > 0) {
+          const balcony = new Mesh(
+            new BoxGeometry(strip.axis === 'x' ? width * 0.74 : 0.32, 0.24, strip.axis === 'x' ? 0.55 : width * 0.74),
+            balconyMaterial,
+          )
 
-      const shopfront = new Mesh(
-        new PlaneGeometry(width * 0.68, 1.85),
-        windowMaterial,
-      )
-      placeOnFacade(
-        shopfront,
-        strip,
-        building,
-        0,
-        1.28,
-        depth / 2 + 0.075,
-      )
-      scene.add(shopfront)
-
-      for (const bandY of [3.0, 6.9]) {
-        const band = new Mesh(
-          new BoxGeometry(width + 0.06, 0.14, depth + 0.06),
-          frameMaterial,
-        )
-        band.position.copy(building.position)
-        band.position.y = bandY
-        band.rotation.y = strip.rotation
-        scene.add(band)
+          if (strip.axis === 'x') {
+            balcony.position.set(
+              building.position.x,
+              2.45 + floor * 2.55,
+              strip.origin.z + 4.34,
+            )
+          } else {
+            balcony.position.set(
+              strip.origin.x - Math.sign(strip.origin.x) * 4.34,
+              2.45 + floor * 2.55,
+              building.position.z,
+            )
+          }
+          balcony.castShadow = true
+          scene.add(balcony)
+        }
       }
     }
+  }
+}
+
+function addScaleFigures(scene: Scene) {
+  const bodyGeometry = new CylinderGeometry(0.16, 0.22, 1.25, 10)
+  const headGeometry = new SphereGeometry(0.16, 10, 8)
+  const colors = ['#5d302a', '#3e4851', '#6c4b35', '#7e2f29', '#2e4241']
+
+  for (let i = 0; i < 24; i += 1) {
+    const angle = (i / 24) * Math.PI * 2 + (i % 2) * 0.08
+    const radius = 28 + (i % 3) * 2.25
+    const material = new MeshStandardMaterial({
+      color: colors[i % colors.length],
+      roughness: 0.92,
+    })
+    const skin = new MeshStandardMaterial({
+      color: '#9b7359',
+      roughness: 0.92,
+    })
+
+    const body = new Mesh(bodyGeometry, material)
+    body.position.set(
+      Math.cos(angle) * radius,
+      0.65,
+      Math.sin(angle) * radius,
+    )
+    body.castShadow = true
+    scene.add(body)
+
+    const head = new Mesh(headGeometry, skin)
+    head.position.set(body.position.x, 1.45, body.position.z)
+    head.castShadow = true
+    scene.add(head)
   }
 }
 
@@ -537,11 +530,13 @@ function createStupa(scene: Scene) {
   const eyeTexture = makeEyeTexture()
 
   const plaster = new MeshPhysicalMaterial({
-    color: '#eee8db',
+    color: '#eee8dc',
     map: plasterTexture,
-    roughness: 0.82,
+    bumpMap: plasterTexture,
+    bumpScale: 0.08,
+    roughness: 0.9,
     metalness: 0,
-    clearcoat: 0.04,
+    clearcoat: 0.02,
   })
   const warmWhite = new MeshStandardMaterial({
     color: '#e7ded0',
@@ -604,6 +599,25 @@ function createStupa(scene: Scene) {
   domeBand.position.y = 5.12
   stupa.add(domeBand)
 
+  const nicheMaterial = new MeshStandardMaterial({
+    color: '#b38858',
+    roughness: 0.72,
+    metalness: 0.04,
+  })
+  const nicheGeometry = new BoxGeometry(0.34, 0.7, 0.25)
+  for (let i = 0; i < 108; i += 1) {
+    const angle = (i / 108) * Math.PI * 2
+    const niche = new Mesh(nicheGeometry, nicheMaterial)
+    niche.position.set(
+      Math.cos(angle) * 19.28,
+      5.7,
+      Math.sin(angle) * 19.28,
+    )
+    niche.rotation.y = -angle + Math.PI / 2
+    niche.castShadow = true
+    stupa.add(niche)
+  }
+
   const nicheGeometry = new BoxGeometry(0.72, 0.68, 0.62)
   for (let index = 0; index < 64; index += 1) {
     const angle = (index / 64) * Math.PI * 2
@@ -619,7 +633,7 @@ function createStupa(scene: Scene) {
   }
 
   const harmika = new Mesh(new BoxGeometry(7.2, 5.2, 7.2), gold)
-  harmika.position.y = 26.0
+  harmika.position.y = 25.8
   harmika.castShadow = true
   stupa.add(harmika)
 
@@ -833,16 +847,16 @@ export function BoudhaPrototypeCanvas({
     })
     renderer.outputColorSpace = SRGBColorSpace
     renderer.toneMapping = ACESFilmicToneMapping
-    renderer.toneMappingExposure = 1.08
+    renderer.toneMappingExposure = 1.0
     renderer.shadowMap.enabled = true
     renderer.shadowMap.type = PCFSoftShadowMap
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.7))
 
-    const camera = new PerspectiveCamera(40, 1, 0.1, 420)
-    const finalCamera = new Vector3(60, 31, 67)
+    const camera = new PerspectiveCamera(35, 1, 0.1, 420)
+    const finalCamera = new Vector3(58, 11.5, 67)
     const startCamera = reducedMotion
       ? finalCamera.clone()
-      : new Vector3(88, 52, 102)
+      : new Vector3(92, 22, 110)
 
     camera.position.copy(startCamera)
 
@@ -850,11 +864,11 @@ export function BoudhaPrototypeCanvas({
     controls.enableDamping = true
     controls.dampingFactor = 0.055
     controls.enablePan = false
-    controls.minDistance = 37
+    controls.minDistance = 32
     controls.maxDistance = 125
-    controls.minPolarAngle = 0.48
-    controls.maxPolarAngle = Math.PI * 0.47
-    controls.target.set(0, 19, 0)
+    controls.minPolarAngle = 0.35
+    controls.maxPolarAngle = Math.PI * 0.49
+    controls.target.set(0, 15.5, 0)
     controls.enabled = reducedMotion
     controls.update()
 
@@ -862,7 +876,7 @@ export function BoudhaPrototypeCanvas({
     scene.add(hemisphere)
 
     const sun = new DirectionalLight('#ffdda8', 4.6)
-    sun.position.set(54, 74, 34)
+    sun.position.set(48, 62, 22)
     sun.castShadow = true
     sun.shadow.mapSize.set(2048, 2048)
     sun.shadow.camera.left = -70
@@ -882,7 +896,7 @@ export function BoudhaPrototypeCanvas({
     const courtyard = new Mesh(
       new PlaneGeometry(150, 150),
       new MeshStandardMaterial({
-        color: '#b8aa94',
+        color: '#a89579',
         map: courtyardTexture,
         roughness: 0.94,
       }),
@@ -907,6 +921,7 @@ export function BoudhaPrototypeCanvas({
     const { flagTop } = createStupa(scene)
     addPrayerWheelRing(scene)
     addSurroundingBuildings(scene)
+    addScaleFigures(scene)
 
     const animatedFlags: AnimatedFlag[] = []
     addPrayerFlags(scene, animatedFlags, flagTop)
