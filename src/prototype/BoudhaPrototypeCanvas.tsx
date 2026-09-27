@@ -580,8 +580,11 @@ function createStupa(scene: Scene) {
     clearcoat: 0.02,
   })
   const warmWhite = new MeshStandardMaterial({
-    color: '#e7ded0',
-    roughness: 0.86,
+    color: '#ddd5ca',
+    map: plasterTexture,
+    bumpMap: plasterTexture,
+    bumpScale: 0.045,
+    roughness: 0.95,
   })
   const gold = new MeshPhysicalMaterial({
     color: '#d2a044',
@@ -917,7 +920,7 @@ export function BoudhaPrototypeCanvas({
     })
     renderer.outputColorSpace = SRGBColorSpace
     renderer.toneMapping = ACESFilmicToneMapping
-    renderer.toneMappingExposure = 1.0
+    renderer.toneMappingExposure = 0.92
     renderer.shadowMap.enabled = true
     renderer.shadowMap.type = PCFSoftShadowMap
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.7))
@@ -942,10 +945,10 @@ export function BoudhaPrototypeCanvas({
     controls.enabled = reducedMotion
     controls.update()
 
-    const hemisphere = new HemisphereLight('#dff0ff', '#785339', 1.85)
+    const hemisphere = new HemisphereLight('#dff0ff', '#785339', 1.55)
     scene.add(hemisphere)
 
-    const sun = new DirectionalLight('#ffdda8', 4.6)
+    const sun = new DirectionalLight('#ffdda8', 4.05)
     sun.position.set(48, 62, 22)
     sun.castShadow = true
     sun.shadow.mapSize.set(2048, 2048)
@@ -1022,11 +1025,11 @@ export function BoudhaPrototypeCanvas({
 
             if (object.name === 'miniworld3d-boudhanath-mesh') {
               const material = object.material as MeshPhysicalMaterial
-              material.color.set('#ffffff')
+              material.color.set('#e9e2d7')
               material.vertexColors = true
-              material.roughness = 0.94
-              material.clearcoat = 0.015
-              material.clearcoatRoughness = 0.88
+              material.roughness = 0.97
+              material.clearcoat = 0.008
+              material.clearcoatRoughness = 0.94
               material.needsUpdate = true
             }
           })
