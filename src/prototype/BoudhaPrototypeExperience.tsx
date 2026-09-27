@@ -8,7 +8,10 @@ export function BoudhaPrototypeExperience() {
   const [ready, setReady] = useState(false)
 
   return (
-    <main className="prototype-page">
+    <main
+      className="prototype-page"
+      data-prototype-state={ready ? 'ready' : 'loading'}
+    >
       <BoudhaPrototypeCanvas
         reducedMotion={reducedMotion}
         onReady={() => setReady(true)}
