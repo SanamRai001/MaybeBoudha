@@ -705,11 +705,17 @@ function createStupa(scene: Scene) {
     const progress = i / 12
     const width = MathUtils.lerp(6.7, 1.75, progress)
     const tier = new Mesh(
-      new BoxGeometry(width, 0.54, width),
+      new CylinderGeometry(
+        width * 0.64,
+        width * 0.73,
+        0.48,
+        4,
+      ),
       i % 4 === 0 ? darkGold : gold,
     )
     tier.name = 'boudha-spire-tier'
     tier.position.y = tierY
+    tier.rotation.y = Math.PI / 4
     tier.castShadow = true
     upper.add(tier)
     tierY += 0.6
@@ -1016,12 +1022,11 @@ export function BoudhaPrototypeCanvas({
 
             if (object.name === 'miniworld3d-boudhanath-mesh') {
               const material = object.material as MeshPhysicalMaterial
-              material.map = plasterTexture
-              material.bumpMap = plasterTexture
-              material.bumpScale = 0.085
-              material.color.set('#eee8dc')
-              material.roughness = 0.92
-              material.clearcoat = 0.018
+              material.color.set('#ffffff')
+              material.vertexColors = true
+              material.roughness = 0.94
+              material.clearcoat = 0.015
+              material.clearcoatRoughness = 0.88
               material.needsUpdate = true
             }
           })
