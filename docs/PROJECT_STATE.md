@@ -12,7 +12,7 @@ The rendering and delivery architecture is proven. The current product track is 
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Current branch: `main`
+- Current branch: `feat/phase-3p3-point-cloud-spike`
 - Working title: `MaybeBoudha`
 
 ## Last completed milestone
@@ -115,7 +115,7 @@ Therefore the next realism jump should come from **real licensed point data**, n
 
 **Phase 3P.3 — Licensed Boudhanath point-cloud spike**
 
-Status: **not started**
+Status: **intake prepared; waiting for original Sketchfab archive**
 
 Candidate:
 
@@ -140,15 +140,23 @@ Candidate:
 9. Keep the hybrid scene as fallback.
 10. Do not claim survey-grade accuracy unless the source itself supports it.
 
-## External blocker possibility
+## Current blocker
 
-The public Sketchfab model page is visible, but the downloadable asset may require an authenticated Sketchfab account.
+Sketchfab's official Download API requires an authenticated Sketchfab user before it returns the temporary archive URL.
 
-Try to obtain it through normal public/downloadable routes first.
+The current toolchain does not have the user's authenticated Sketchfab session.
 
-If authenticated download is required and no connected authorized tool can retrieve it, ask the user to download the original asset and upload the archive here.
+Required handoff:
 
-Do **not** bypass access controls.
+1. user downloads the original `BOUDHANATH STUPA - POINTCLOUD` archive from the model page;
+2. user uploads the untouched downloaded archive here;
+3. MaybeBoudha records checksum, archive members, actual format, color/bounds/orientation, and license metadata before implementing a renderer.
+
+Do **not** bypass Sketchfab authentication.
+
+See:
+
+`docs/POINT_CLOUD_SPIKE.md`
 
 ## Deferred field-clearance path
 
