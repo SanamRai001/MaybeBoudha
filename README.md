@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3 — Boudhanath Capture / Asset Plan: Phase 3C.1 field readiness is complete and merged; Phase 3C.2 field clearance is externally blocked.**
+**Phase 3P.1 — Synthetic Boudhanath Visual Feasibility Prototype: implemented and visually verified on PR #6; final documentation verification is pending.**
 
 The project now has verified browser evidence for both the renderer choice and the selected large-scene delivery path:
 
@@ -76,6 +76,26 @@ The build process is pinned and repeatable, but Spark embeds per-run timing meta
 
 See [Phase 3B RAD Pipeline Proof](docs/RAD_PIPELINE_PROOF.md).
 
+## Synthetic visual prototype
+
+The default route now renders a procedural Boudhanath architectural study before any real field capture is attempted.
+
+It includes:
+
+- approximate monument-scale massing;
+- procedural dome, harmika/eyes, gilded spire, prayer wheels, and flags;
+- courtyard architecture and shopfront rhythm;
+- cinematic camera entrance;
+- orbit/zoom interaction;
+- atmospheric lighting/fog;
+- explicit disclosure that the scene is synthetic and contains no scan data.
+
+This is a **visual-feasibility study**, not a reconstruction claim.
+
+The current result is strong enough to justify a deeper synthetic realism pass, but it is not yet realistic enough to justify triggering the field-clearance process.
+
+See [Visual Prototype](docs/VISUAL_PROTOTYPE.md).
+
 ## Product direction
 
 The intended experience combines:
@@ -140,6 +160,7 @@ The `?renderer=rad` route expects generated RAD/RADC files under `/rad/`; normal
 - [Capture Provenance Template](docs/CAPTURE_PROVENANCE_TEMPLATE.md)
 - [Phase 3C Field Readiness](docs/PHASE_3C_FIELD_READINESS.md)
 - [Capture Permission Request Template](docs/CAPTURE_PERMISSION_REQUEST_TEMPLATE.md)
+- [Visual Prototype](docs/VISUAL_PROTOTYPE.md)
 - [Project State](docs/PROJECT_STATE.md)
 
 ## Development rules
@@ -155,10 +176,12 @@ The `?renderer=rad` route expects generated RAD/RADC files under `/rad/`; normal
 
 ## Immediate next step
 
-**Phase 3C.2 — Field clearance**
+**Phase 3P.2 — Realism and material pass**
 
-The current official rules and contacts have been rechecked and Phase 3C.1 is merged. The next action is external: obtain written determinations from the Department of Archaeology and the Shree Boudhanath Area Development Committee for the exact systematic capture described in the readiness document.
+Continue improving the synthetic visual prototype first.
 
-Do not begin the photo dataset until those determinations are recorded.
+Field clearance remains prepared and documented, but it is intentionally deferred until the prototype is strong enough to justify the real capture/reconstruction effort.
+
+Do not begin a real systematic Boudhanath photo dataset until the Phase 3C.2 clearance gate is deliberately reactivated and satisfied.
 
 See [ROADMAP.md](docs/ROADMAP.md) for phase boundaries.
