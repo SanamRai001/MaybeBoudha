@@ -165,4 +165,4 @@ Those measurements require a realistic partial or production-sized Boudhanath as
 4. Renderer and delivery format were documented in an ADR — **met**.
 5. The decision is based on measured integration evidence and product constraints — **met**.
 
-**Phase 2 status: complete, pending PR merge.**
+**Phase 2 status: complete and merged in PR #2.**
