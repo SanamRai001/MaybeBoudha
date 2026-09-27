@@ -92,7 +92,7 @@ See `VISUAL_PROTOTYPE.md`.
 
 ### Phase 3P.2 — Realism and material pass
 
-**Status: complete on PR #6; merge pending.**
+**Status: complete and merged in PR #6.**
 
 Delivered:
 
@@ -117,7 +117,7 @@ Verdict:
 
 ### Phase 3P.3 — Licensed point-cloud spike
 
-**Status: next.**
+**Status: next / not started.**
 
 Candidate:
 
