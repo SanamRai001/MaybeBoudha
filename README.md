@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 2 — Real Reconstruction Renderer Spike: complete on PR #2, pending merge.**
+**Phase 2 — Real Reconstruction Renderer Spike: complete and merged in PR #2.**
 
 The project has moved beyond placeholder geometry. Two real Gaussian Splat renderer paths were implemented and browser-tested:
 
