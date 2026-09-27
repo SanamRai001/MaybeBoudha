@@ -108,7 +108,7 @@ Deliver:
 
 #### Phase 3C.1 — Field readiness / permission gate
 
-**Status: remote readiness complete on branch; written clearance pending.**
+**Status: complete and merged in PR #5; written clearance pending.**
 
 Deliver:
 
