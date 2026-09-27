@@ -20,15 +20,15 @@ The real reconstruction pipeline is already proven technically. The current prod
 
 **Phase 3P.2 — Realism and material pass**
 
-Status: **implementation and direct screenshot review complete; final documentation-complete CI pending**
+Status: **complete on PR #6; merge pending**
 
-Latest visually reviewed implementation head:
+Final verified PR head:
 
-`13e593c637f4f83e85eb57dbd67e06c3f49e57a7`
+`27e422c4f2df863ea8d69955c17cc8b1576aba8b`
 
 Verification:
 
-- CI #145 — green;
+- CI #147 — green;
 - locked install — passed;
 - tests — passed;
 - production build — passed;
@@ -36,7 +36,8 @@ Verification:
 - explicit uploaded-model probe — passed;
 - Spark regression — passed;
 - PlayCanvas regression — passed;
-- RAD Pipeline #72 — green;
+- final screenshot artifact — directly reviewed;
+- RAD Pipeline #74 — green;
 - generated paged RAD runtime — passed.
 
 ## Phase 3P.2 delivered
@@ -177,10 +178,9 @@ Reactivate clearance only if the point-cloud spike still leaves a clear reason t
 
 ## Resume rule
 
-1. verify PR #6 final documentation CI;
-2. merge PR #6 only when green;
-3. checkpoint actual merge SHA on `main`;
-4. create Phase 3P.3 from verified `main`;
+1. merge PR #6 from final green head `27e422c4f2df863ea8d69955c17cc8b1576aba8b`;
+2. checkpoint actual merge SHA on `main`;
+3. create Phase 3P.3 from verified `main`;
 5. obtain/inspect the licensed point-cloud asset;
 6. keep all provenance/licensing facts explicit;
 7. do not claim a digital twin or real scan without supporting source evidence.
