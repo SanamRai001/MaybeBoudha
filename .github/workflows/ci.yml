@@ -79,7 +79,7 @@ jobs:
         id: prototype-smoke
         continue-on-error: true
         run: |
-          timeout 75s xvfb-run -a env MAYBEBOUDHA_HEADFUL=1 node scripts/runtime-smoke.mjs \
+          timeout 75s node scripts/runtime-smoke.mjs \
             prototype \
             /tmp/maybeboudha-visual-prototype.png
 
