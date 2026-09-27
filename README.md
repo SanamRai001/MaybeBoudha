@@ -57,7 +57,7 @@ See [ADR-001](docs/ADR-001-RENDERER-AND-SCENE-FORMAT.md).
 
 ## Phase 3B proof
 
-The reproducible engineering fixture produced:
+The pinned engineering fixture produced:
 
 - source PLY: **2,487,573 bytes**, **152,746 splats**;
 - quality LOD: **202,475 splats**;
@@ -71,6 +71,8 @@ The Spark source is pinned to commit:
 `4eb719afdb5b3655fe0bc290588e4728d9772405`
 
 The practical pinned Rust toolchain for that exact lockfile is **1.88.0**.
+
+The build process is pinned and repeatable, but Spark embeds per-run timing metadata in the small RAD header, so the header hash is not expected to be bit-for-bit identical across rebuilds. Each build manifest records the exact artifact hashes.
 
 See [Phase 3B RAD Pipeline Proof](docs/RAD_PIPELINE_PROOF.md).
 
