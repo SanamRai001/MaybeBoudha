@@ -10,182 +10,155 @@ Build a browser-based, photorealistic interactive heritage experience centered o
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Current branch: `main`
+- Current branch: `feat/phase-3c-partial-boudhanath-capture`
 - Working title: `MaybeBoudha`
 
 ## Last completed subphase
 
 **Phase 3B — PLY → paged RAD processing proof**
 
-Status: **complete and merged**
-
-PR:
-
-`#4 — feat: Phase 3B paged RAD processing proof`
-
-Merge SHA:
+Merged in PR #4:
 
 `80604179ebe2c3499dffcbf894e070fdc533d28f`
 
-### Final PR-head verification
+Verified:
 
-Documentation-complete head:
+- PR head: CI #80 + RAD Pipeline #16
+- merged main: CI #81 + RAD Pipeline #17
+- final Phase 3B main checkpoint: `433a727f6d954a57ed18982af445cbd26e226eef`
+- checkpoint CI #85: green
 
-`85e6abccfa7abdb327258634f2e524f28423211d`
-
-Passed:
-
-- normal CI **#80**
-- RAD Pipeline **#16**
-
-### Post-merge main verification
-
-The actual merge SHA passed:
-
-- normal CI **#81**
-- RAD Pipeline **#17**
-
-Verified on merged `main`:
-
-- locked install;
-- tests;
-- production build;
-- Spark runtime probe;
-- PlayCanvas runtime probe;
-- pinned Spark/Rust asset conversion;
-- quality Bhatt LOD;
-- chunked RAD/RADC generation;
-- per-build manifest generation;
-- HTTP 206 byte-range delivery;
-- paged Spark runtime with non-zero streamed splats;
-- Chromium RAD rendering proof.
-
-## Phase 3B evidence
-
-Detailed report:
-
-`docs/RAD_PIPELINE_PROOF.md`
-
-### Source fixture
-
-- repository: `playcanvas/engine`
-- commit: `b5b983982a9860d21e0c1dafb2f85f72e2c01afb`
-- source: `biker.compressed.ply`
-- bytes: **2,487,573**
-- source splats: **152,746**
-- SHA-256: `ad906646017096ef6613cdbd1e575104e90403dc79116a9c6af749433ca1e8a1`
-
-### Asset builder
-
-- Spark: **2.2.0**
-- commit: `4eb719afdb5b3655fe0bc290588e4728d9772405`
-- practical pinned Rust toolchain: **1.88.0**
-- method: `BhattLod { lod_base: 1.75 }`
-- delivery: `--rad-chunked`
-
-### Output
-
-- quality-LOD splats: **202,475**
-- RAD header: **1,744 bytes**
-- RADC chunks: **4**
-- total delivery: **4,033,648 bytes**
-- range support: **verified 206 Partial Content**
-- generated paged RAD visible in Chromium: **verified**
-
-### Reproducibility finding
-
-The source, Spark commit, Rust toolchain, and build options are pinned.
-
-The four RADC chunk hashes remained stable across successful runs, but Spark embeds per-run timing metadata in the small RAD header comment, so the RAD header is **not bit-for-bit stable**. Every asset build therefore records the exact output hashes in its manifest.
-
-Use immutable scene version + manifest as the release identity.
-
-## Accepted rendering/delivery architecture
+Phase 3B proved:
 
 ```text
-approved cleaned PLY
-        ↓
-Spark quality LOD asset job
-        ↓
+pinned PLY
+    ↓
+Spark quality LOD
+    ↓
 chunked RAD
-        ↓
-range-capable object storage/CDN
-        ↓
-Spark paged runtime
+    ↓
+HTTP range delivery
+    ↓
+paged Spark runtime
 ```
 
-Normal application CI remains Node/web-only. The Rust asset builder stays in the separate RAD Pipeline.
+See `docs/RAD_PIPELINE_PROOF.md`.
 
-PlayCanvas remains the fallback renderer candidate if the real Boudhanath workload exposes a material Spark limitation.
-
-## Current subphase
+## Current phase
 
 **Phase 3C — Partial Boudhanath Capture**
 
-Status: **not started**
+### Current subphase
 
-## Phase 3C prerequisite
+**Phase 3C.1 — Field readiness / permission gate**
 
-Do not begin systematic field capture until the current requirements for the intended capture method are reconfirmed.
+Status: **remote implementation complete on branch; verification pending**
 
-Required before capture:
+## Phase 3C.1 current-source findings
 
-1. verify current site-management / heritage rules;
-2. determine whether written permission or prior consent is required;
-3. record permission/reference information honestly in the provenance record;
-4. select one small ground-accessible, mostly static exterior section;
-5. use the ground-first capture method from `docs/CAPTURE_PLAN.md`;
-6. keep raw imagery private by default.
+Checked on **2026-09-27**.
 
-No Boudhanath field imagery currently exists in the repository, and none is claimed as captured.
+### Heritage status
 
-## Phase 3C target
+Boudhanath is a Monument Zone of the Kathmandu Valley UNESCO World Heritage property and is nationally protected.
 
-Produce only:
+### Department of Archaeology
+
+Current official DoA material:
+
+- lists photography/documentation work for historical and archaeological monuments;
+- lists consent for filming at ancient monuments;
+- says its Photography Unit grants filming permission under applicable rules inside protected monument areas.
+
+The sources do not explicitly classify Gaussian Splatting / photogrammetry.
+
+Therefore a systematic 120–180 image capture for a derived public 3D reconstruction is treated as **permission-determination required**, not assumed casual photography.
+
+### Local site authority
+
+The Shree Boudhanath Area Development Committee is the current local Boudhanath body.
+
+Current public contact:
+
+- phone: `01-4589257`
+- email: `info@boudhanath.gov.np`
+
+No dedicated current public form for photogrammetry / Gaussian Splat capture was found.
+
+### Drone
+
+**No drone in Phase 3C.**
+
+CAAN's published standard UAS conditions prohibit operation over populated areas. Boudhanath's first proof remains ground-only.
+
+## Phase 3C.1 delivered
+
+- `docs/PHASE_3C_FIELD_READINESS.md`
+- `docs/CAPTURE_PERMISSION_REQUEST_TEMPLATE.md`
+- exact project/capture description for authorities;
+- DoA questions;
+- Boudhanath committee questions;
+- evidence rules;
+- capture-day readiness pack;
+- explicit GO / NO-GO gate.
+
+## Next subphase
+
+**Phase 3C.2 — Field clearance**
+
+Status: **blocked on external written determinations**
+
+Before any systematic field capture, obtain and privately retain:
+
+1. DoA written determination for the described ground-based systematic capture;
+2. Boudhanath Area Development Committee written determination;
+3. required approval/fee/process evidence, if applicable;
+4. allowed scope and publication conditions.
+
+A written statement that no prior permission is required also satisfies the determination requirement if it clearly covers the described activity.
+
+## Field capture remains not started
+
+No Boudhanath source-photo dataset or real reconstruction exists in the repository.
+
+Do not:
+
+- claim permission was obtained;
+- capture a systematic dataset before the gate clears;
+- substitute scraped/web imagery;
+- use a drone;
+- attempt the full monument/plaza.
+
+## After clearance
+
+Phase 3C.3 only:
 
 ```text
-legitimate partial field capture
+small legitimate ground capture
+        ↓
+private raw archive + provenance
         ↓
 cloud Gaussian Splat reconstruction
         ↓
 source PLY
 ```
 
-Cleanup, privacy-reviewed master promotion, RAD conversion of the real asset, and physical-device validation belong to **Phase 3D**.
-
-## Still unverified
-
-Do not claim these are solved:
-
-- capture permission for a specific session;
-- actual partial Boudhanath reconstruction quality;
-- upper-monument coverage;
-- full monument/plaza scene size;
-- physical desktop/mobile FPS;
-- physical mobile memory;
-- real CDN/cache behavior;
-- privacy cleanup of actual captured bystanders.
-
-## Next branch
-
-After this main checkpoint verifies:
-
-`feat/phase-3c-partial-boudhanath-capture`
+Cleanup/privacy master promotion and real-asset RAD/device proof remain Phase 3D.
 
 ## Known risks
 
-- systematic capture may require site/heritage consent;
-- crowds and moving prayer flags can corrupt reconstruction;
-- changing light and occlusion can reduce quality;
-- upper monument coverage is limited from the ground;
-- a real reconstruction may differ substantially from the engineering fixture;
-- privacy review is required before any public reconstruction.
+- the authorities may require a formal application or fee;
+- approved scope may differ from the current proposal;
+- crowds/ceremonies can make a permitted day a practical no-go;
+- moving prayer flags and people can hurt reconstruction;
+- upper monument coverage remains limited from the ground;
+- cloud export capabilities can change.
 
 ## Resume rule
 
-1. inspect actual `main` and CI;
-2. read `CAPTURE_PLAN.md`, `CAPTURE_PROVENANCE_TEMPLATE.md`, and `RAD_PIPELINE_PROOF.md`;
-3. repository state wins if documentation differs;
-4. reconfirm current capture requirements before field work;
-5. do not invent or substitute web imagery for a legitimate project capture;
+1. inspect branch/PR/CI;
+2. read `PHASE_3C_FIELD_READINESS.md`;
+3. repository state wins over documentation if they differ;
+4. do not advance to field capture until written determinations are available;
+5. once received, record only non-sensitive references in the public repo and keep private correspondence private;
 6. update this file at every subphase boundary.
