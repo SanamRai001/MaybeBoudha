@@ -2,139 +2,167 @@
 
 ## Purpose
 
-Phase 2 exists to answer one question before the project captures or integrates Boudhanath:
+Phase 2 answered:
 
-> Which browser rendering path gives us the best practical foundation for a photorealistic reconstruction on desktop and mobile?
+> Which browser rendering path should MaybeBoudha use before we invest in a real Boudhanath reconstruction?
 
-This is a technical spike, not final product UI.
+The phase compared real Gaussian Splat rendering rather than placeholder geometry.
 
-## Test reconstruction
+## Result
 
-The first real Gaussian Splat fixture is:
+**Selected production direction: Spark 2.2.x + raw Three.js integration.**
+
+**Scene pipeline: cleaned/master PLY → prebuilt LOD → paged RAD for web delivery.**
+
+The full decision and reconsideration criteria are recorded in:
+
+[ADR-001 — Production Renderer and Scene Delivery Format](ADR-001-RENDERER-AND-SCENE-FORMAT.md)
+
+## Evidence 1 — Spark viability with a larger SPZ
+
+Early Spark testing used:
 
 - source: `nianticlabs/spz`;
 - asset: `samples/hornedlizard.spz`;
 - pinned upstream commit: `affd0ecea7fbb4c265ee119475af7ee5b2997482`;
-- file size: `18,143,098 bytes` (17.3 MiB);
-- format: SPZ;
-- upstream repository license: MIT.
+- payload: 17.3 MiB;
+- decoded splats: **786,233**.
 
-The file is **not copied into this repository**. The spike loads the pinned upstream asset through jsDelivr so large binary data does not enter MaybeBoudha Git history.
+A real reconstruction was visibly rendered in CI. The recorded hosted-runner load-to-ready metric was approximately **2.57 s**.
 
-This fixture exists only to test the rendering pipeline. It is not Boudhanath content.
+### Important integration finding
 
-## Candidate A — Spark
+The first Spark attempt loaded Spark from a remote module while the application used a different Three.js module instance.
 
-Version under test:
+It decoded successfully but rendered blank.
 
-`@sparkjsdev/spark 2.2.0`
+Spark was moved to the installed npm dependency so it shares the application's Three.js runtime.
 
-Why it is first:
+Later, the comparison renderer was made even more explicit by mounting Spark on a directly managed `THREE.WebGLRenderer`. That path exposes context creation, asset initialization, animation-loop ownership, and cleanup directly.
 
-- integrates directly with Three.js;
-- supports SPZ;
-- can coexist with ordinary Three.js scene objects;
-- fits behind the existing renderer boundary;
-- preserves the current React Three Fiber application architecture.
+## Evidence 2 — PlayCanvas viability
 
-### Integration decision discovered by the spike
+PlayCanvas 2.22.4 was integrated behind the same product-level renderer boundary.
 
-The first experiment loaded Spark as a remote module while React Three Fiber used the app-bundled Three.js runtime.
+It successfully loaded and visibly rendered a Gaussian Splat fixture in the automated Chromium probe.
 
-That configuration decoded all **786,233 splats** and reached a ready state, but the captured canvas remained visually empty.
+This proved PlayCanvas is a credible fallback, not merely a paper comparison.
 
-The integration was replaced with Spark's normal npm dependency and the same declarative React Three Fiber pattern used by Spark's own R3F example. Spark and R3F now share the same Three.js module instance.
+## Format compatibility finding
 
-After this change, the CI Chromium runtime capture visibly rendered the real Gaussian Splat fixture.
+SPZ was not suitable as the final neutral fixture for the exact versions tested because the older and newer SPZ generations were not accepted by both candidates in the same way.
 
-This is exactly why Phase 2 exists: compile-time success was insufficient to prove renderer compatibility.
+That finding changed the comparison to **compressed PLY**, which both candidates consumed successfully.
 
-### Automated runtime evidence
+It also reinforced the decision to keep a portable source/interchange reconstruction rather than making SPZ the project's only master artifact.
 
-Latest successful Spark runtime smoke evidence before this checkpoint:
+## Final same-asset comparison
 
-- CI run: `#17`;
-- browser: headless Chromium;
-- asset: 17.3 MiB SPZ;
-- decoded splats: **786,233**;
-- measured load-to-`onLoad`: approximately **2.57 s** on the GitHub-hosted runner;
-- real reconstruction: **visibly rendered in the captured frame**;
-- tests: passed;
-- TypeScript/Vite production build: passed.
+The neutral fixture:
 
-The headless screenshot displayed `FPS 0`. That value is **not accepted as a performance result** because headless CI rendering/throttling is not representative of an interactive device. FPS must be recorded on actual desktop/mobile hardware.
+- source: `playcanvas/engine`;
+- pinned commit: `b5b983982a9860d21e0c1dafb2f85f72e2c01afb`;
+- asset: `examples/assets/splats/biker.compressed.ply`;
+- payload: 2,487,573 bytes (~2.4 MiB);
+- decoded splats: **152,746**.
 
-### Runtime measurements exposed by the app
+### CI run #49
 
-The browser panel records:
+Both candidates used the same source reconstruction and passed the deterministic browser probe.
 
-- asset download progress when available;
-- time from viewer initialization to Spark `onLoad`;
-- decoded splat count;
-- live rendered FPS.
+| Evidence | Spark 2.2.0 | PlayCanvas 2.22.4 |
+| --- | ---: | ---: |
+| Renderer reached ready | yes | yes |
+| Reconstruction visibly rendered | yes | yes |
+| Decoded splats | 152,746 | 152,746 |
+| Hosted-runner load metric | ~0.19 s | ~0.24 s |
+| Locked tests/build | pass | pass |
 
-Memory is **not** reported as a portable JavaScript metric because there is no reliable cross-browser GPU-memory API. It must be inspected using browser/device profiling tools.
+The captured frames visually contain the same reconstructed biker subject in both renderers.
 
-## Candidate B — PlayCanvas
+### What these numbers do not prove
 
-PlayCanvas remains the main alternative for a large environment because its Gaussian Splat stack emphasizes:
+The CI environment uses virtualized/software graphics.
 
-- WebGL/WebGPU renderer paths;
-- large-scene delivery;
-- SOG compression;
-- streamed SOG / spatial LOD workflows;
-- device-aware Gaussian budgets.
+Therefore:
 
-Those characteristics may matter more when the workload becomes a complete monument plus surrounding plaza instead of an isolated object.
+- the FPS values shown in the screenshots are **not valid device benchmarks**;
+- the small load-time difference is not treated as a meaningful performance win;
+- no claim is made about phone memory, battery, or production-scale frame rate.
 
-Phase 2 should not select PlayCanvas or Spark from feature lists alone.
+The CI probe is a **correctness and integration gate**.
 
-## Current comparison
+## Why Spark was selected
 
-| Dimension | Spark | PlayCanvas |
-| --- | --- | --- |
-| Existing React/Three integration | Native fit and now runtime-proven | Requires separate engine integration |
-| Current real fixture | 786,233-splat SPZ visibly renders | Pending runtime comparison |
-| Hybrid splat + Three scene | Native fit | Uses PlayCanvas scene model |
-| Large streamed environment | Requires separate validation | Core comparison reason |
-| Production package integration | Pinned npm dependency | Pending spike |
-| Phase 2 implementation cost | Lower | Higher |
-| Current status | **Viability proven** | **Next comparison** |
+The final decision is not based on the ~0.05 s CI load difference.
 
-This table is descriptive. No production renderer has been selected yet.
+Spark was selected because:
 
-## Verification plan
+1. it works with the existing Three.js architecture;
+2. it avoids carrying a second permanent 3D engine;
+3. the neutral comparison exposed no correctness disadvantage requiring PlayCanvas;
+4. Spark provides prebuilt LOD and paged RAD streaming for large worlds;
+5. conventional Three.js objects can share the scene with the reconstruction;
+6. the renderer boundary remains replaceable if the real Boudhanath workload proves this decision wrong.
 
-### Automated
+PlayCanvas remains the fallback candidate because its SOG / Streamed-SOG ecosystem is strong for large scenes.
+
+## Production format direction
+
+Do not serve the master PLY directly for the full monument.
+
+Expected flow:
+
+```text
+reconstruction
+    ↓
+cleaned master PLY
+    ↓
+prebuilt quality LOD
+    ↓
+paged RAD
+    ↓
+range-capable CDN / object storage
+    ↓
+Spark
+```
+
+The production RAD settings cannot be chosen until a partial Boudhanath reconstruction exists.
+
+## Runtime verification retained in CI
+
+The Phase 2 branch now verifies:
 
 - locked dependency install;
-- TypeScript build;
-- Vite production build;
-- Phase 1 regression tests;
-- Spark spike helper tests;
-- headless Chromium runtime capture;
-- no binary reconstruction committed to Git.
+- automated tests;
+- TypeScript/Vite production build;
+- real Chromium WebGL/WebGL2 availability;
+- Spark reaches ready;
+- PlayCanvas reaches ready;
+- each candidate produces a runtime screenshot artifact;
+- either probe failing fails the runtime-smoke job.
 
-### Real-device measurements still required
+## Real-device validation
 
-Record on at least one desktop and one mobile-class device:
+Still required later:
 
-- load time;
-- first usable interaction;
-- average FPS while orbiting;
-- obvious sorting artifacts;
-- memory pressure / tab reloads;
-- touch orbit and zoom quality;
-- retry behavior after network failure.
+- desktop FPS;
+- mobile FPS;
+- first visible scene;
+- memory pressure;
+- touch/orbit quality;
+- sorting artifacts;
+- slow/interrupted delivery;
+- LOD transition quality.
+
+Those measurements require a realistic partial or production-sized Boudhanath asset. They remain gates in the production-scene/performance phases and are not fabricated from CI.
 
 ## Exit criteria
 
-Phase 2 is complete only when:
+1. Real Gaussian Splat renders in MaybeBoudha — **met**.
+2. Two credible renderer paths were implemented — **met**.
+3. Same-asset browser comparison was completed — **met**.
+4. Renderer and delivery format were documented in an ADR — **met**.
+5. The decision is based on measured integration evidence and product constraints — **met**.
 
-1. a real Gaussian Splat renders in MaybeBoudha — **met for Spark**;
-2. measurements are recorded — **partial; CI load evidence exists, real-device data pending**;
-3. the credible alternative is compared — **pending PlayCanvas spike**;
-4. renderer + preferred scene format are documented in an architecture decision — **pending**;
-5. the choice is based on evidence rather than ecosystem popularity — **pending**.
-
-No production Boudhanath capture/integration should begin until those remaining items are resolved.
+**Phase 2 status: complete, pending PR merge.**
