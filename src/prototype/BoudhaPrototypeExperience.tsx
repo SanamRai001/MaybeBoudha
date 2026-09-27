@@ -69,6 +69,14 @@ export function BoudhaPrototypeExperience() {
         <span>Scroll to zoom</span>
         <span aria-hidden="true">·</span>
         <span>{reducedMotion ? 'Reduced motion' : 'Cinematic entry'}</span>
+        <span aria-hidden="true">·</span>
+        <a
+          href="https://commons.wikimedia.org/wiki/File:20110725_Budha_eyes_closeup_Bodhnath_Stupa_Kathmandu_Nepal.jpg"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Photo texture: Ggia · CC BY-SA 3.0
+        </a>
       </footer>
     </main>
   )
