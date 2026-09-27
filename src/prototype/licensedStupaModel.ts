@@ -89,14 +89,14 @@ function plasterColor(
   z: number,
 ) {
   const broad =
-    Math.sin(x * 0.083 + z * 0.061) * 0.045 +
-    Math.sin(x * 0.19 - z * 0.137 + y * 0.051) * 0.025
+    Math.sin(x * 0.083 + z * 0.061) * 0.065 +
+    Math.sin(x * 0.19 - z * 0.137 + y * 0.051) * 0.038
   const fine =
-    Math.sin(x * 0.71 + z * 0.53 + y * 0.27) * 0.015
+    Math.sin(x * 0.71 + z * 0.53 + y * 0.27) * 0.022
 
   const lowerStain =
-    Math.max(0, 0.34 - normalizedHeight) *
-    (0.17 + 0.08 * Math.sin(x * 0.11 + z * 0.17))
+    Math.max(0, 0.46 - normalizedHeight) *
+    (0.24 + 0.11 * Math.sin(x * 0.11 + z * 0.17))
 
   const warmStreak =
     Math.max(
@@ -106,7 +106,7 @@ function plasterColor(
     ) *
     0.035
 
-  const base = new Color('#eee7dc')
+  const base = new Color('#e3ddd2')
   const shade = 1 + broad + fine - lowerStain
 
   base.r *= shade
@@ -308,12 +308,12 @@ export async function loadLicensedStupaModel() {
   } = await fetchPackedModel()
 
   const material = new MeshPhysicalMaterial({
-    color: '#ffffff',
+    color: '#e9e2d7',
     vertexColors: true,
-    roughness: 0.94,
+    roughness: 0.97,
     metalness: 0,
-    clearcoat: 0.015,
-    clearcoatRoughness: 0.88,
+    clearcoat: 0.008,
+    clearcoatRoughness: 0.94,
   })
 
   const mesh = new Mesh(geometry, material)
