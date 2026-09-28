@@ -55,29 +55,47 @@ function resolveAsset(value) {
   return new URL(value, baseUrl).href
 }
 
-const rootResponse = await fetchWithRetry(baseUrl.href)
-const html = await rootResponse.text()
+async function fetchReleaseHtml(timeoutMs = 60_000) {
+  const deadline = Date.now() + timeoutMs
+  let lastError
 
-requireFragment(
-  html,
-  `<link rel="canonical" href="${expectedCanonical}" />`,
-  'canonical URL',
-)
-requireFragment(
-  html,
-  `<meta property="og:url" content="${expectedCanonical}" />`,
-  'Open Graph URL',
-)
-requireFragment(
-  html,
-  `<meta property="og:image" content="${expectedSocial}" />`,
-  'Open Graph image',
-)
-requireFragment(
-  html,
-  `<meta name="twitter:image" content="${expectedSocial}" />`,
-  'Twitter image',
-)
+  while (Date.now() < deadline) {
+    try {
+      const response = await fetchWithRetry(baseUrl.href, {}, 10_000)
+      const html = await response.text()
+
+      requireFragment(
+        html,
+        `<link rel="canonical" href="${expectedCanonical}" />`,
+        'canonical URL',
+      )
+      requireFragment(
+        html,
+        `<meta property="og:url" content="${expectedCanonical}" />`,
+        'Open Graph URL',
+      )
+      requireFragment(
+        html,
+        `<meta property="og:image" content="${expectedSocial}" />`,
+        'Open Graph image',
+      )
+      requireFragment(
+        html,
+        `<meta name="twitter:image" content="${expectedSocial}" />`,
+        'Twitter image',
+      )
+
+      return { response, html }
+    } catch (error) {
+      lastError = error
+      await sleep(2_000)
+    }
+  }
+
+  throw lastError ?? new Error('Timed out waiting for release metadata.')
+}
+
+const { response: rootResponse, html } = await fetchReleaseHtml()
 
 const manifestResponse = await fetchWithRetry(new URL('site.webmanifest', baseUrl))
 const manifest = await manifestResponse.json()
@@ -95,6 +113,14 @@ if (assetMatches.length === 0) {
 }
 
 const assetUrls = [...new Set(assetMatches.map(resolveAsset))]
+const expectedAssetPrefix = `${baseUrl.origin}${baseUrl.pathname}`
+
+for (const url of assetUrls) {
+  if (!url.startsWith(expectedAssetPrefix)) {
+    throw new Error(`Production asset escaped the project path: ${url}`)
+  }
+}
+
 const checkedAssets = []
 
 for (const url of assetUrls) {

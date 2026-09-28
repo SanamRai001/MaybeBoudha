@@ -13,6 +13,8 @@ on:
       - "public/**"
       - "src/**"
       - "scripts/verify-pages-build.mjs"
+      - "scripts/verify-production-pages.mjs"
+      - "scripts/runtime-smoke.mjs"
   push:
     branches:
       - main
@@ -56,11 +58,9 @@ jobs:
         run: npm run build
 
       - name: Install Chromium for release capture
-        if: github.event_name != 'pull_request'
         run: npx --yes playwright@1.55.0 install --with-deps chromium
 
       - name: Resolve full Chromium binary
-        if: github.event_name != 'pull_request'
         run: |
           CHROME="$(find "$HOME/.cache/ms-playwright" -type f -path "*/chromium-*/chrome-linux/chrome" | head -n 1)"
           if [ -z "$CHROME" ]; then
@@ -70,13 +70,11 @@ jobs:
           echo "CHROME=$CHROME" >> "$GITHUB_ENV"
 
       - name: Start project-path preview server
-        if: github.event_name != 'pull_request'
         run: |
           npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/maybeboudha-pages-preview.log 2>&1 &
           echo $! > /tmp/maybeboudha-pages-preview.pid
 
       - name: Capture release social preview
-        if: github.event_name != 'pull_request'
         env:
           MAYBEBOUDHA_TARGET_BASE_URL: http://127.0.0.1:4173/MaybeBoudha/
           MAYBEBOUDHA_VIEWPORT_WIDTH: 1200
