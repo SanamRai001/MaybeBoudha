@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3P.7A — Presentation polish is complete on PR #11; the current hybrid now has a cleaner loader/reveal and Focus view.**
+**Phase 3P.7A — Presentation polish is complete and merged; Phase 3P.7B interaction/mobile polish is next.**
 
 The project now has verified browser evidence for both the renderer choice and the selected large-scene delivery path:
 
@@ -244,9 +244,7 @@ See [Selective Hybrid Spike](docs/SELECTIVE_HYBRID_SPIKE.md).
 
 ## Immediate next step
 
-Finish the documentation-complete verification and merge **Phase 3P.7A**.
-
-Then continue with **Phase 3P.7B — camera, interaction, mobile and accessibility polish**:
+Continue with **Phase 3P.7B — camera, interaction, mobile and accessibility polish**:
 
 - cinematic camera handoff;
 - reset/home framing;
