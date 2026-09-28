@@ -140,31 +140,55 @@ Decision:
 
 ### Phase 3P.4 — Deterministic surface reconstruction spike
 
-**Status: next.**
+**Status: engineering proof complete on PR #9; final merge verification pending.**
+
+Verified:
+
+- deterministic extraction of 99,992 transformed points + normals;
+- Open3D 0.20.0 Poisson depth 9;
+- 110,643 output vertices;
+- 220,000 output triangles;
+- source/output checksums;
+- density cleanup + bounds crop;
+- Float64 PLY → Float32 WebGL compatibility layer;
+- successful Chromium surface proof.
+
+Decision:
+
+- **do not replace the Phase 3P.2 hybrid**;
+- keep `/?surface=1` as evidence/debug;
+- retain the reconstructed mesh as a licensed geometric source.
+
+Reason:
+
+The continuous surface is recognizable and geometrically useful, but lacks photographic RGB and fine architectural/material fidelity.
+
+### Phase 3P.5 — Selective geometry hybridization
+
+**Status: next after Phase 3P.4 merge.**
 
 Goal:
 
-Test whether the point cloud's geometry + normals can produce a materially better surface mesh without new field capture.
+Use only reconstructed regions that materially improve the current hybrid.
 
 Deliver:
 
-- reproducible point extraction;
-- pinned deterministic Poisson/equivalent reconstruction;
-- generated mesh bounds/triangle count/checksum;
-- cleanup/crop rules;
-- existing MaybeBoudha material/eye/panorama treatment;
-- Chromium A/B against Phase 3P.2;
-- explicit adopt/reject decision.
+- deterministic crop/selection strategy;
+- remove broad reconstructed ground mass where it hurts composition;
+- integrate selected source-derived geometry into the existing hybrid;
+- preserve current photographic panorama, eye treatment, materials, and refined upper monument;
+- Chromium A/B against the Phase 3P.2 baseline;
+- explicit keep/reject decision.
 
 Guardrails:
 
 - no generative AI;
 - no AI training/model development;
-- preserve source GLB unchanged;
-- retain CC attribution and NoAI handling;
-- do not claim survey-grade accuracy.
+- preserve source GLB and reconstruction provenance;
+- do not replace visually stronger hybrid regions merely because reconstructed geometry exists;
+- keep field-clearance outreach deferred until this final existing-source pass is evaluated.
 
-If Phase 3P.4 still does not produce a substantial realism jump, re-evaluate **Phase 3C.2 — Field clearance** as the next meaningful source-acquisition step.
+If Phase 3P.5 still cannot produce a meaningful realism jump, re-evaluate **Phase 3C.2 — Field clearance** as the next serious source-acquisition step.
 
 ---
 
