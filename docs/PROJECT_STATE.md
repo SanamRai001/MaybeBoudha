@@ -6,145 +6,160 @@ This is the canonical checkpoint for continuing MaybeBoudha work. Repository sta
 
 Build a browser-based, photorealistic interactive heritage experience centered on Boudhanath Stupa.
 
-The rendering/delivery architecture is proven. The current product track is exhausting strong legally reusable existing 3D sources before deciding whether new systematic field capture is worth the permission/provenance cost.
+The rendering/delivery architecture is proven. The project has now tested the strongest available existing-source geometry path far enough to make the next step a deliberate real-capture go/no-go decision.
 
 ## Repository
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Current branch: `main`
+- Current branch: `feat/phase-3p5-selective-hybrid`
+- Pull request: `#10 — feat: Phase 3P.5 selective reconstructed geometry hybrid`
 - Working title: `MaybeBoudha`
-
-## Last completed milestone
-
-**Phase 3P.4 — Deterministic point-cloud surface reconstruction**
-
-Status: **complete and merged**
-
-PR:
-
-`#9 — feat: Phase 3P.4 deterministic Boudhanath surface reconstruction`
-
-Merge SHA:
-
-`6c9f01416ad6f510c8c68f2c0ecc200d50006529`
-
-Final pre-merge verification on documentation-complete head:
-
-- CI **#194** — green;
-- Surface Reconstruction **#17** — green;
-- RAD Pipeline **#108** — green;
-- tests/build — passed;
-- hybrid browser probe — passed;
-- uploaded-model browser probe — passed;
-- point-cloud browser probe — passed;
-- reconstructed-surface browser probe — passed;
-- Spark regression — passed;
-- PlayCanvas regression — passed;
-- paged-RAD regression — passed.
-
-## Phase 3P.4 result
-
-Source:
-
-- `boudhanath_stupa_-_pointcloud.glb`
-- **99,992** points
-- normals present
-- uniform gray source color
-- Creative Commons Attribution
-- NoAI restriction respected.
-
-Deterministic pipeline:
-
-```text
-source GLB
-    ↓
-point + normal extraction
-    ↓
-Open3D 0.20.0 Poisson depth 9
-    ↓
-density cleanup / bounds crop
-    ↓
-220k-triangle generated PLY
-    ↓
-Float64 → Float32 browser compatibility
-    ↓
-Three.js browser proof
-```
-
-Generated surface:
-
-- vertices: **110,643**
-- triangles: **220,000**
-- bytes: **8,171,130**
-- SHA-256:
-  `6f644e51d834a88f7b99d470575384b07810ea886d537c67feabdfba41b2101a`
-
-### Verdict
-
-**Do not replace the Phase 3P.2 hybrid with the reconstructed surface.**
-
-The surface is recognizable and useful as source-derived geometry, but it does not beat the hybrid in photographic realism, architectural detail, eye/harmika fidelity, upper-structure presentation, or ground/base cleanliness.
-
-Keep:
-
-- default Phase 3P.2 hybrid;
-- `/?pointcloud=1` as source evidence;
-- `/?surface=1` as reconstructed-surface evidence;
-- deterministic reconstruction pipeline.
-
-Detailed report:
-
-`docs/SURFACE_RECONSTRUCTION_SPIKE.md`
 
 ## Current milestone
 
 **Phase 3P.5 — Selective geometry hybridization**
 
+Status: **engineering implementation and visual A/B complete; final documentation/merge pending**
+
+Final implementation head:
+
+`de6fb70c26f008592d4c04ea50d06d2c92f12bce`
+
+Final verification on that implementation head:
+
+- CI **#203** — green;
+- Surface Reconstruction **#23** — green;
+- RAD Pipeline **#114** — green;
+- tests/build — passed;
+- default hybrid probe — passed;
+- uploaded MiniWorld model probe — passed;
+- licensed point-cloud probe — passed;
+- standalone reconstructed-surface probe — passed;
+- selective-hybrid probe — passed;
+- Spark regression — passed;
+- PlayCanvas regression — passed;
+- paged-RAD regression — passed.
+
+## Phase 3P.5 composition tested
+
+```text
+MiniWorld3D plinth/base
+        +
+deterministic Poisson dome/body
+        +
+existing photographic eye treatment
+        +
+existing refined harmika / 13-stage spire
+        +
+existing photographic Boudhanath surroundings
+```
+
+The source GLB remained unchanged and its CC Attribution / NoAI handling was preserved.
+
+No generative AI, AI training, or model development was used.
+
+## Final selective geometry
+
+The source surface contains:
+
+- **220,000 triangles**.
+
+Final deterministic selection:
+
+- **59,011 triangles**;
+- normalized scale: **2.0707919910043135**;
+- source size:
+  `[44.939613342285156, 20.88572883605957, 45.28645896911621]`;
+- minimum Y: **7.10 m**;
+- maximum Y: **23.45 m**;
+- maximum radius: **19.70 m**.
+
+The selection requires each retained triangle to fit entirely inside the configured region, avoiding the earlier centroid-based fringe.
+
+Detailed report:
+
+`docs/SELECTIVE_HYBRID_SPIKE.md`
+
+## Visual verdict
+
+**Do not replace the Phase 3P.2 hybrid.**
+
+The source-derived dome improves:
+
+- source-specific geometry;
+- smoothness/continuity of the dome/body;
+- evidence that the point source can contribute usable local geometry.
+
+It does not improve enough because:
+
+- the lower dome/base seam remains visually rougher than the current hybrid;
+- the source has no photographic RGB;
+- fine monument detail is still missing;
+- the current MiniWorld/hybrid base is visually cleaner;
+- the current photographic eye/harmika/spire treatment remains stronger.
+
+Keep:
+
+- `/` — Phase 3P.2 hybrid default;
+- `/?pointcloud=1` — raw licensed point-source evidence;
+- `/?surface=1` — full deterministic Poisson evidence;
+- `/?selective=1` — selective-hybrid evidence when the generated surface is staged;
+- deterministic extraction/reconstruction/selection tooling.
+
+## Existing-source track conclusion
+
+The project has now tested:
+
+1. procedural Boudhanath geometry;
+2. user-supplied MiniWorld3D STL;
+3. hybrid STL + refined procedural upper monument;
+4. licensed photographic eye/environment imagery;
+5. licensed 99,992-point Boudhanath GLB;
+6. deterministic Poisson surface reconstruction;
+7. selective source-derived dome/body integration.
+
+Further hand-modeling or repeated cropping of the same monochrome point source has diminishing expected value.
+
+The remaining large realism gap is a **source-data quality problem**.
+
+## Next milestone after merge
+
+**Phase 3P.6 — Real-capture go/no-go review**
+
 Status: **not started**
 
-Goal:
+Question:
 
-Use reconstructed geometry only where it materially improves the current hybrid.
+> Is the current MaybeBoudha experience promising enough to justify acquiring a genuinely better real-world source dataset?
 
-Plan:
+If **GO**:
 
-1. identify useful reconstructed regions;
-2. remove/crop broad reconstructed ground mass;
-3. preserve the current refined harmika / photographic eye treatment / upper spire where stronger;
-4. preserve the photographic courtyard panorama;
-5. preserve current material and cinematic treatment;
-6. integrate only beneficial source-derived geometry;
-7. run a deterministic Chromium A/B;
-8. keep or reject based on visible evidence.
+- deliberately reactivate Phase 3C.2;
+- obtain written clearance/determinations;
+- perform only a small controlled partial capture first;
+- keep raw imagery private;
+- run the already-proven PLY → RAD pipeline.
 
-Guardrails:
+If **NO-GO**:
 
-- no generative AI;
-- no AI training/model development;
-- preserve source GLB unchanged;
-- retain CC attribution and NoAI handling;
-- do not replace stronger hybrid regions just because reconstructed geometry exists;
-- do not call the result survey-grade.
+- keep the current hybrid as the finished visual/engineering prototype;
+- do not spend additional time on field capture or permission outreach.
 
-## Deferred field-clearance path
+## Field-clearance rule
 
-Phase **3C.2 — Field clearance** remains prepared but intentionally deferred.
+Phase **3C.2 — Field clearance** remains prepared but deferred.
 
-Do not send permission emails yet.
+**Do not send permission emails automatically.**
 
-If Phase 3P.5 still does not materially improve realism, field clearance / new capture becomes the next serious source-quality route rather than further procedural modeling.
-
-## Next branch
-
-`feat/phase-3p5-selective-hybrid`
+The user explicitly decides whether the current project quality justifies that next investment.
 
 ## Resume rule
 
-1. inspect actual `main` and CI;
-2. read `docs/SURFACE_RECONSTRUCTION_SPIKE.md`;
+1. inspect actual `main`, PR #10, and CI;
+2. read `docs/SELECTIVE_HYBRID_SPIKE.md`;
 3. repository state wins over documentation if they differ;
-4. create Phase 3P.5 only from verified main;
-5. preserve all source/license/NoAI provenance;
-6. make the A/B decision from screenshots, not code alone;
-7. update this file at the Phase 3P.5 boundary.
+4. merge PR #10 only if documentation-complete head remains green;
+5. checkpoint the actual merge SHA on `main`;
+6. next conversation should begin with the Phase 3P.6 visual go/no-go review;
+7. do not restart procedural geometry work unless new source evidence justifies it.
