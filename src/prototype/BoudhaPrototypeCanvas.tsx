@@ -44,7 +44,6 @@ import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader.js'
 import { SURFACE_ASSET_URL } from '../surface/surfaceConfig'
 import {
   BOUDHA_BASE_FOOTPRINT_METERS,
-  BOUDHA_DOME_RADIUS_METERS,
   BOUDHA_DOME_TOP_Y_METERS,
   BOUDHA_EYE_PANEL_WIDTH_METERS,
   BOUDHA_HARMIKA_WIDTH_METERS,
@@ -1164,6 +1163,9 @@ export function BoudhaPrototypeCanvas({
 
     if (useLicensedModel) {
       void loadLicensedStupaModel({
+        // The default route keeps only the supplied lower/base geometry.
+        // Selective-surface mode retains a slightly taller transition collar
+        // because its reconstructed dome crop begins at 7.1 m.
         heightFraction: useSelectiveSurface ? 0.19 : undefined,
       })
         .then(({ group, dispose, metadata }) => {
