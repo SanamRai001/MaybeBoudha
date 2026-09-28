@@ -413,7 +413,7 @@ Do not return to the retired 82.2 m square-root-of-area derivation or the
 
 **Phase 3P.7H — Reference-backed dome / kumbha refinement**
 
-Status: **implementation in progress on `fix/reference-dome-hemisphere`**
+Status: **implementation and visual verification complete on `fix/reference-dome-hemisphere`**
 
 This phase responds to another visual review of the central white dome.
 
@@ -453,10 +453,48 @@ Reference note:
 
 `docs/REFERENCE_SILHOUETTE.md`
 
+### Phase 3P.7H verification
+
+PR:
+
+`#20 — fix: refine Boudha dome from hemispherical references`
+
+Verified branch head before this documentation checkpoint:
+
+`d432ad98b529ff2beca84d74d68bf5ab1f70bb1e`
+
+Verification:
+
+- `CI #271` — **passed**;
+- `Deploy GitHub Pages #24` PR build — **passed**;
+- `Surface Reconstruction #61` — **passed**;
+- default desktop runtime — **passed**;
+- mobile runtime — **passed**;
+- reduced-motion runtime — **passed**;
+- uploaded-model probe — **passed**;
+- licensed point-cloud probe — **passed**;
+- Spark runtime — **passed**;
+- PlayCanvas runtime — **passed**.
+
+Runtime screenshot artifact:
+
+`phase-2-runtime-smoke` — artifact ID `10983048734`.
+
+Visual review confirms:
+
+- dome now reads as a broad hemispherical body rather than a tall conical/bulbous one;
+- the lower shoulder begins higher, consistent with the cited plinth + drum stack;
+- the top radius still meets the existing harmika footprint cleanly;
+- desktop and mobile layouts remain visually healthy;
+- camera/FOV, plinth X/Z dimensions, upper monument position, and environment are unchanged.
+
 ## Next phase
 
-Run all existing tests and runtime probes, inspect desktop/mobile screenshots
-against the real references, and tune only if a specific mismatch remains.
+Merge PR #20 after its documentation-only check is green, then verify the live
+Pages deployment and production desktop/mobile/reduced-motion probes.
+
+After production verification, freeze the dome profile unless a specific
+mismatch against a cited real reference is identified.
 
 ## Resume rule
 
