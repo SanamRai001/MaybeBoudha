@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3P.7D — Ambient sound and release readiness is complete and merged in PR #14. Phase 3P.7E public prototype deployment and portfolio packaging is next.**
+**Phase 3P.7E — GitHub Pages deployment is implemented and merged in PR #15. The production bundle is green; deployment is blocked only by one-time GitHub Pages enablement in repository Settings.**
 
 The project now has verified browser evidence for both the renderer choice and the selected large-scene delivery path:
 
@@ -248,16 +248,22 @@ See [Selective Hybrid Spike](docs/SELECTIVE_HYBRID_SPIKE.md).
 
 ## Immediate next step
 
-Continue with **Phase 3P.7E — public prototype deployment and portfolio packaging**:
+Enable GitHub Pages once:
 
-- choose an actual static hosting target;
-- deploy the current release candidate unchanged;
-- add canonical / `og:url` from the real deployment URL;
-- publish a social-preview image;
+```text
+Settings → Pages → Build and deployment → Source → GitHub Actions
+```
+
+Then rerun/dispatch the `Deploy GitHub Pages` workflow.
+
+The production Pages bundle is already build-verified. After the first successful live deployment:
+
+- use the actual deployment URL for canonical / `og:url`;
+- publish a hosted social-preview image;
 - verify production asset/cache behavior;
 - run production URL desktop/mobile smoke;
 - capture final portfolio media;
-- no monument/source geometry changes.
+- keep monument/source geometry unchanged.
 
 The current decision remains **NO-GO for field capture right now**.
 
