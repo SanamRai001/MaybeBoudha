@@ -1,4 +1,4 @@
-export const SURFACE_ASSET_URL = '/generated/boudha-poisson.ply'
+export const SURFACE_ASSET_URL = `${import.meta.env.BASE_URL}generated/boudha-poisson.ply`
 
 export const SURFACE_SOURCE = {
   sourceTitle: 'BOUDHANATH STUPA - POINTCLOUD',
