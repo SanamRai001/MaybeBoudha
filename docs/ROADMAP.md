@@ -233,7 +233,7 @@ Verified on implementation head `93f95f4045d9b78c12a2b983a799ea7175498962`:
 
 #### Phase 3P.7B — Camera, interaction, mobile and accessibility polish
 
-**Status: implementation complete on PR #12; final documentation verification pending.**
+**Status: complete and merged in PR #12.**
 
 Delivered:
 
@@ -247,17 +247,29 @@ Delivered:
 - reduced-motion browser emulation and screenshot;
 - existing MiniWorld / point-cloud / Spark / PlayCanvas / RAD / surface regressions preserved.
 
-Verified on implementation head `a24d31c1ac83726ab1bc65d63b8ae9835525c763`:
+Implementation verification:
 
+- head `a24d31c1ac83726ab1bc65d63b8ae9835525c763`;
 - CI #223 — green;
 - RAD Pipeline #123 — green;
 - Surface Reconstruction #32 — green.
+
+Documentation-complete verification:
+
+- head `aca3a9808d2a5b6a9a10759f8b5533e87fa8c2cf`;
+- CI #226 — green;
+- RAD Pipeline #126 — green;
+- Surface Reconstruction #35 — green.
+
+Merge SHA:
+
+`942ef9a36554d2bd1f1be06097bc0c4b0e4708a9`
 
 See `PHASE_3P7B_INTERACTION_MOBILE.md`.
 
 #### Phase 3P.7C — Environment, atmosphere and performance polish
 
-**Status: next after 3P.7B merge.**
+**Status: next.**
 
 Build:
 
