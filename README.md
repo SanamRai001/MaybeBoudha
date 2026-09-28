@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3P.3 — Licensed Boudhanath point-cloud spike: engineering complete on PR #7; final merge verification pending.**
+**Phase 3P.3 — Licensed Boudhanath point-cloud spike: complete and merged in PR #7. Phase 3P.4 is next.**
 
 The project now has verified browser evidence for both the renderer choice and the selected large-scene delivery path:
 
@@ -206,8 +206,6 @@ The point cloud does **not** replace the current hybrid because its lack of real
 See [Point-Cloud Spike](docs/POINT_CLOUD_SPIKE.md).
 
 ## Immediate next step
-
-After PR #7 is merged:
 
 **Phase 3P.4 — Deterministic surface reconstruction spike**
 
