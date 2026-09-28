@@ -248,7 +248,7 @@ async function pressKey(client, key, code, virtualKeyCode) {
   }
 
   await client.send('Input.dispatchKeyEvent', {
-    type: 'rawKeyDown',
+    type: text ? 'keyDown' : 'rawKeyDown',
     ...event,
   })
   await client.send('Input.dispatchKeyEvent', {
