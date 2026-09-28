@@ -1016,7 +1016,7 @@ export function BoudhaPrototypeCanvas({
 
     if (useLicensedModel) {
       void loadLicensedStupaModel({
-        heightFraction: useSelectiveSurface ? 0.145 : undefined,
+        heightFraction: useSelectiveSurface ? 0.19 : undefined,
       })
         .then(({ group, dispose, metadata }) => {
           if (disposed) {
@@ -1075,11 +1075,14 @@ export function BoudhaPrototypeCanvas({
           sourceGeometry.dispose()
 
           const material = new MeshPhysicalMaterial({
-            color: '#e5ded2',
-            roughness: 0.93,
+            color: '#e7e0d5',
+            roughness: 0.97,
             metalness: 0,
-            clearcoat: 0.015,
-            clearcoatRoughness: 0.88,
+            clearcoat: 0.006,
+            clearcoatRoughness: 0.94,
+            polygonOffset: true,
+            polygonOffsetFactor: -1,
+            polygonOffsetUnits: -1,
           })
 
           const mesh = new Mesh(geometry, material)
