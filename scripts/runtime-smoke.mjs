@@ -329,6 +329,83 @@ async function verifyPrototypeControls(client) {
   console.log('[prototype] interaction proof:', JSON.stringify({ focusOn, focusOff, home }))
 }
 
+async function verifyPrototypeAudioControl(client) {
+  const initial = await evaluate(
+    client,
+    `(() => ({
+      state: document.querySelector('.prototype-page')?.getAttribute('data-audio-state') ?? null,
+      pressed: document.querySelector('.prototype-audio-toggle')?.getAttribute('aria-pressed') ?? null,
+      disabled: document.querySelector('.prototype-audio-toggle')?.disabled ?? true,
+      autoplayAudio: Boolean(document.querySelector('audio[autoplay]')),
+    }))()`,
+  )
+
+  if (
+    !initial ||
+    initial.state !== 'off' ||
+    initial.pressed !== 'false' ||
+    initial.disabled ||
+    initial.autoplayAudio
+  ) {
+    throw new Error(
+      `Prototype audio did not start in the required opt-in state: ${JSON.stringify(initial)}`,
+    )
+  }
+
+  await evaluate(
+    client,
+    `document.querySelector('.prototype-audio-toggle')?.focus()`,
+  )
+  await pressKey(client, 'Enter', 'Enter', 13)
+
+  const deadline = Date.now() + 3_000
+  let enabled = null
+
+  while (Date.now() < deadline) {
+    enabled = await evaluate(
+      client,
+      `(() => ({
+        state: document.querySelector('.prototype-page')?.getAttribute('data-audio-state') ?? null,
+        pressed: document.querySelector('.prototype-audio-toggle')?.getAttribute('aria-pressed') ?? null,
+      }))()`,
+    )
+
+    if (enabled?.state === 'on' && enabled.pressed === 'true') {
+      break
+    }
+
+    await sleep(80)
+  }
+
+  if (enabled?.state !== 'on' || enabled.pressed !== 'true') {
+    throw new Error(
+      `Prototype audio did not enable from keyboard activation: ${JSON.stringify(enabled)}`,
+    )
+  }
+
+  await pressKey(client, 'Enter', 'Enter', 13)
+  await sleep(220)
+
+  const disabled = await evaluate(
+    client,
+    `(() => ({
+      state: document.querySelector('.prototype-page')?.getAttribute('data-audio-state') ?? null,
+      pressed: document.querySelector('.prototype-audio-toggle')?.getAttribute('aria-pressed') ?? null,
+    }))()`,
+  )
+
+  if (disabled?.state !== 'off' || disabled.pressed !== 'false') {
+    throw new Error(
+      `Prototype audio did not return to off: ${JSON.stringify(disabled)}`,
+    )
+  }
+
+  console.log(
+    '[prototype] audio proof:',
+    JSON.stringify({ initial, enabled, disabled }),
+  )
+}
+
 async function verifyMobileLayout(client) {
   const layout = await evaluate(
     client,
@@ -336,6 +413,7 @@ async function verifyMobileLayout(client) {
       const root = document.documentElement
       const focus = document.querySelector('.prototype-focus-toggle')?.getBoundingClientRect()
       const reset = document.querySelector('.prototype-reset-view')?.getBoundingClientRect()
+      const audio = document.querySelector('.prototype-audio-toggle')?.getBoundingClientRect()
       return {
         innerWidth: window.innerWidth,
         innerHeight: window.innerHeight,
@@ -343,6 +421,13 @@ async function verifyMobileLayout(client) {
         scrollHeight: root.scrollHeight,
         focusVisible: Boolean(focus && focus.width > 0 && focus.right <= window.innerWidth + 1),
         resetVisible: Boolean(reset && reset.width > 0 && reset.right <= window.innerWidth + 1),
+        audioVisible: Boolean(
+          audio &&
+          audio.width > 0 &&
+          audio.left >= -1 &&
+          audio.right <= window.innerWidth + 1 &&
+          audio.bottom <= window.innerHeight + 1
+        ),
       }
     })()`,
   )
@@ -351,7 +436,8 @@ async function verifyMobileLayout(client) {
     !layout ||
     layout.scrollWidth > layout.innerWidth + 1 ||
     !layout.focusVisible ||
-    !layout.resetVisible
+    !layout.resetVisible ||
+    !layout.audioVisible
   ) {
     throw new Error(`Mobile layout overflow/control failure: ${JSON.stringify(layout)}`)
   }
@@ -588,6 +674,10 @@ try {
   if (['prototype', 'prototype-mobile', 'prototype-reduced'].includes(renderer)) {
     await verifyPrototypeRuntimeProfile(client, renderer)
     await verifyPrototypeControls(client)
+  }
+
+  if (renderer === 'prototype') {
+    await verifyPrototypeAudioControl(client)
   }
 
   if (renderer === 'prototype-mobile') {
