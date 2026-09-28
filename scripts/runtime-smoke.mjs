@@ -3,8 +3,8 @@ import { writeFile } from 'node:fs/promises'
 
 const [renderer, outputPath] = process.argv.slice(2)
 
-if (!['spark', 'playcanvas', 'rad', 'prototype', 'licensed', 'pointcloud', 'surface', 'selective'].includes(renderer) || !outputPath) {
-  console.error('Usage: node scripts/runtime-smoke.mjs <spark|playcanvas|rad|prototype|licensed|pointcloud|surface|selective> <output.png>')
+if (!['spark', 'playcanvas', 'rad', 'prototype', 'prototype-mobile', 'prototype-reduced', 'licensed', 'pointcloud', 'surface', 'selective'].includes(renderer) || !outputPath) {
+  console.error('Usage: node scripts/runtime-smoke.mjs <spark|playcanvas|rad|prototype|prototype-mobile|prototype-reduced|licensed|pointcloud|surface|selective> <output.png>')
   process.exit(2)
 }
 
@@ -14,8 +14,18 @@ if (!chrome) {
   process.exit(2)
 }
 
-const port = renderer === 'spark' ? 9222 : renderer === 'playcanvas' ? 9223 : renderer === 'rad' ? 9224 : renderer === 'prototype' ? 9225 : renderer === 'licensed' ? 9226 : renderer === 'pointcloud' ? 9227 : renderer === 'surface' ? 9228 : 9229
-const targetUrl = renderer === 'prototype'
+const port =
+  renderer === 'spark' ? 9222 :
+  renderer === 'playcanvas' ? 9223 :
+  renderer === 'rad' ? 9224 :
+  renderer === 'prototype' ? 9225 :
+  renderer === 'licensed' ? 9226 :
+  renderer === 'pointcloud' ? 9227 :
+  renderer === 'surface' ? 9228 :
+  renderer === 'selective' ? 9229 :
+  renderer === 'prototype-mobile' ? 9230 :
+  9231
+const targetUrl = ['prototype', 'prototype-mobile', 'prototype-reduced'].includes(renderer)
   ? 'http://127.0.0.1:4173/'
   : renderer === 'licensed'
     ? 'http://127.0.0.1:4173/?model=licensed'
@@ -203,6 +213,151 @@ async function waitForRenderer(client, timeoutMs = 45_000) {
   throw new Error(`Renderer did not reach ready state within ${timeoutMs / 1000}s`)
 }
 
+
+async function waitForPrototypeHome(client, timeoutMs = 8_000) {
+  const deadline = Date.now() + timeoutMs
+
+  while (Date.now() < deadline) {
+    const state = await evaluate(
+      client,
+      `(() => ({
+        cameraState: document.querySelector('.prototype-canvas')?.getAttribute('data-camera-state') ?? null,
+        resetToken: Number(document.querySelector('.prototype-page')?.getAttribute('data-reset-view-token') ?? -1),
+      }))()`,
+    )
+
+    if (state?.cameraState === 'home') {
+      return state
+    }
+
+    await sleep(100)
+  }
+
+  throw new Error('Prototype camera did not return to the home view.')
+}
+
+async function verifyPrototypeControls(client) {
+  const before = await evaluate(
+    client,
+    `(() => ({
+      focusPressed: document.querySelector('.prototype-focus-toggle')?.getAttribute('aria-pressed'),
+      resetToken: Number(document.querySelector('.prototype-page')?.getAttribute('data-reset-view-token') ?? -1),
+      resetDisabled: document.querySelector('.prototype-reset-view')?.disabled ?? true,
+    }))()`,
+  )
+
+  if (!before || before.resetDisabled || before.focusPressed !== 'false') {
+    throw new Error(`Prototype controls were not ready: ${JSON.stringify(before)}`)
+  }
+
+  await evaluate(
+    client,
+    `document.querySelector('.prototype-focus-toggle')?.click()`,
+  )
+  await sleep(80)
+
+  const focusOn = await evaluate(
+    client,
+    `(() => ({
+      active: document.querySelector('.prototype-page')?.classList.contains('is-focus-mode') ?? false,
+      pressed: document.querySelector('.prototype-focus-toggle')?.getAttribute('aria-pressed'),
+    }))()`,
+  )
+
+  if (!focusOn?.active || focusOn.pressed !== 'true') {
+    throw new Error(`Focus mode did not activate: ${JSON.stringify(focusOn)}`)
+  }
+
+  await evaluate(
+    client,
+    `document.querySelector('.prototype-focus-toggle')?.click()`,
+  )
+  await sleep(80)
+
+  const focusOff = await evaluate(
+    client,
+    `(() => ({
+      active: document.querySelector('.prototype-page')?.classList.contains('is-focus-mode') ?? true,
+      pressed: document.querySelector('.prototype-focus-toggle')?.getAttribute('aria-pressed'),
+    }))()`,
+  )
+
+  if (focusOff?.active || focusOff?.pressed !== 'false') {
+    throw new Error(`Focus mode did not restore story view: ${JSON.stringify(focusOff)}`)
+  }
+
+  await evaluate(
+    client,
+    `document.querySelector('.prototype-reset-view')?.click()`,
+  )
+  await sleep(80)
+
+  const afterClick = await evaluate(
+    client,
+    `Number(document.querySelector('.prototype-page')?.getAttribute('data-reset-view-token') ?? -1)`,
+  )
+
+  if (afterClick !== before.resetToken + 1) {
+    throw new Error(
+      `Reset view token did not advance: before=${before.resetToken} after=${afterClick}`,
+    )
+  }
+
+  const home = await waitForPrototypeHome(client)
+  console.log('[prototype] interaction proof:', JSON.stringify({ focusOn, focusOff, home }))
+}
+
+async function verifyMobileLayout(client) {
+  const layout = await evaluate(
+    client,
+    `(() => {
+      const root = document.documentElement
+      const focus = document.querySelector('.prototype-focus-toggle')?.getBoundingClientRect()
+      const reset = document.querySelector('.prototype-reset-view')?.getBoundingClientRect()
+      return {
+        innerWidth: window.innerWidth,
+        innerHeight: window.innerHeight,
+        scrollWidth: root.scrollWidth,
+        scrollHeight: root.scrollHeight,
+        focusVisible: Boolean(focus && focus.width > 0 && focus.right <= window.innerWidth + 1),
+        resetVisible: Boolean(reset && reset.width > 0 && reset.right <= window.innerWidth + 1),
+      }
+    })()`,
+  )
+
+  if (
+    !layout ||
+    layout.scrollWidth > layout.innerWidth + 1 ||
+    !layout.focusVisible ||
+    !layout.resetVisible
+  ) {
+    throw new Error(`Mobile layout overflow/control failure: ${JSON.stringify(layout)}`)
+  }
+
+  console.log('[prototype-mobile] layout proof:', JSON.stringify(layout))
+}
+
+async function verifyReducedMotion(client) {
+  const state = await evaluate(
+    client,
+    `(() => ({
+      prefersReducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+      cameraState: document.querySelector('.prototype-canvas')?.getAttribute('data-camera-state') ?? null,
+      footer: document.querySelector('.prototype-controls')?.textContent ?? '',
+    }))()`,
+  )
+
+  if (
+    !state?.prefersReducedMotion ||
+    state.cameraState !== 'home' ||
+    !state.footer.includes('Reduced motion')
+  ) {
+    throw new Error(`Reduced-motion proof failed: ${JSON.stringify(state)}`)
+  }
+
+  console.log('[prototype-reduced] motion proof:', JSON.stringify(state))
+}
+
 async function withTimeout(promise, timeoutMs, label) {
   let timer
   const timeout = new Promise((_, reject) => {
@@ -232,6 +387,34 @@ try {
   await client.send('Page.enable')
   await client.send('Log.enable')
 
+  if (renderer === 'prototype-mobile') {
+    await client.send('Emulation.setDeviceMetricsOverride', {
+      width: 390,
+      height: 844,
+      deviceScaleFactor: 1,
+      mobile: true,
+      screenWidth: 390,
+      screenHeight: 844,
+    })
+    await client.send('Emulation.setTouchEmulationEnabled', {
+      enabled: true,
+      maxTouchPoints: 5,
+    })
+    await client.send('Page.reload', { ignoreCache: true })
+  }
+
+  if (renderer === 'prototype-reduced') {
+    await client.send('Emulation.setEmulatedMedia', {
+      features: [
+        {
+          name: 'prefers-reduced-motion',
+          value: 'reduce',
+        },
+      ],
+    })
+    await client.send('Page.reload', { ignoreCache: true })
+  }
+
   const capabilities = await evaluate(
     client,
     `(() => {
@@ -249,7 +432,19 @@ try {
   const state = await waitForRenderer(client)
   console.log(`[${renderer}] renderer state:`, JSON.stringify(state))
 
-  await sleep(2_000)
+  if (['prototype', 'prototype-mobile', 'prototype-reduced'].includes(renderer)) {
+    await verifyPrototypeControls(client)
+  }
+
+  if (renderer === 'prototype-mobile') {
+    await verifyMobileLayout(client)
+  }
+
+  if (renderer === 'prototype-reduced') {
+    await verifyReducedMotion(client)
+  }
+
+  await sleep(1_000)
 
   const capture = await withTimeout(
     client.send('Page.captureScreenshot', {
