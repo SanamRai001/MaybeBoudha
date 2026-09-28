@@ -12,7 +12,7 @@ The current public release is an **honest synthetic visual feasibility study**, 
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Current branch: `main`
+- Current branch: `fix/monument-scale-proportions`
 - Public URL: `https://sanamrai001.github.io/MaybeBoudha/`
 
 ## Last completed phase
@@ -156,15 +156,98 @@ Still required before physical-device performance claims:
 - GitHub Pages currently returns a 10-minute cache policy for the checked release resources; the release verifier records the live headers rather than assuming CDN behavior.
 - The release pipeline now exercises production after deployment, reducing the chance of a green build hiding a broken public path.
 
+## Current phase
+
+**Phase 3P.7F-B — Dome / middle-body silhouette correction**
+
+Status: **implementation and visual verification complete on `fix/monument-scale-proportions`**
+
+User screenshot review found that the released monument reads as a small, thin model inside the photographic courtyard.
+
+Root cause confirmed in code:
+
+- the packed MiniWorld3D source is approximately 108 × 54.4 × 108 in source proportions;
+- its vertical scale was calibrated to 43.25 m;
+- its entire horizontal footprint was then compressed to only 43.5 m;
+- the default route hides the procedural lower monument and therefore inherits that compressed lower silhouette.
+
+This phase corrects the horizontal visual calibration to **82.2 m** while keeping the 43.25 m height unchanged. The target is intentionally approximate and corresponds to the square-equivalent width of the published 6,756 m² stupa area.
+
+Related scene radii (prayer-wheel ring, kora path, contact shadow, fallback scale figures, and prayer-flag anchors) are recalibrated with the larger footprint.
+
+Guardrails for 3P.7F-A:
+
+- do not change the upper harmika/spire;
+- do not change the camera/FOV in this first correction;
+- do not change the photographic environment;
+- do not restart point-cloud/surface experiments;
+- do not merge until the new desktop/mobile screenshots are inspected.
+
+## Phase 3P.7F verification
+
+PR:
+
+`#18 — fix: restore Boudha monument scale and mass`
+
+Current verified branch head before this documentation checkpoint:
+
+`eb564c12d91707696ad8556aa18ddae07ce73b69`
+
+3P.7F-A established the broader 82.2 m footprint while retaining the 43.25 m height.
+
+3P.7F-B then corrected the remaining thin middle silhouette by applying a smooth height-based radial profile to the licensed lower mesh:
+
+- terraces/base stay essentially unchanged;
+- dome expansion begins gradually above the lower terraces;
+- the belly reaches roughly 30–35% additional radial mass around the strongest middle band;
+- the expansion tapers toward the harmika transition;
+- the deformation is capped inside the established outer footprint;
+- vertical scale remains unchanged.
+
+Runtime model metadata remains:
+
+```json
+{
+  "heightMeters": 43.25,
+  "footprintMeters": {
+    "x": 82.2,
+    "z": 82.2
+  }
+}
+```
+
+Verification on the 3P.7F-B implementation:
+
+- `CI #260` — **passed**;
+- `Deploy GitHub Pages #13` PR build — **passed**;
+- `Surface Reconstruction #53` — **passed**;
+- default prototype — **passed**;
+- mobile prototype — **passed**;
+- reduced-motion prototype — **passed**;
+- uploaded-model probe — **passed**;
+- point-cloud probe — **passed**;
+- Spark / PlayCanvas regressions — **passed**;
+- mobile layout: 390 × 844 with no horizontal overflow — **passed**;
+- mobile touch orbit/reset — **passed**.
+
+Visual review of the generated runtime screenshots confirms:
+
+- the base remains broad and grounded;
+- the dome/middle body now reads as heavy and dominant rather than thin;
+- the harmika/spire remains unchanged;
+- the camera/FOV is still unchanged, proving the silhouette improvement comes from geometry rather than zoom.
+
+Runtime screenshot artifact:
+
+`phase-2-runtime-smoke` — artifact ID `10978138744`.
+
 ## Next phase
 
-Do **not** automatically restart field capture or geometry experiments.
+Merge PR #18 after its final documentation-only check is green.
 
-The next product decision should be one of:
+After merge, verify production deployment and production browser smoke.
 
-1. stop here and use the public prototype as a portfolio case study;
-2. do a separate portfolio/public-release polish phase for README screenshots/video and project write-up;
-3. reopen real-capture work only if a better source path appears or the field-capture decision is explicitly changed.
+Do not make further geometry changes unless the new live wide-screen composition reveals a specific remaining silhouette problem. Any next visual adjustment should be a small camera/framing phase rather than another global scale change.
 
 ## Resume rule
 

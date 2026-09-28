@@ -10,8 +10,8 @@ import {
   Vector3,
 } from 'three'
 
-const TARGET_HEIGHT_METERS = 43.25
-const TARGET_FOOTPRINT_METERS = 43.5
+export const BOUDHA_TARGET_HEIGHT_METERS = 43.25
+export const BOUDHA_TARGET_FOOTPRINT_METERS = 82.2
 const QUANTIZATION_MAX = 65_535
 const DEFAULT_MODEL_HEIGHT_FRACTION = 0.55
 
@@ -84,6 +84,63 @@ function readVarint(bytes: Uint8Array, cursor: Cursor) {
 
 function zigZagDecode(value: number) {
   return (value >>> 1) ^ -(value & 1)
+}
+
+
+function smoothstep(edge0: number, edge1: number, value: number) {
+  const normalized = Math.max(
+    0,
+    Math.min(1, (value - edge0) / (edge1 - edge0)),
+  )
+
+  return normalized * normalized * (3 - 2 * normalized)
+}
+
+export function boudhaMiddleProfileScale(normalizedHeight: number) {
+  const height = Math.max(0, Math.min(1, normalizedHeight))
+  const bellyRise = smoothstep(0.14, 0.3, height)
+  const bellyFall = 1 - smoothstep(0.49, 0.62, height)
+  const upperSupport =
+    smoothstep(0.28, 0.4, height) *
+    (1 - smoothstep(0.54, 0.62, height))
+
+  return 1 + bellyRise * bellyFall * 0.3 + upperSupport * 0.05
+}
+
+function widenBoudhaMiddleProfile(
+  geometry: BufferGeometry,
+  sourceSize: Vector3,
+) {
+  const positions = geometry.getAttribute('position') as BufferAttribute
+  const halfWidth = sourceSize.x / 2
+  const halfDepth = sourceSize.z / 2
+
+  for (let vertex = 0; vertex < positions.count; vertex += 1) {
+    const x = positions.getX(vertex)
+    const y = positions.getY(vertex)
+    const z = positions.getZ(vertex)
+    const normalizedHeight = y / sourceSize.y
+    const profileScale = boudhaMiddleProfileScale(normalizedHeight)
+
+    if (profileScale <= 1.0001) {
+      continue
+    }
+
+    const widenedX = Math.sign(x) * Math.min(
+      Math.abs(x) * profileScale,
+      halfWidth * 0.985,
+    )
+    const widenedZ = Math.sign(z) * Math.min(
+      Math.abs(z) * profileScale,
+      halfDepth * 0.985,
+    )
+
+    positions.setXYZ(vertex, widenedX, y, widenedZ)
+  }
+
+  positions.needsUpdate = true
+  geometry.computeVertexNormals()
+  geometry.computeBoundingBox()
 }
 
 function plasterColor(
@@ -243,6 +300,7 @@ function parsePackedModel(
   const center = sourceBounds.getCenter(new Vector3())
 
   geometry.translate(-center.x, -sourceBounds.min.y, -center.z)
+  widenBoudhaMiddleProfile(geometry, sourceSize)
 
   const translatedPositions = geometry.getAttribute('position') as BufferAttribute
   const translatedIndex = geometry.getIndex()
@@ -342,13 +400,15 @@ export async function loadLicensedStupaModel(
   mesh.receiveShadow = true
 
   // The downloaded STL is a printable interpretation (~108 × 54.4 × 108).
-  // Uniform scaling to the monument's real height would create an implausible
-  // ~86 m footprint. For this visual study we adapt the footprint and height
-  // independently; this is explicitly not survey-grade geometry.
+  // Its broad footprint-to-height proportion is much closer to Boudhanath's
+  // documented mandala mass than the previous 43.5 m horizontal compression.
+  // Keep the published 43.25 m height and use an ~82.2 m visual footprint,
+  // approximately the square-equivalent width of the published 6,756 m²
+  // stupa area. This remains visual calibration, not survey-grade geometry.
   mesh.scale.set(
-    TARGET_FOOTPRINT_METERS / sourceSize.x,
-    TARGET_HEIGHT_METERS / sourceSize.y,
-    TARGET_FOOTPRINT_METERS / sourceSize.z,
+    BOUDHA_TARGET_FOOTPRINT_METERS / sourceSize.x,
+    BOUDHA_TARGET_HEIGHT_METERS / sourceSize.y,
+    BOUDHA_TARGET_FOOTPRINT_METERS / sourceSize.z,
   )
 
   const group = new Group()
