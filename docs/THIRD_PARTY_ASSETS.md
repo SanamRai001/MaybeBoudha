@@ -135,3 +135,27 @@ Allowed MaybeBoudha use is limited to ordinary 3D-product operations such as det
 The asset is not treated as survey-grade.
 
 The project normalizes/recenters it only for visual A/B comparison and does not infer real-world measurement accuracy from its authored coordinate system.
+
+
+## Phase 3P.7D ambient sound
+
+The default prototype does **not** use a third-party field recording.
+
+Ambient sound is generated procedurally at runtime with the browser Web Audio API:
+
+- deterministic filtered noise bed;
+- very slow low-frequency modulation;
+- no prerecorded bells, voices, chanting, traffic, birds, or site-specific sounds;
+- no external audio file;
+- no third-party audio license.
+
+The ambience is an abstract atmospheric layer only.
+
+It must not be described as:
+
+- a recording of Boudhanath;
+- authentic on-site sound;
+- ethnographic/religious audio;
+- reconstructed historic ambience.
+
+Playback is off by default and begins only after explicit user activation.

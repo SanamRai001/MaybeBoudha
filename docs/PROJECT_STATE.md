@@ -4,15 +4,16 @@ This is the canonical checkpoint for continuing MaybeBoudha work. Repository sta
 
 ## Objective
 
-Build a browser-based, photorealistic interactive heritage experience centered on Boudhanath Stupa.
+Build a browser-based interactive digital-heritage experience centered on Boudhanath Stupa.
 
-The rendering/delivery architecture is proven. Existing-source geometry experiments have reached diminishing returns, so current work is polishing the strongest honest hybrid rather than claiming reconstruction quality the source data cannot support.
+The renderer/delivery architecture is proven. Existing-source geometry experiments have reached diminishing returns, so the current product track polishes and deploys the strongest honest synthetic hybrid rather than claiming reconstruction quality the source data cannot support.
 
 ## Repository
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Current branch: `main`
+- Current branch: `feat/phase-3p7d-audio-release`
+- Pull request: `#14 — feat: Phase 3P.7D ambient sound and release readiness`
 - Working title: `MaybeBoudha`
 
 ## Last completed subphase
@@ -21,27 +22,17 @@ The rendering/delivery architecture is proven. Existing-source geometry experime
 
 Status: **complete and merged**
 
-PR:
-
-`#13 — feat: Phase 3P.7C atmosphere and performance polish`
-
 Merge SHA:
 
 `634442bdc5636ecd9769ab2b6378470e35f1441f`
 
-Documentation-complete head:
+Final post-merge main checkpoint before 3P.7D:
 
-`83106592c0cfc1f17d369e910cd30c969efae9d1`
+`9dc8098df7890478b7832d926dd50d02368c9974`
 
-Green on that head:
+Main CI:
 
-- CI **#234**
-- RAD Pipeline **#131**
-- Surface Reconstruction **#40**
-
-Detailed evidence:
-
-`docs/PHASE_3P7C_ATMOSPHERE_PERFORMANCE.md`
+`#238 — green`
 
 ## Current strongest visual
 
@@ -63,13 +54,107 @@ photographic Boudhanath courtyard environment
 quality-aware animated prayer flags
         +
 cinematic / resettable orbit interaction
+        +
+optional procedural ambience
 ```
 
 This remains a **synthetic visual feasibility study**, not a scan or digital twin.
 
+## Current subphase
+
+**Phase 3P.7D — Ambient sound and release readiness**
+
+Status: **implementation/proof complete on PR #14; final documentation-complete verification pending**
+
+Implementation head:
+
+`e97313ad94137db2ff544af0ba2e45ffbc3fd125`
+
+Green:
+
+- CI **#239**
+- RAD Pipeline **#133**
+- Surface Reconstruction **#42**
+
+Detailed evidence:
+
+`docs/PHASE_3P7D_AUDIO_RELEASE.md`
+
+## Phase 3P.7D delivered
+
+### Opt-in procedural ambience
+
+- generated through Web Audio API;
+- no external audio recording;
+- no field-recording claim;
+- deterministic filtered noise bed;
+- off by default;
+- created/resumed only after explicit user activation;
+- faded in/out;
+- suspends while the document is hidden;
+- resumes only when visible and previously enabled;
+- cleaned up on unmount.
+
+### Browser audio proof
+
+Initial:
+
+```text
+state = off
+aria-pressed = false
+autoplayAudio = false
+```
+
+Keyboard Enter activation:
+
+```text
+state = on
+aria-pressed = true
+```
+
+Second Enter activation:
+
+```text
+state = off
+aria-pressed = false
+```
+
+### Mobile proof
+
+Viewport:
+
+`390 × 844`
+
+Verified:
+
+- scrollWidth = 390;
+- no horizontal overflow;
+- Sound visible;
+- Reset visible;
+- Focus visible;
+- touch orbit still enters `explore`;
+- Reset still returns to `home`.
+
+### Release metadata
+
+Added:
+
+- honest title/description;
+- Open Graph descriptive metadata;
+- Twitter summary metadata;
+- manifest;
+- robots policy;
+- theme/color-scheme metadata.
+
+Intentionally deferred until a real deployment URL exists:
+
+- canonical URL;
+- `og:url`;
+- hosted `og:image`.
+
 ## GLB / source status
 
-The uploaded Boudhanath GLB has already been integrated and evaluated.
+The uploaded Boudhanath GLB has already been fully evaluated.
 
 Verified source facts:
 
@@ -96,36 +181,11 @@ Evidence routes:
 - `/?surface=1`
 - `/?selective=1`
 
-Engineering renderer routes:
+Engineering routes:
 
 - `?renderer=spark`
 - `?renderer=rad`
 - `?renderer=playcanvas`
-
-## Phase 3P.7C outcome
-
-Delivered:
-
-- multi-axis prayer-flag motion;
-- reduced-motion-safe decorative behavior;
-- eased photographic-environment cross-fade;
-- refined fog/exposure/sun/fill balance;
-- mobile / balanced / high rendering profiles;
-- bounded renderer DPR;
-- tier-aware shadow-map and anisotropy settings;
-- lightweight smoothed FPS instrumentation;
-- browser assertions for quality/DPR/FPS;
-- screenshot review on desktop, mobile and reduced-motion modes.
-
-CI's virtualized runner selected:
-
-```text
-qualityTier = mobile
-rendererDpr = 1.0
-sampled FPS ≈ 1.5
-```
-
-That FPS value is **not a physical-device benchmark**.
 
 ## Field-clearance state
 
@@ -137,44 +197,65 @@ Current decision:
 
 Do not send permission emails automatically.
 
-## Current subphase
+## Release-candidate state
 
-**Phase 3P.7D — Ambient sound and release readiness**
+Ready before deployment:
 
-Status: **not started**
+- desktop/mobile/reduced-motion presentation;
+- keyboard Focus/Reset/Sound controls;
+- touch orbit;
+- device-aware quality;
+- runtime profiling;
+- audio opt-in policy;
+- asset/audio provenance;
+- descriptive metadata;
+- screenshot artifacts;
+- renderer/RAD/source regressions.
 
-Scope only:
+Still deployment-specific:
 
-1. optional ambient sound;
-2. explicit audio control;
-3. no forced audio playback;
-4. pause/suppress audio when appropriate;
-5. audio licensing/provenance;
-6. public-deployment metadata;
-7. portfolio screenshots/media;
-8. keep monument/source geometry unchanged.
+- production host/URL;
+- canonical URL;
+- `og:url`;
+- hosted social preview;
+- production cache/header validation;
+- production URL smoke.
 
-## Next branch
+Still required before performance claims:
 
-`feat/phase-3p7d-audio-release`
+- physical desktop GPU measurement;
+- physical phone FPS/memory/battery behavior.
+
+## Next subphase after merge
+
+**Phase 3P.7E — Public prototype deployment and portfolio packaging**
+
+Scope:
+
+1. choose actual hosting target;
+2. deploy current release candidate without monument/source changes;
+3. set canonical / `og:url` from the real URL;
+4. publish a social-preview image;
+5. verify production caching and asset delivery;
+6. run production URL desktop/mobile smoke;
+7. capture final portfolio screenshots/media.
 
 ## Guardrails
 
-3P.7D must not:
+Do not:
 
-- change monument/source geometry;
+- change monument/source geometry in deployment work;
 - restart point-cloud/surface experiments;
 - change the field-capture NO-GO decision;
 - send permission outreach;
-- claim the prototype is a scan or digital twin;
-- autoplay audible sound without explicit user action.
+- claim the prototype is a scan/digital twin;
+- describe procedural audio as real Boudhanath sound.
 
 ## Resume rule
 
-1. inspect actual `main` and post-merge CI;
+1. inspect PR #14 and all three workflow results;
 2. repository state wins over documentation if they differ;
-3. create 3P.7D only from verified `main`;
-4. preserve the current default hybrid;
-5. use only clearly licensed/provenance-recorded audio;
-6. add deterministic browser proof for audio control/state;
-7. keep field-clearance outreach deferred unless the user explicitly changes the decision.
+3. merge only after CI, RAD Pipeline and Surface Reconstruction are green on the documentation-complete head;
+4. checkpoint the actual merge SHA on `main`;
+5. only then start 3P.7E;
+6. choose/confirm a real hosting target before writing canonical deployment URLs.

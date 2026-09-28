@@ -2,12 +2,14 @@ import { useCallback, useState } from 'react'
 
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { BoudhaPrototypeCanvas } from './BoudhaPrototypeCanvas'
+import { useAmbientSound } from './useAmbientSound'
 
 export function BoudhaPrototypeExperience() {
   const reducedMotion = useReducedMotion()
   const [ready, setReady] = useState(false)
   const [focusMode, setFocusMode] = useState(false)
   const [resetViewToken, setResetViewToken] = useState(0)
+  const ambientSound = useAmbientSound()
   const handleReady = useCallback(() => setReady(true), [])
 
   return (
@@ -21,6 +23,7 @@ export function BoudhaPrototypeExperience() {
         .join(' ')}
       data-prototype-state={ready ? 'ready' : 'loading'}
       data-reset-view-token={resetViewToken}
+      data-audio-state={ambientSound.state}
     >
       <BoudhaPrototypeCanvas
         reducedMotion={reducedMotion}
@@ -59,6 +62,16 @@ export function BoudhaPrototypeExperience() {
           </div>
 
           <div className="prototype-view-actions">
+            <button
+              className="prototype-view-button prototype-audio-toggle"
+              type="button"
+              aria-pressed={ambientSound.pressed}
+              disabled={ambientSound.state === 'unavailable'}
+              onClick={ambientSound.toggle}
+            >
+              {ambientSound.label}
+            </button>
+
             <button
               className="prototype-view-button prototype-reset-view"
               type="button"
