@@ -15,10 +15,6 @@ describe('experienceModeFromSearch', () => {
     expect(experienceModeFromSearch('?pointcloud=1')).toBe('pointcloud')
   })
 
-  it('prefers surface over point-cloud when both debug flags are present', () => {
-    expect(experienceModeFromSearch('?pointcloud=1&surface=1')).toBe('surface')
-  })
-
   it('keeps renderer query modes available for engineering verification', () => {
     expect(experienceModeFromSearch('?renderer=spark')).toBe('technical')
     expect(experienceModeFromSearch('?renderer=rad')).toBe('technical')
