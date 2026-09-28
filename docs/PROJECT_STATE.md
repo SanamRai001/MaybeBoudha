@@ -12,8 +12,7 @@ The rendering/delivery architecture is proven. The strongest existing-source geo
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Current branch: `feat/phase-3p7-prototype-polish`
-- Pull request: `#11 — feat: Phase 3P.7A prototype presentation polish`
+- Current branch: `main`
 - Working title: `MaybeBoudha`
 
 ## Last completed milestone
@@ -38,15 +37,19 @@ See:
 
 **Phase 3P.7A — Presentation polish**
 
-Status: **implementation and visual review complete on PR #11; final documentation-complete verification pending**
+Status: **complete and merged**
 
-Final implementation head before this documentation checkpoint:
+PR:
 
-`93f95f4045d9b78c12a2b983a799ea7175498962`
+`#11 — feat: Phase 3P.7A prototype presentation polish`
 
-Verification on that exact head:
+Merge SHA:
 
-- CI **#214** — green;
+`a590d43063a976e08fd1ba73b49b3fbd235b0fb7`
+
+Final documentation-complete verification:
+
+- CI **#215** — green;
 - tests — passed;
 - production build — passed;
 - default prototype browser probe — passed;
@@ -146,7 +149,7 @@ Phase **3C.2 — Field clearance** remains deferred.
 
 Do **not** send permission emails automatically.
 
-## Next subphase after PR #11 merge
+## Current subphase
 
 **Phase 3P.7B — Camera, interaction, mobile and accessibility polish**
 
@@ -165,9 +168,7 @@ Do not add audio yet unless 3P.7B is visually/interaction-stable.
 
 ## Resume rule
 
-1. inspect PR #11 and final CI;
-2. merge only if documentation-complete head is green;
-3. checkpoint the actual merge SHA on `main`;
-4. continue Phase 3P.7B from verified `main`;
+1. inspect actual `main` and post-merge CI;
+2. continue Phase 3P.7B only from verified `main`;
 5. use screenshot/browser evidence for every visual decision;
 6. do not restart source-geometry experiments without materially better source data.
