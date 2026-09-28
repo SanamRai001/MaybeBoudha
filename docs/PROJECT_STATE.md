@@ -12,7 +12,8 @@ The rendering/delivery architecture is proven. Existing-source geometry experime
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Current branch: `main`
+- Current branch: `feat/phase-3p7c-atmosphere-performance`
+- Pull request: `#13 — feat: Phase 3P.7C atmosphere and performance polish`
 - Working title: `MaybeBoudha`
 
 ## Last completed subphase
@@ -29,58 +30,13 @@ Merge SHA:
 
 `942ef9a36554d2bd1f1be06097bc0c4b0e4708a9`
 
-### Final documentation-complete verification
+Final post-merge main checkpoint before 3P.7C:
 
-Head:
+`b005cca819ad2fd541bec2621dad67648f2cedd4`
 
-`aca3a9808d2a5b6a9a10759f8b5533e87fa8c2cf`
+Main CI:
 
-Green:
-
-- CI **#226**;
-- RAD Pipeline **#126**;
-- Surface Reconstruction **#35**.
-
-### Interaction proof
-
-Verified in real Chromium automation:
-
-- Focus view activated by keyboard Enter;
-- `aria-pressed` changes correctly on/off;
-- Reset view activated by keyboard;
-- reset returns camera to `home`;
-- cinematic intro yields to user input;
-- camera state transitions include `intro`, `explore`, `resetting`, and `home`.
-
-### Mobile proof
-
-Viewport:
-
-`390 × 844`
-
-Verified:
-
-- `scrollWidth = 390`;
-- no horizontal overflow;
-- Focus control visible;
-- Reset control visible;
-- real emulated touch drag enters `explore`;
-- reset returns to `home`;
-- screenshot inspected directly.
-
-### Reduced-motion proof
-
-Verified:
-
-- `prefers-reduced-motion: reduce` is honored;
-- camera reaches `home` without cinematic travel;
-- UI reports Reduced motion;
-- reset is immediate;
-- screenshot inspected directly.
-
-Detailed evidence:
-
-`docs/PHASE_3P7B_INTERACTION_MOBILE.md`
+`#230 — green`
 
 ## Current strongest visual
 
@@ -155,30 +111,182 @@ Do not send permission emails automatically.
 
 **Phase 3P.7C — Environment, atmosphere and performance polish**
 
-Status: **not started**
+Status: **implementation/proof complete on PR #13; final documentation-complete verification pending**
+
+Implementation head:
+
+`61e5cdf1149264c51e00362508e98ca7193bd7f0`
+
+Verified green:
+
+- CI **#231**
+- RAD Pipeline **#128**
+- Surface Reconstruction **#37**
+
+## Phase 3P.7C delivered
+
+### Prayer-flag motion
+
+- multi-axis motion;
+- per-flag phase/amplitude;
+- slower primary sway;
+- smaller gust component;
+- quality-tier motion scaling;
+- decorative movement disabled by reduced-motion mode.
+
+### Environment blending
+
+- photographic panorama no longer hard-swaps;
+- ~1.3 s eased cross-fade;
+- procedural surroundings remain as load-failure fallback;
+- synthetic surroundings are hidden only after the photographic blend is established.
+
+### Lighting / atmosphere
+
+- softer fog;
+- refined tone-mapping exposure;
+- lower hemisphere/sun intensity;
+- softer fill light;
+- panorama participates in tone mapping;
+- panorama does not write depth.
+
+### Device-aware quality
+
+Profiles:
+
+```text
+mobile
+balanced
+high
+```
+
+Quality selection considers:
+
+- viewport width;
+- device pixel ratio;
+- hardware concurrency;
+- reported device memory when available.
+
+Caps:
+
+```text
+mobile:
+  DPR <= 1.15
+  shadows 1024
+  anisotropy 4
+
+balanced:
+  DPR <= 1.35
+  shadows 1536
+  anisotropy 6
+
+high:
+  DPR <= 1.60
+  shadows 2048
+  anisotropy 8
+```
+
+### Runtime instrumentation
+
+Prototype canvas exposes:
+
+- `data-quality-tier`;
+- `data-renderer-dpr`;
+- `data-fps`.
+
+FPS is sampled in lightweight one-second windows and smoothed.
+
+## Browser evidence
+
+Hosted CI selected:
+
+```text
+qualityTier = mobile
+rendererDpr = 1.0
+sampled FPS ≈ 1.5
+```
+
+The desktop screenshot also used the constrained/mobile tier because the CI runner exposes constrained virtualized hardware characteristics.
+
+This is expected.
+
+**CI FPS is not a physical-device performance benchmark.**
+
+### Mobile
+
+Viewport:
+
+`390 × 844`
+
+Verified:
+
+- quality tier = mobile;
+- renderer DPR = 1.0;
+- scrollWidth = 390;
+- no horizontal overflow;
+- Focus control visible;
+- Reset control visible;
+- emulated touch drag enters `explore`;
+- Reset returns to `home`.
+
+### Reduced motion
+
+Verified:
+
+- `prefers-reduced-motion: reduce` is honored;
+- camera reaches `home`;
+- UI reports Reduced motion;
+- interaction/reset remains functional.
+
+### Screenshot review
+
+Desktop, mobile, and reduced-motion screenshots were inspected directly.
+
+Accepted:
+
+- photographic environment remains coherent;
+- no duplicate synthetic surroundings after the cross-fade;
+- monument remains dominant;
+- eye façade/spire remain readable;
+- mobile composition remains usable;
+- no blocking crop/overflow regression;
+- reduced-motion composition remains equivalent.
+
+Detailed evidence:
+
+`docs/PHASE_3P7C_ATMOSPHERE_PERFORMANCE.md`
+
+## Guardrails
+
+3P.7C does not:
+
+- change monument/source geometry;
+- change the Phase 3P.6 field-capture NO-GO decision;
+- restart point-cloud/surface experiments;
+- send permission outreach;
+- add audio;
+- claim the prototype is a scan or digital twin.
+
+## Next subphase after merge
+
+**Phase 3P.7D — Ambient sound and release readiness**
 
 Scope only:
 
-1. improve prayer-flag motion quality;
-2. refine photographic-environment blending;
-3. refine lighting/fog balance;
-4. define device-aware pixel-ratio / quality behavior;
-5. add lightweight runtime performance instrumentation;
-6. use screenshot evidence for atmosphere decisions;
-7. keep monument/source geometry unchanged.
-
-Do not add audio until the visual/performance pass is stable.
-
-## Next branch
-
-`feat/phase-3p7c-atmosphere-performance`
+1. optional ambient sound;
+2. explicit audio control;
+3. no forced audio playback;
+4. pause/suppress audio when appropriate;
+5. audio licensing/provenance;
+6. public-deployment metadata;
+7. portfolio screenshots/media;
+8. keep monument/source geometry unchanged.
 
 ## Resume rule
 
-1. inspect actual `main` and post-merge CI;
-2. read this file before changing code;
-3. repository state wins over documentation if they differ;
-4. start 3P.7C only from verified `main`;
-5. use browser/screenshot evidence for visual decisions;
-6. do not restart source-geometry experiments without materially better source data;
-7. keep field-clearance outreach deferred unless the user explicitly changes the decision.
+1. inspect PR #13 head and all three workflow results;
+2. repository state wins over documentation if they differ;
+3. merge only after CI, RAD Pipeline, and Surface Reconstruction are green on the documentation-complete head;
+4. post-merge, record the actual merge SHA on `main`;
+5. only then begin 3P.7D;
+6. keep field-clearance outreach deferred unless the user explicitly changes the decision.
