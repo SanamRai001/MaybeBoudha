@@ -1,4 +1,8 @@
-export type ExperienceMode = 'prototype' | 'technical' | 'pointcloud' | 'surface'
+export type ExperienceMode =
+  | 'prototype'
+  | 'technical'
+  | 'pointcloud'
+  | 'surface'
 
 export function experienceModeFromSearch(search: string): ExperienceMode {
   const params = new URLSearchParams(search)
