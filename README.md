@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3P.4 — Deterministic Boudhanath surface reconstruction: engineering proof complete on PR #9; final documentation verification pending.**
+**Phase 3P.4 — Deterministic Boudhanath surface reconstruction: complete and merged in PR #9. Phase 3P.5 is next.**
 
 The project now has verified browser evidence for both the renderer choice and the selected large-scene delivery path:
 
