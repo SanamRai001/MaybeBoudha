@@ -10,9 +10,9 @@ import { prepareSurfaceGeometryForWebGL } from '../surface/surfaceGeometry'
 const TARGET_HEIGHT_METERS = 43.25
 
 export const SELECTIVE_DOME_REGION = {
-  minY: 5.6,
-  maxY: 23.7,
-  maxRadius: 20.75,
+  minY: 7.1,
+  maxY: 23.45,
+  maxRadius: 19.7,
 } as const
 
 export type SelectiveSurfaceMetadata = {
@@ -63,7 +63,8 @@ function triangleInsideSelectiveRegion(
   b: Vertex,
   c: Vertex,
 ) {
-  const centerY = (a[1] + b[1] + c[1]) / 3
+  const minY = Math.min(a[1], b[1], c[1])
+  const maxY = Math.max(a[1], b[1], c[1])
   const maxRadius = Math.max(
     Math.hypot(a[0], a[2]),
     Math.hypot(b[0], b[2]),
@@ -71,8 +72,8 @@ function triangleInsideSelectiveRegion(
   )
 
   return (
-    centerY >= SELECTIVE_DOME_REGION.minY &&
-    centerY <= SELECTIVE_DOME_REGION.maxY &&
+    minY >= SELECTIVE_DOME_REGION.minY &&
+    maxY <= SELECTIVE_DOME_REGION.maxY &&
     maxRadius <= SELECTIVE_DOME_REGION.maxRadius
   )
 }
