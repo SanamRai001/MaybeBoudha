@@ -295,18 +295,44 @@ See `PHASE_3P7C_ATMOSPHERE_PERFORMANCE.md`.
 
 #### Phase 3P.7D — Ambient sound and release readiness
 
-**Status: next.**
+**Status: implementation complete on PR #14; final documentation-complete verification pending.**
+
+Delivered:
+
+- opt-in procedural Web Audio ambience;
+- sound off by default;
+- real keyboard user-activation proof;
+- Sound on/off accessible state;
+- hidden-page suspension behavior;
+- no external audio asset or field-recording claim;
+- audio provenance documentation;
+- honest title/description + Open Graph/Twitter metadata;
+- site web manifest and robots policy;
+- 390 × 844 mobile proof with Sound / Reset / Focus visible;
+- desktop/mobile screenshot review;
+- existing MiniWorld / point-cloud / Spark / PlayCanvas / RAD / surface regressions preserved.
+
+Verified on implementation head `e97313ad94137db2ff544af0ba2e45ffbc3fd125`:
+
+- CI #239 — green;
+- RAD Pipeline #133 — green;
+- Surface Reconstruction #42 — green.
+
+See `PHASE_3P7D_AUDIO_RELEASE.md`.
+
+#### Phase 3P.7E — Public prototype deployment and portfolio packaging
+
+**Status: next after 3P.7D merge.**
 
 Build:
 
-- optional ambient sound;
-- explicit user audio control;
-- no forced audio playback;
-- pause/suppress audio when appropriate;
-- audio licensing/provenance;
-- public-deployment metadata;
-- portfolio screenshots/media;
-- no monument/source geometry changes.
+- choose the actual hosting target;
+- deploy the current release candidate without monument/source changes;
+- add canonical URL and `og:url`;
+- publish a hosted social-preview image;
+- verify production cache/asset delivery;
+- production URL desktop/mobile smoke;
+- capture final portfolio media.
 
 Later 3P.7 work may include:
 
