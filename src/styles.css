@@ -957,13 +957,13 @@ h1 {
 .prototype-explore-hint {
   position: absolute;
   left: 50%;
-  bottom: 42px;
+  bottom: 72px;
   z-index: 5;
   display: flex;
   align-items: center;
   gap: 9px;
-  color: rgba(255, 246, 229, 0.66);
-  font-size: 0.64rem;
+  color: rgba(255, 246, 229, 0.54);
+  font-size: 0.62rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   pointer-events: none;
