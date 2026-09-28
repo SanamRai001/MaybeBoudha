@@ -51,7 +51,7 @@ export function BoudhaPrototypeExperience() {
       </div>
 
       <header className="prototype-header">
-        <a className="prototype-brand" href="/" aria-label="MaybeBoudha">
+        <a className="prototype-brand" href={import.meta.env.BASE_URL} aria-label="MaybeBoudha">
           MaybeBoudha
         </a>
 
