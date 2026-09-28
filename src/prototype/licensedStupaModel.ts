@@ -86,6 +86,63 @@ function zigZagDecode(value: number) {
   return (value >>> 1) ^ -(value & 1)
 }
 
+
+function smoothstep(edge0: number, edge1: number, value: number) {
+  const normalized = Math.max(
+    0,
+    Math.min(1, (value - edge0) / (edge1 - edge0)),
+  )
+
+  return normalized * normalized * (3 - 2 * normalized)
+}
+
+export function boudhaMiddleProfileScale(normalizedHeight: number) {
+  const height = Math.max(0, Math.min(1, normalizedHeight))
+  const bellyRise = smoothstep(0.14, 0.3, height)
+  const bellyFall = 1 - smoothstep(0.49, 0.62, height)
+  const upperSupport =
+    smoothstep(0.28, 0.4, height) *
+    (1 - smoothstep(0.54, 0.62, height))
+
+  return 1 + bellyRise * bellyFall * 0.3 + upperSupport * 0.05
+}
+
+function widenBoudhaMiddleProfile(
+  geometry: BufferGeometry,
+  sourceSize: Vector3,
+) {
+  const positions = geometry.getAttribute('position') as BufferAttribute
+  const halfWidth = sourceSize.x / 2
+  const halfDepth = sourceSize.z / 2
+
+  for (let vertex = 0; vertex < positions.count; vertex += 1) {
+    const x = positions.getX(vertex)
+    const y = positions.getY(vertex)
+    const z = positions.getZ(vertex)
+    const normalizedHeight = y / sourceSize.y
+    const profileScale = boudhaMiddleProfileScale(normalizedHeight)
+
+    if (profileScale <= 1.0001) {
+      continue
+    }
+
+    const widenedX = Math.sign(x) * Math.min(
+      Math.abs(x) * profileScale,
+      halfWidth * 0.985,
+    )
+    const widenedZ = Math.sign(z) * Math.min(
+      Math.abs(z) * profileScale,
+      halfDepth * 0.985,
+    )
+
+    positions.setXYZ(vertex, widenedX, y, widenedZ)
+  }
+
+  positions.needsUpdate = true
+  geometry.computeVertexNormals()
+  geometry.computeBoundingBox()
+}
+
 function plasterColor(
   normalizedHeight: number,
   x: number,
@@ -243,6 +300,7 @@ function parsePackedModel(
   const center = sourceBounds.getCenter(new Vector3())
 
   geometry.translate(-center.x, -sourceBounds.min.y, -center.z)
+  widenBoudhaMiddleProfile(geometry, sourceSize)
 
   const translatedPositions = geometry.getAttribute('position') as BufferAttribute
   const translatedIndex = geometry.getIndex()
