@@ -6,28 +6,15 @@ This is the canonical checkpoint for continuing MaybeBoudha work. Repository sta
 
 Build a browser-based, photorealistic interactive heritage experience centered on Boudhanath Stupa.
 
-The rendering/delivery architecture is proven. The strongest existing-source geometry track has reached diminishing returns, so the current work is polishing the strongest honest hybrid rather than pretending more procedural geometry will solve the remaining source-data gap.
+The rendering/delivery architecture is proven. The strongest existing-source geometry track has reached diminishing returns, so current work is polishing the strongest honest hybrid.
 
 ## Repository
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Current branch: `main`
+- Current branch: `feat/phase-3p7b-interaction-mobile`
+- Pull request: `#12 — feat: Phase 3P.7B camera interaction and mobile proof`
 - Working title: `MaybeBoudha`
-
-## Last completed milestone
-
-**Phase 3P.6 — Real-capture go / no-go review**
-
-Decision:
-
-**NO-GO for field capture right now.**
-
-Field-clearance outreach remains prepared but deferred.
-
-See:
-
-`docs/REAL_CAPTURE_GO_NO_GO.md`
 
 ## Current milestone
 
@@ -35,88 +22,87 @@ See:
 
 ### Current subphase
 
-**Phase 3P.7A — Presentation polish**
+**Phase 3P.7B — Camera, interaction, mobile and accessibility polish**
 
-Status: **complete and merged**
+Status: **implementation complete; documentation-complete verification pending**
 
-PR:
+## Phase 3P.7B delivered
 
-`#11 — feat: Phase 3P.7A prototype presentation polish`
+### Camera
 
-Merge SHA:
+- explicit camera state: `intro`, `explore`, `resetting`, `home`;
+- cinematic intro yields immediately to pointer/wheel interaction;
+- explicit Reset view control;
+- animated home reset in standard motion;
+- immediate home reset under reduced motion;
+- calmer orbit rotate/zoom tuning.
 
-`a590d43063a976e08fd1ba73b49b3fbd235b0fb7`
+### Keyboard
 
-Final documentation-complete verification:
+Deterministic Chromium proof uses real keyboard activation.
 
-- CI **#215** — green;
-- tests — passed;
-- production build — passed;
-- default prototype browser probe — passed;
-- uploaded MiniWorld model probe — passed;
-- licensed point-cloud probe — passed;
-- Spark regression — passed;
-- PlayCanvas regression — passed;
-- final screenshot artifact — inspected directly.
+Verified:
 
-## Phase 3P.7A delivered
+- Focus view activates with Enter;
+- `aria-pressed` becomes `true`;
+- Show story restores normal view with Enter;
+- Reset view activates from keyboard and returns the camera to `home`.
 
-### Loader / reveal
+### Mobile
 
-- non-blocking full-screen preparation state;
-- compact MaybeBoudha loading mark;
-- loader fades away after the actual scene reaches ready;
-- story chrome reveals in stages rather than appearing abruptly;
-- reduced-motion disables the new transitions/animations.
+Dedicated browser proof:
 
-### Focus mode
+- **390 × 844** viewport;
+- mobile emulation enabled;
+- touch emulation enabled;
+- no horizontal overflow;
+- Reset and Focus controls remain visible;
+- real emulated touch drag enters `explore`;
+- reset returns camera to `home`;
+- screenshot inspected directly.
 
-A new accessible **Focus view** control:
+### Reduced motion
 
-- hides editorial/story chrome;
-- reduces the vignette;
-- lets the monument/environment dominate the screen;
-- remains keyboard-focusable;
-- can restore the normal story view.
+Browser emulates `prefers-reduced-motion: reduce`.
 
-### Interaction affordance
+Verified:
 
-- temporary `Drag to explore` hint;
-- repositioned after screenshot review so it no longer crowds the footer;
-- existing drag/orbit and scroll/zoom instructions retained.
+- media query matches;
+- camera reaches `home` without cinematic travel;
+- UI reports Reduced motion;
+- reset remains immediate;
+- screenshot inspected directly.
 
-### Responsive presentation
+## Final strengthened implementation verification
 
-- mobile header/control spacing refined;
-- third-party credit hidden from the tight mobile footer while remaining documented elsewhere;
-- focus control remains reachable on small screens;
-- story side-note remains suppressed on smaller layouts.
+Head:
 
-## Visual review
+`a24d31c1ac83726ab1bc65d63b8ae9835525c763`
 
-The documentation-complete decision is based on the final Chromium screenshot from CI #214, not code inspection alone.
+Green:
 
-Result:
+- CI **#223**;
+- RAD Pipeline **#123**;
+- Surface Reconstruction **#32**.
 
-**Keep the Phase 3P.7A presentation changes.**
+CI #223 also preserved:
 
-Visible gains:
+- uploaded MiniWorld model probe;
+- licensed point-cloud probe;
+- Spark regression;
+- PlayCanvas regression.
 
-- cleaner first impression;
-- better hierarchy once the scene becomes ready;
-- stronger option to view the monument without editorial overlays;
-- bottom interaction region no longer feels crowded after the final hint-spacing correction;
-- no regression to the current strongest hybrid scene.
+Detailed proof:
 
-This phase improves presentation, not monument realism.
+`docs/PHASE_3P7B_INTERACTION_MOBILE.md`
 
 ## Current strongest visual
 
-Default route remains:
+Default route:
 
 `/`
 
-Composition remains:
+Composition:
 
 ```text
 MiniWorld3D lower monument
@@ -129,10 +115,10 @@ photographic Boudhanath courtyard environment
         +
 animated prayer flags
         +
-cinematic interaction
+cinematic / resettable orbit interaction
 ```
 
-The default remains a **synthetic visual feasibility study**, not a scan or digital twin.
+The default remains a **synthetic visual feasibility study**, not scan data or a digital twin.
 
 Engineering evidence routes remain:
 
@@ -143,32 +129,53 @@ Engineering evidence routes remain:
 - `?renderer=rad`
 - `?renderer=playcanvas`
 
+## GLB / source status
+
+The uploaded Sketchfab Boudhanath GLB has already been integrated and evaluated.
+
+Verified:
+
+- 99,992 points;
+- 0 triangles;
+- normals present;
+- uniform gray stored color;
+- deterministic point-cloud and Poisson-surface experiments completed.
+
+Decision remains:
+
+**do not replace the current Phase 3P.2 hybrid with the point cloud/surface.**
+
 ## Field-clearance state
 
 Phase **3C.2 — Field clearance** remains deferred.
 
-Do **not** send permission emails automatically.
+Current decision:
 
-## Current subphase
+**NO-GO for field capture right now.**
 
-**Phase 3P.7B — Camera, interaction, mobile and accessibility polish**
+Do not send permission emails automatically.
+
+## Next subphase after merge
+
+**Phase 3P.7C — Environment, atmosphere and performance polish**
 
 Scope:
 
-1. refine cinematic camera timing/handoff;
-2. make reset/home framing explicit;
-3. review orbit constraints and touch behavior;
-4. verify focus mode with keyboard;
-5. add mobile viewport screenshot coverage;
-6. verify reduced-motion presentation;
-7. address any responsive overlap discovered by real browser captures;
-8. keep monument geometry/source unchanged.
+1. prayer-flag motion quality;
+2. photographic environment blending;
+3. lighting/fog balance;
+4. pixel-ratio / quality policy;
+5. lightweight runtime performance instrumentation;
+6. screenshot-driven atmosphere review;
+7. keep monument/source geometry unchanged.
 
-Do not add audio yet unless 3P.7B is visually/interaction-stable.
+Do not add audio until the 3P.7C visual/performance pass is stable.
 
 ## Resume rule
 
-1. inspect actual `main` and post-merge CI;
-2. continue Phase 3P.7B only from verified `main`;
-5. use screenshot/browser evidence for every visual decision;
+1. inspect actual PR #12 head and workflow results;
+2. merge only after the documentation-complete SHA is green;
+3. post-merge, checkpoint the actual merge SHA on `main`;
+4. start 3P.7C only from verified `main`;
+5. use screenshot/browser evidence for visual decisions;
 6. do not restart source-geometry experiments without materially better source data.

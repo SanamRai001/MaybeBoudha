@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3P.7A — Presentation polish is complete and merged; Phase 3P.7B interaction/mobile polish is next.**
+**Phase 3P.7B — Camera, interaction, mobile and accessibility polish is complete on PR #12; final documentation verification is pending.**
 
 The project now has verified browser evidence for both the renderer choice and the selected large-scene delivery path:
 
@@ -171,6 +171,7 @@ The `?renderer=rad` route expects generated RAD/RADC files under `/rad/`; normal
 - [Surface Reconstruction Spike](docs/SURFACE_RECONSTRUCTION_SPIKE.md)
 - [Selective Hybrid Spike](docs/SELECTIVE_HYBRID_SPIKE.md)
 - [Real-Capture Go / No-Go](docs/REAL_CAPTURE_GO_NO_GO.md)
+- [Phase 3P.7B Interaction + Mobile Proof](docs/PHASE_3P7B_INTERACTION_MOBILE.md)
 - [Project State](docs/PROJECT_STATE.md)
 
 ## Development rules
@@ -244,14 +245,16 @@ See [Selective Hybrid Spike](docs/SELECTIVE_HYBRID_SPIKE.md).
 
 ## Immediate next step
 
-Continue with **Phase 3P.7B — camera, interaction, mobile and accessibility polish**:
+After PR #12 merges, continue with **Phase 3P.7C — environment, atmosphere and performance polish**:
 
-- cinematic camera handoff;
-- reset/home framing;
-- orbit/touch review;
-- mobile screenshot coverage;
-- reduced-motion browser verification;
-- keyboard/focus-mode review.
+- prayer-flag motion quality;
+- photographic environment blending;
+- lighting/fog balance;
+- pixel-ratio / quality policy;
+- lightweight runtime performance instrumentation;
+- screenshot-driven atmosphere review.
+
+Do not change monument source geometry in this subphase.
 
 The current decision remains **NO-GO for field capture right now**.
 

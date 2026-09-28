@@ -233,17 +233,41 @@ Verified on implementation head `93f95f4045d9b78c12a2b983a799ea7175498962`:
 
 #### Phase 3P.7B — Camera, interaction, mobile and accessibility polish
 
-**Status: next after 3P.7A merge.**
+**Status: implementation complete on PR #12; final documentation verification pending.**
+
+Delivered:
+
+- cinematic camera yields immediately to user interaction;
+- explicit home/reset camera state;
+- calmer orbit/zoom tuning;
+- keyboard-activated Focus mode and Reset view proof;
+- 390 × 844 mobile screenshot coverage;
+- horizontal-overflow assertion;
+- real emulated touch-drag proof;
+- reduced-motion browser emulation and screenshot;
+- existing MiniWorld / point-cloud / Spark / PlayCanvas / RAD / surface regressions preserved.
+
+Verified on implementation head `a24d31c1ac83726ab1bc65d63b8ae9835525c763`:
+
+- CI #223 — green;
+- RAD Pipeline #123 — green;
+- Surface Reconstruction #32 — green.
+
+See `PHASE_3P7B_INTERACTION_MOBILE.md`.
+
+#### Phase 3P.7C — Environment, atmosphere and performance polish
+
+**Status: next after 3P.7B merge.**
 
 Build:
 
-- cinematic camera timing/handoff;
-- reset/home framing;
-- orbit/touch review;
-- keyboard/focus-mode verification;
-- mobile viewport screenshot coverage;
-- reduced-motion browser verification;
-- responsive overlap fixes.
+- improve prayer-flag motion quality;
+- refine photographic-environment blending;
+- refine lighting/fog balance;
+- define pixel-ratio / quality behavior;
+- add lightweight runtime performance instrumentation;
+- use screenshot evidence for visual decisions;
+- keep monument/source geometry unchanged.
 
 Later 3P.7 work may include:
 
