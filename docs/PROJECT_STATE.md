@@ -12,7 +12,7 @@ The current public release is an **honest synthetic visual feasibility study**, 
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Current branch: `fix/monument-scale-proportions`
+- Current branch: `main`
 - Public URL: `https://sanamrai001.github.io/MaybeBoudha/`
 
 ## Last completed phase
@@ -160,7 +160,7 @@ Still required before physical-device performance claims:
 
 **Phase 3P.7F-B — Dome / middle-body silhouette correction**
 
-Status: **implementation and visual verification complete on `fix/monument-scale-proportions`**
+Status: **complete, merged, deployed, and production-verified**
 
 User screenshot review found that the released monument reads as a small, thin model inside the photographic courtyard.
 
@@ -187,9 +187,13 @@ Guardrails for 3P.7F-A:
 
 PR:
 
-`#18 — fix: restore Boudha monument scale and mass`
+`#18 — fix: restore Boudha monument scale and mass` — **merged**
 
-Current verified branch head before this documentation checkpoint:
+Merge SHA:
+
+`19e52880c5463541693c9157abd36e518e9158b2`
+
+Verified implementation head before merge:
 
 `eb564c12d91707696ad8556aa18ddae07ce73b69`
 
@@ -241,13 +245,29 @@ Runtime screenshot artifact:
 
 `phase-2-runtime-smoke` — artifact ID `10978138744`.
 
+## Post-merge production verification
+
+Verified on merge SHA:
+
+`19e52880c5463541693c9157abd36e518e9158b2`
+
+- `CI #262` — **passed**;
+- `Deploy GitHub Pages #15` — **passed**;
+- `Surface Reconstruction #55` — **passed**;
+- production HTTP/static-asset verification — **passed**;
+- production desktop browser probe — **passed**;
+- production mobile browser probe — **passed**;
+- production reduced-motion browser probe — **passed**.
+
+The live public URL now contains the broader base and corrected dome/middle-body silhouette:
+
+`https://sanamrai001.github.io/MaybeBoudha/`
+
 ## Next phase
 
-Merge PR #18 after its final documentation-only check is green.
+Do not make another global geometry-scale change.
 
-After merge, verify production deployment and production browser smoke.
-
-Do not make further geometry changes unless the new live wide-screen composition reveals a specific remaining silhouette problem. Any next visual adjustment should be a small camera/framing phase rather than another global scale change.
+If the live wide-screen composition still needs refinement, the next phase should be a small camera/framing pass only. Preserve the 43.25 m height, 82.2 m outer footprint calibration, and the corrected fuller dome profile unless a specific visual defect is identified.
 
 ## Resume rule
 
