@@ -165,9 +165,12 @@ export function SurfaceReconstructionCanvas({
         scene.add(mesh)
 
         const index = geometry.getIndex()
+        const positionCount = geometry.getAttribute('position').count
         const metadata: SurfaceRuntimeMetadata = {
-          vertexCount: geometry.getAttribute('position').count,
-          triangleCount: index ? Math.floor(index.count / 3) : 0,
+          vertexCount: positionCount,
+          triangleCount: index
+            ? Math.floor(index.count / 3)
+            : Math.floor(positionCount / 3),
           normalizedScale: scale,
           sourceBounds: {
             min: [sourceBounds.min.x, sourceBounds.min.y, sourceBounds.min.z],
