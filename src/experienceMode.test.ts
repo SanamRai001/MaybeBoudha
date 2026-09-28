@@ -7,6 +7,10 @@ describe('experienceModeFromSearch', () => {
     expect(experienceModeFromSearch('')).toBe('prototype')
   })
 
+  it('selects the deterministic surface spike explicitly', () => {
+    expect(experienceModeFromSearch('?surface=1')).toBe('surface')
+  })
+
   it('selects the licensed point-cloud spike explicitly', () => {
     expect(experienceModeFromSearch('?pointcloud=1')).toBe('pointcloud')
   })

@@ -1,5 +1,6 @@
 import { PointCloudSpikeExperience } from './pointcloud/PointCloudSpikeExperience'
 import { BoudhaPrototypeExperience } from './prototype/BoudhaPrototypeExperience'
+import { SurfaceReconstructionExperience } from './surface/SurfaceReconstructionExperience'
 import { TechnicalSpikeApp } from './TechnicalSpikeApp'
 import { experienceModeFromSearch } from './experienceMode'
 
@@ -12,6 +13,10 @@ function App() {
 
   if (mode === 'pointcloud') {
     return <PointCloudSpikeExperience />
+  }
+
+  if (mode === 'surface') {
+    return <SurfaceReconstructionExperience />
   }
 
   return <BoudhaPrototypeExperience />

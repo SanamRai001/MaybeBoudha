@@ -655,7 +655,8 @@ h1 {
 
 /* Phase 3P.3 — licensed point-cloud comparison */
 
-.pointcloud-page {
+.pointcloud-page,
+.surface-page {
   position: relative;
   min-height: 100svh;
   overflow: hidden;
