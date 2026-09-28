@@ -165,30 +165,42 @@ The continuous surface is recognizable and geometrically useful, but lacks photo
 
 ### Phase 3P.5 — Selective geometry hybridization
 
-**Status: next.**
+**Status: engineering proof complete on PR #10; final merge pending.**
+
+Verified:
+
+- deterministic dome/body crop from the Phase 3P.4 Poisson surface;
+- broad reconstructed ground rejected;
+- reconstructed harmika/spire rejected in favor of the stronger existing upper monument;
+- MiniWorld base retained;
+- photographic panorama and eye treatment retained;
+- final source crop: **59,011 / 220,000 triangles**;
+- final crop region: **7.10–23.45 m Y**, max radius **19.70 m**;
+- Chromium A/B completed;
+- CI #203, Surface Reconstruction #23, and RAD Pipeline #114 green on the final implementation head.
+
+Decision:
+
+- **do not replace the Phase 3P.2 default hybrid**;
+- keep the selective route as engineering evidence;
+- the reconstructed dome is source-specific but the lower transition remains visually rougher than the existing hybrid.
+
+See `SELECTIVE_HYBRID_SPIKE.md`.
+
+### Phase 3P.6 — Real-capture go/no-go review
+
+**Status: next after Phase 3P.5 merge.**
 
 Goal:
 
-Use only reconstructed regions that materially improve the current hybrid.
+Decide whether the current experience is promising enough to justify the cost and permission/provenance work of acquiring genuinely better real-world source data.
 
-Deliver:
+Decision options:
 
-- deterministic crop/selection strategy;
-- remove broad reconstructed ground mass where it hurts composition;
-- integrate selected source-derived geometry into the existing hybrid;
-- preserve current photographic panorama, eye treatment, materials, and refined upper monument;
-- Chromium A/B against the Phase 3P.2 baseline;
-- explicit keep/reject decision.
+- **GO** → deliberately reactivate Phase 3C.2 field clearance for a small controlled partial capture;
+- **NO-GO** → retain MaybeBoudha as a strong visual/engineering prototype without additional field-capture effort.
 
-Guardrails:
-
-- no generative AI;
-- no AI training/model development;
-- preserve source GLB and reconstruction provenance;
-- do not replace visually stronger hybrid regions merely because reconstructed geometry exists;
-- keep field-clearance outreach deferred until this final existing-source pass is evaluated.
-
-If Phase 3P.5 still cannot produce a meaningful realism jump, re-evaluate **Phase 3C.2 — Field clearance** as the next serious source-acquisition step.
+Do not send permission outreach automatically. The user makes this decision after reviewing the current default experience.
 
 ---
 
