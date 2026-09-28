@@ -6,7 +6,7 @@ This is the canonical checkpoint for continuing MaybeBoudha work. Repository sta
 
 Build a browser-based interactive digital-heritage experience centered on Boudhanath Stupa.
 
-The renderer/delivery architecture is proven. Existing-source geometry experiments have reached diminishing returns, so the current product track polishes and deploys the strongest honest synthetic hybrid rather than claiming reconstruction quality the source data cannot support.
+The renderer/delivery architecture is proven. Existing-source geometry experiments have reached diminishing returns, so the current product track deploys and packages the strongest honest synthetic hybrid rather than claiming reconstruction quality the source data cannot support.
 
 ## Repository
 
@@ -28,20 +28,6 @@ PR:
 Merge SHA:
 
 `1f269049c590d5615d01fbe88fbcfd334280dbd5`
-
-Documentation-complete head:
-
-`038ab968e747d1794fa744f45d57b907ea3378c0`
-
-Green on that head:
-
-- CI **#242**
-- RAD Pipeline **#136**
-- Surface Reconstruction **#45**
-
-Detailed evidence:
-
-`docs/PHASE_3P7D_AUDIO_RELEASE.md`
 
 ## Current strongest visual
 
@@ -68,67 +54,6 @@ optional procedural ambience
 ```
 
 This remains a **synthetic visual feasibility study**, not a scan or digital twin.
-
-## Phase 3P.7D outcome
-
-Delivered:
-
-- opt-in procedural Web Audio ambience;
-- sound off by default;
-- real keyboard off → on → off proof;
-- no autoplay audio element;
-- hidden-page suspension behavior;
-- no third-party/field-recording audio claim;
-- desktop/mobile/reduced-motion regressions preserved;
-- mobile Sound / Reset / Focus controls all visible at 390 × 844;
-- honest page/Open Graph/Twitter descriptive metadata;
-- manifest and robots policy;
-- audio provenance documentation;
-- deterministic portfolio screenshot artifacts.
-
-## Release-candidate state
-
-Ready before deployment:
-
-- desktop/mobile/reduced-motion presentation;
-- keyboard Focus/Reset/Sound controls;
-- touch orbit;
-- device-aware quality;
-- runtime profiling;
-- opt-in audio;
-- asset/audio provenance;
-- descriptive metadata;
-- screenshot artifacts;
-- renderer/RAD/source regressions.
-
-Still deployment-specific:
-
-- actual host and URL;
-- canonical URL;
-- `og:url`;
-- hosted social-preview image;
-- production cache/header verification;
-- production URL smoke.
-
-Still required before performance claims:
-
-- physical desktop GPU measurement;
-- physical phone FPS/memory/battery behavior.
-
-## Current deployment state
-
-No deployment configuration exists on `main` yet.
-
-No:
-
-- Vercel config;
-- Netlify config;
-- Cloudflare config;
-- GitHub Pages workflow;
-- CNAME;
-- deployment workflow.
-
-Do not invent a canonical production URL before a real host exists.
 
 ## GLB / source decision
 
@@ -165,17 +90,110 @@ Do not send permission emails automatically.
 
 **Phase 3P.7E — Public prototype deployment and portfolio packaging**
 
-Status: **not started**
+Status: **deployment implementation merged; blocked on one-time GitHub Pages enablement**
 
-Scope:
+Deployment preparation PR:
 
-1. choose the actual hosting target;
-2. deploy the current release candidate without monument/source changes;
-3. set canonical / `og:url` from the real deployed URL;
-4. publish a social-preview image;
-5. verify production caching and asset delivery;
-6. run production URL desktop/mobile smoke;
-7. capture final portfolio screenshots/media.
+`#15 — deploy: Phase 3P.7E GitHub Pages prototype`
+
+Merge SHA:
+
+`e6637350e34ecee8e74a8583bd9856ebc4ecaac3`
+
+Verified on the PR head:
+
+- normal tests/build: **passed**;
+- Pages-specific project-path build: **passed**;
+- Pages build integrity check: **passed**;
+- desktop prototype: **passed**;
+- mobile prototype: **passed**;
+- reduced-motion prototype: **passed**;
+- uploaded Boudhanath model probe: **passed**;
+- licensed point-cloud probe: **passed**;
+- Spark probe: **passed**;
+- PlayCanvas probe: **passed**;
+- surface reconstruction regression: **passed**;
+- selective hybrid regression: **passed**.
+
+## Hosting decision
+
+First public host:
+
+**GitHub Pages**
+
+Reason:
+
+- repository is public;
+- application is static Vite;
+- no extra hosting account or secret is required;
+- deployment can stay inside GitHub Actions;
+- the release-candidate visual remains unchanged.
+
+## Deployment implementation
+
+Merged to `main`:
+
+- configurable Vite base path;
+- project-path-safe panorama/model/surface URLs;
+- base-aware brand navigation;
+- relative manifest `start_url` / `scope`;
+- `.github/workflows/deploy-pages.yml`;
+- Pages build integrity script.
+
+The Pages PR build successfully validated a `/MaybeBoudha/` bundle.
+
+## Current blocker
+
+The first real deployment run:
+
+`Deploy GitHub Pages #2`
+
+built and validated the production bundle successfully, then failed at:
+
+`Configure GitHub Pages`
+
+with:
+
+`Get Pages site failed ... repository has Pages enabled and configured to build using GitHub Actions ... Not Found`
+
+This means the repository does not yet have a GitHub Pages site enabled.
+
+### Required one-time user action
+
+In GitHub:
+
+```text
+MaybeBoudha
+→ Settings
+→ Pages
+→ Build and deployment
+→ Source
+→ GitHub Actions
+```
+
+After that, rerun the failed `Deploy GitHub Pages #2` workflow or trigger `Deploy GitHub Pages` manually.
+
+No code change is required for this blocker.
+
+## After Pages deploys successfully
+
+Continue Phase 3P.7E with:
+
+1. capture the actual Pages URL from the deployment output;
+2. add canonical URL;
+3. add `og:url`;
+4. publish a hosted social-preview image;
+5. verify production cache/static-asset behavior;
+6. run production desktop/mobile URL smoke;
+7. capture final portfolio screenshots/media;
+8. checkpoint the final public release state.
+
+Do not hard-code/invent the public URL before GitHub Pages succeeds.
+
+## Still required before performance claims
+
+- physical desktop GPU measurement;
+- physical phone FPS/memory/battery behavior.
 
 ## Guardrails
 
@@ -186,18 +204,13 @@ Deployment work must not:
 - change field-capture NO-GO;
 - send permission outreach;
 - claim scan/digital-twin status;
-- invent a domain/canonical URL;
 - weaken existing CI/RAD/surface gates.
-
-## Next branch
-
-`feat/phase-3p7e-public-deploy`
 
 ## Resume rule
 
-1. inspect actual `main` and post-merge CI;
+1. inspect actual `main` and deployment workflow state;
 2. repository state wins over documentation if they differ;
-3. start 3P.7E only from verified `main`;
-4. inspect available deployment options before choosing a host;
-5. ask the user only if a deployment target cannot be determined safely;
+3. if Pages is still disabled, ask the user only for the one-time Pages source change;
+4. once Pages is enabled, rerun/dispatch the deploy workflow;
+5. use the real deployment URL for canonical/social metadata;
 6. keep the release candidate visually/source-stable.
