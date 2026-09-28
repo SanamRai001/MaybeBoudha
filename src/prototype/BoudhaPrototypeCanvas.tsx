@@ -17,6 +17,7 @@ import {
   HemisphereLight,
   Line,
   LineBasicMaterial,
+  LatheGeometry,
   MathUtils,
   Mesh,
   MeshBasicMaterial,
@@ -33,6 +34,7 @@ import {
   SRGBColorSpace,
   Texture,
   TextureLoader,
+  Vector2,
   Vector3,
   WebGLRenderer,
 } from 'three'
@@ -41,9 +43,17 @@ import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader.js'
 
 import { SURFACE_ASSET_URL } from '../surface/surfaceConfig'
 import {
-  BOUDHA_TARGET_FOOTPRINT_METERS,
-  loadLicensedStupaModel,
-} from './licensedStupaModel'
+  BOUDHA_BASE_FOOTPRINT_METERS,
+  BOUDHA_DOME_RADIUS_METERS,
+  BOUDHA_DOME_TOP_Y_METERS,
+  BOUDHA_EYE_PANEL_WIDTH_METERS,
+  BOUDHA_HARMIKA_WIDTH_METERS,
+  BOUDHA_REFERENCE_DOME_PROFILE,
+  BOUDHA_TOTAL_HEIGHT_METERS,
+  referenceDomeRadiusMeters,
+  referenceDomeYMetres,
+} from './boudhaReferenceGeometry'
+import { loadLicensedStupaModel } from './licensedStupaModel'
 import { licensedModelRequested } from './prototypeModelMode'
 import { selectiveHybridRequested } from './selectiveHybridMode'
 import { createSelectiveDomeGeometry } from './selectiveSurfaceHybrid'
@@ -64,8 +74,6 @@ type AnimatedFlag = {
   amplitude: number
 }
 
-const DOME_RADIUS = 18.3
-const MONUMENT_HEIGHT = 43.25
 const BOUDHA_REFERENCE_TEXTURE_URL =
   'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Boudha_eyes.jpg/960px-Boudha_eyes.jpg'
 
@@ -277,7 +285,10 @@ function makeEyeTexture() {
 }
 
 function addEyePanels(group: Group, eyeTexture: CanvasTexture | null) {
-  const geometry = new PlaneGeometry(6.65, 3.35)
+  const geometry = new PlaneGeometry(
+    BOUDHA_EYE_PANEL_WIDTH_METERS,
+    3.35,
+  )
   const material = new MeshStandardMaterial({
     map: eyeTexture,
     color: eyeTexture ? '#ffffff' : '#c99a4a',
@@ -286,7 +297,7 @@ function addEyePanels(group: Group, eyeTexture: CanvasTexture | null) {
   })
 
   const y = 26.05
-  const offset = 3.66
+  const offset = BOUDHA_HARMIKA_WIDTH_METERS / 2 + 0.06
 
   const front = new Mesh(geometry, material)
   front.name = 'boudha-eye-panel'
@@ -584,10 +595,29 @@ function addScaleFigures(scene: Group, baseRadius = 28) {
   }
 }
 
+function createReferenceDomeGeometry() {
+  const profile = BOUDHA_REFERENCE_DOME_PROFILE.map(
+    ([normalizedHeight]) =>
+      new Vector2(
+        referenceDomeRadiusMeters(normalizedHeight),
+        referenceDomeYMetres(normalizedHeight),
+      ),
+  )
+
+  // Close the traced crown with a flat top that carries the harmika.
+  profile.push(new Vector2(0, BOUDHA_DOME_TOP_Y_METERS))
+
+  return new LatheGeometry(profile, 128)
+}
+
 function createStupa(scene: Scene) {
   const stupa = new Group()
   const lower = new Group()
+  const sourceBaseFallback = new Group()
+  const domeAssembly = new Group()
   const upper = new Group()
+  lower.add(sourceBaseFallback)
+  lower.add(domeAssembly)
   stupa.add(lower)
   stupa.add(upper)
 
@@ -626,9 +656,17 @@ function createStupa(scene: Scene) {
   const yellow = new MeshStandardMaterial({ color: '#d39d34', roughness: 0.76 })
 
   const platforms = [
-    { size: 43.5, height: 1.2, y: 0.6 },
-    { size: 40.5, height: 1.05, y: 1.72 },
-    { size: 37.5, height: 0.95, y: 2.72 },
+    { size: BOUDHA_BASE_FOOTPRINT_METERS, height: 1.2, y: 0.6 },
+    {
+      size: BOUDHA_BASE_FOOTPRINT_METERS * 0.93,
+      height: 1.05,
+      y: 1.72,
+    },
+    {
+      size: BOUDHA_BASE_FOOTPRINT_METERS * 0.86,
+      height: 0.95,
+      y: 2.72,
+    },
   ]
 
   for (const platform of platforms) {
@@ -639,7 +677,7 @@ function createStupa(scene: Scene) {
     mesh.position.y = platform.y
     mesh.receiveShadow = true
     mesh.castShadow = true
-    lower.add(mesh)
+    sourceBaseFallback.add(mesh)
   }
 
   const drum = new Mesh(
@@ -649,23 +687,23 @@ function createStupa(scene: Scene) {
   drum.position.y = 4.2
   drum.receiveShadow = true
   drum.castShadow = true
-  lower.add(drum)
+  sourceBaseFallback.add(drum)
 
   const dome = new Mesh(
-    new SphereGeometry(DOME_RADIUS, 128, 64, 0, Math.PI * 2, 0, Math.PI / 2),
+    createReferenceDomeGeometry(),
     plaster,
   )
-  dome.position.y = 5.15
+  dome.name = 'reference-grounded-boudha-dome'
   dome.castShadow = true
   dome.receiveShadow = true
-  lower.add(dome)
+  domeAssembly.add(dome)
 
   const domeBand = new Mesh(
     new CylinderGeometry(18.95, 18.95, 0.58, 96),
     warmWhite,
   )
   domeBand.position.y = 5.12
-  lower.add(domeBand)
+  domeAssembly.add(domeBand)
 
   const nicheMaterial = new MeshStandardMaterial({
     color: '#b38858',
@@ -683,10 +721,17 @@ function createStupa(scene: Scene) {
     )
     niche.rotation.y = -angle + Math.PI / 2
     niche.castShadow = true
-    lower.add(niche)
+    domeAssembly.add(niche)
   }
 
-  const harmika = new Mesh(new BoxGeometry(7.2, 5.2, 7.2), gold)
+  const harmika = new Mesh(
+    new BoxGeometry(
+      BOUDHA_HARMIKA_WIDTH_METERS,
+      5.2,
+      BOUDHA_HARMIKA_WIDTH_METERS,
+    ),
+    gold,
+  )
   harmika.position.y = 25.8
   harmika.castShadow = true
   upper.add(harmika)
@@ -694,17 +739,33 @@ function createStupa(scene: Scene) {
   for (let seam = -2; seam <= 2; seam += 1) {
     const seamY = 24.2 + seam * 0.82
     const frontSeam = new Mesh(
-      new BoxGeometry(7.28, 0.055, 0.06),
+      new BoxGeometry(
+        BOUDHA_HARMIKA_WIDTH_METERS + 0.08,
+        0.055,
+        0.06,
+      ),
       darkGold,
     )
-    frontSeam.position.set(0, seamY, 3.64)
+    frontSeam.position.set(
+      0,
+      seamY,
+      BOUDHA_HARMIKA_WIDTH_METERS / 2 + 0.04,
+    )
     upper.add(frontSeam)
 
     const sideSeam = new Mesh(
-      new BoxGeometry(0.06, 0.055, 7.28),
+      new BoxGeometry(
+        0.06,
+        0.055,
+        BOUDHA_HARMIKA_WIDTH_METERS + 0.08,
+      ),
       darkGold,
     )
-    sideSeam.position.set(3.64, seamY, 0)
+    sideSeam.position.set(
+      BOUDHA_HARMIKA_WIDTH_METERS / 2 + 0.04,
+      seamY,
+      0,
+    )
     upper.add(sideSeam)
   }
 
@@ -714,16 +775,37 @@ function createStupa(scene: Scene) {
     color: '#285b3d',
     roughness: 0.9,
   })
-  const greenSkirt = new Mesh(new BoxGeometry(7.72, 0.74, 7.72), green)
+  const greenSkirt = new Mesh(
+    new BoxGeometry(
+      BOUDHA_HARMIKA_WIDTH_METERS + 0.72,
+      0.74,
+      BOUDHA_HARMIKA_WIDTH_METERS + 0.72,
+    ),
+    green,
+  )
   greenSkirt.position.y = 28.45
   greenSkirt.castShadow = true
   upper.add(greenSkirt)
 
-  const redBand = new Mesh(new BoxGeometry(7.78, 0.28, 7.78), red)
+  const redBand = new Mesh(
+    new BoxGeometry(
+      BOUDHA_HARMIKA_WIDTH_METERS + 0.82,
+      0.28,
+      BOUDHA_HARMIKA_WIDTH_METERS + 0.82,
+    ),
+    red,
+  )
   redBand.position.y = 28.9
   upper.add(redBand)
 
-  const blueBand = new Mesh(new BoxGeometry(7.42, 0.24, 7.42), blue)
+  const blueBand = new Mesh(
+    new BoxGeometry(
+      BOUDHA_HARMIKA_WIDTH_METERS + 0.42,
+      0.24,
+      BOUDHA_HARMIKA_WIDTH_METERS + 0.42,
+    ),
+    blue,
+  )
   blueBand.position.y = 29.05
   upper.add(blueBand)
 
@@ -797,7 +879,7 @@ function createStupa(scene: Scene) {
     new SphereGeometry(0.58, 24, 16),
     gold,
   )
-  jewel.position.y = MONUMENT_HEIGHT
+  jewel.position.y = BOUDHA_TOTAL_HEIGHT_METERS
   upper.add(jewel)
 
   const pigeonMaterial = new MeshStandardMaterial({
@@ -807,19 +889,20 @@ function createStupa(scene: Scene) {
   const pigeonGeometry = new ConeGeometry(0.065, 0.2, 6)
   for (let i = 0; i < 42; i += 1) {
     const angle = (i * 2.399963229728653) % (Math.PI * 2)
-    const normalized = 0.24 + ((i * 37) % 61) / 100
-    const polar = normalized * 1.05
-    const radius = DOME_RADIUS + 0.08
+    const normalizedHeight =
+      0.18 + (((i * 37) % 61) / 100) * 0.68
+    const radius =
+      referenceDomeRadiusMeters(normalizedHeight) + 0.08
     const pigeon = new Mesh(pigeonGeometry, pigeonMaterial)
     pigeon.position.set(
-      Math.sin(polar) * Math.cos(angle) * radius,
-      5.15 + Math.cos(polar) * radius,
-      Math.sin(polar) * Math.sin(angle) * radius,
+      Math.cos(angle) * radius,
+      referenceDomeYMetres(normalizedHeight) + 0.05,
+      Math.sin(angle) * radius,
     )
     pigeon.rotation.z = Math.PI
     pigeon.rotation.y = angle
     pigeon.castShadow = true
-    lower.add(pigeon)
+    domeAssembly.add(pigeon)
   }
 
   scene.add(stupa)
@@ -827,6 +910,8 @@ function createStupa(scene: Scene) {
   return {
     stupa,
     lower,
+    sourceBaseFallback,
+    domeAssembly,
     plasterTexture,
     flagTop: new Vector3(0, 39.65, 0),
   }
@@ -939,7 +1024,7 @@ export function BoudhaPrototypeCanvas({
     const useLicensedModel = licensedModelRequested(window.location.search)
     const useSelectiveSurface = selectiveHybridRequested(window.location.search)
     const licensedFootprintRadius =
-      BOUDHA_TARGET_FOOTPRINT_METERS / 2
+      BOUDHA_BASE_FOOTPRINT_METERS / 2
     const licensedFootprintCorner =
       licensedFootprintRadius * Math.SQRT2
     const prayerWheelRadius = useLicensedModel
@@ -952,7 +1037,7 @@ export function BoudhaPrototypeCanvas({
       ? koraInnerRadius + 12
       : 45.5
     const contactShadowSize = useLicensedModel
-      ? BOUDHA_TARGET_FOOTPRINT_METERS * 1.2
+      ? BOUDHA_BASE_FOOTPRINT_METERS * 1.2
       : 56
     const flagAnchorRadius = useLicensedModel
       ? licensedFootprintCorner + 2
@@ -1071,7 +1156,11 @@ export function BoudhaPrototypeCanvas({
     contactShadow.position.y = 0.055
     scene.add(contactShadow)
 
-    const { lower, flagTop } = createStupa(scene)
+    const {
+      sourceBaseFallback,
+      domeAssembly,
+      flagTop,
+    } = createStupa(scene)
 
     if (useLicensedModel) {
       void loadLicensedStupaModel({
@@ -1101,7 +1190,7 @@ export function BoudhaPrototypeCanvas({
             }
           })
 
-          lower.visible = false
+          sourceBaseFallback.visible = false
           scene.add(group)
           licensedModelReady = true
 
@@ -1149,6 +1238,7 @@ export function BoudhaPrototypeCanvas({
           mesh.castShadow = true
           mesh.receiveShadow = true
           scene.add(mesh)
+          domeAssembly.visible = false
 
           selectiveSurfaceReady = true
 
