@@ -158,9 +158,9 @@ Still required before physical-device performance claims:
 
 ## Current phase
 
-**Phase 3P.7F-A — Monument scale/proportion correction**
+**Phase 3P.7F-B — Dome / middle-body silhouette correction**
 
-Status: **implementation verified; visual approval pending on `fix/monument-scale-proportions`**
+Status: **implementation and visual verification complete on `fix/monument-scale-proportions`**
 
 User screenshot review found that the released monument reads as a small, thin model inside the photographic courtyard.
 
@@ -183,29 +183,28 @@ Guardrails for 3P.7F-A:
 - do not restart point-cloud/surface experiments;
 - do not merge until the new desktop/mobile screenshots are inspected.
 
-## Phase 3P.7F-A verification
+## Phase 3P.7F verification
 
 PR:
 
 `#18 — fix: restore Boudha monument scale and mass`
 
-Verified on branch head:
+Current verified branch head before this documentation checkpoint:
 
-`065aa58511372c1f98c63f72e884e3894c5ffc87`
+`eb564c12d91707696ad8556aa18ddae07ce73b69`
 
-Gates:
+3P.7F-A established the broader 82.2 m footprint while retaining the 43.25 m height.
 
-- `CI #258` — **passed**;
-- `Deploy GitHub Pages #11` PR build — **passed**;
-- `Surface Reconstruction #51` — **passed**;
-- default prototype — **passed**;
-- mobile prototype — **passed**;
-- reduced-motion prototype — **passed**;
-- uploaded-model probe — **passed**;
-- point-cloud probe — **passed**;
-- Spark / PlayCanvas regressions — **passed**.
+3P.7F-B then corrected the remaining thin middle silhouette by applying a smooth height-based radial profile to the licensed lower mesh:
 
-Runtime model metadata now reports:
+- terraces/base stay essentially unchanged;
+- dome expansion begins gradually above the lower terraces;
+- the belly reaches roughly 30–35% additional radial mass around the strongest middle band;
+- the expansion tapers toward the harmika transition;
+- the deformation is capped inside the established outer footprint;
+- vertical scale remains unchanged.
+
+Runtime model metadata remains:
 
 ```json
 {
@@ -217,21 +216,38 @@ Runtime model metadata now reports:
 }
 ```
 
-Screenshot review:
+Verification on the 3P.7F-B implementation:
 
-- desktop monument mass is dramatically stronger and no longer reads as a miniature;
-- mobile remains overflow-safe with all controls visible;
-- the camera/FOV was intentionally unchanged, so the visual difference comes from corrected monument mass rather than a framing trick.
+- `CI #260` — **passed**;
+- `Deploy GitHub Pages #13` PR build — **passed**;
+- `Surface Reconstruction #53` — **passed**;
+- default prototype — **passed**;
+- mobile prototype — **passed**;
+- reduced-motion prototype — **passed**;
+- uploaded-model probe — **passed**;
+- point-cloud probe — **passed**;
+- Spark / PlayCanvas regressions — **passed**;
+- mobile layout: 390 × 844 with no horizontal overflow — **passed**;
+- mobile touch orbit/reset — **passed**.
 
-PR #18 remains **unmerged** pending user visual approval.
+Visual review of the generated runtime screenshots confirms:
+
+- the base remains broad and grounded;
+- the dome/middle body now reads as heavy and dominant rather than thin;
+- the harmika/spire remains unchanged;
+- the camera/FOV is still unchanged, proving the silhouette improvement comes from geometry rather than zoom.
+
+Runtime screenshot artifact:
+
+`phase-2-runtime-smoke` — artifact ID `10978138744`.
 
 ## Next phase
 
-Compare the Phase 3P.7F-A screenshot with the released screenshot.
+Merge PR #18 after its final documentation-only check is green.
 
-If the new mass is approved, either merge as-is or make a small Phase 3P.7F-B camera/framing adjustment.
+After merge, verify production deployment and production browser smoke.
 
-If it is too wide, tune the footprint target before merge.
+Do not make further geometry changes unless the new live wide-screen composition reveals a specific remaining silhouette problem. Any next visual adjustment should be a small camera/framing phase rather than another global scale change.
 
 ## Resume rule
 
