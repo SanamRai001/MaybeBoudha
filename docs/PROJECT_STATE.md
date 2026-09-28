@@ -12,7 +12,7 @@ The current public release is an **honest synthetic visual feasibility study**, 
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Current branch: `main`
+- Current branch: `fix/monument-scale-proportions`
 - Public URL: `https://sanamrai001.github.io/MaybeBoudha/`
 
 ## Last completed phase
@@ -156,15 +156,40 @@ Still required before physical-device performance claims:
 - GitHub Pages currently returns a 10-minute cache policy for the checked release resources; the release verifier records the live headers rather than assuming CDN behavior.
 - The release pipeline now exercises production after deployment, reducing the chance of a green build hiding a broken public path.
 
+## Current phase
+
+**Phase 3P.7F-A — Monument scale/proportion correction**
+
+Status: **in progress on `fix/monument-scale-proportions`**
+
+User screenshot review found that the released monument reads as a small, thin model inside the photographic courtyard.
+
+Root cause confirmed in code:
+
+- the packed MiniWorld3D source is approximately 108 × 54.4 × 108 in source proportions;
+- its vertical scale was calibrated to 43.25 m;
+- its entire horizontal footprint was then compressed to only 43.5 m;
+- the default route hides the procedural lower monument and therefore inherits that compressed lower silhouette.
+
+This phase corrects the horizontal visual calibration to **82.2 m** while keeping the 43.25 m height unchanged. The target is intentionally approximate and corresponds to the square-equivalent width of the published 6,756 m² stupa area.
+
+Related scene radii (prayer-wheel ring, kora path, contact shadow, fallback scale figures, and prayer-flag anchors) are recalibrated with the larger footprint.
+
+Guardrails for 3P.7F-A:
+
+- do not change the upper harmika/spire;
+- do not change the camera/FOV in this first correction;
+- do not change the photographic environment;
+- do not restart point-cloud/surface experiments;
+- do not merge until the new desktop/mobile screenshots are inspected.
+
 ## Next phase
 
-Do **not** automatically restart field capture or geometry experiments.
+Run the full existing test/runtime gates and inspect the new screenshot against the user-provided release screenshot.
 
-The next product decision should be one of:
+If the monument mass is correct, keep the geometry correction and only make small camera/framing adjustments if still needed.
 
-1. stop here and use the public prototype as a portfolio case study;
-2. do a separate portfolio/public-release polish phase for README screenshots/video and project write-up;
-3. reopen real-capture work only if a better source path appears or the field-capture decision is explicitly changed.
+If it is too wide, tune the footprint target before merge.
 
 ## Resume rule
 
