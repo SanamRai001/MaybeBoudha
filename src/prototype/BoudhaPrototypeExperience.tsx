@@ -7,6 +7,7 @@ export function BoudhaPrototypeExperience() {
   const reducedMotion = useReducedMotion()
   const [ready, setReady] = useState(false)
   const [focusMode, setFocusMode] = useState(false)
+  const [resetViewToken, setResetViewToken] = useState(0)
   const handleReady = useCallback(() => setReady(true), [])
 
   return (
@@ -19,9 +20,11 @@ export function BoudhaPrototypeExperience() {
         .filter(Boolean)
         .join(' ')}
       data-prototype-state={ready ? 'ready' : 'loading'}
+      data-reset-view-token={resetViewToken}
     >
       <BoudhaPrototypeCanvas
         reducedMotion={reducedMotion}
+        resetViewToken={resetViewToken}
         onReady={handleReady}
       />
 
@@ -55,14 +58,25 @@ export function BoudhaPrototypeExperience() {
             <a href="?renderer=rad">Engineering proof</a>
           </div>
 
-          <button
-            className="prototype-focus-toggle"
-            type="button"
-            aria-pressed={focusMode}
-            onClick={() => setFocusMode((current) => !current)}
-          >
-            {focusMode ? 'Show story' : 'Focus view'}
-          </button>
+          <div className="prototype-view-actions">
+            <button
+              className="prototype-view-button prototype-reset-view"
+              type="button"
+              disabled={!ready}
+              onClick={() => setResetViewToken((current) => current + 1)}
+            >
+              Reset view
+            </button>
+
+            <button
+              className="prototype-view-button prototype-focus-toggle"
+              type="button"
+              aria-pressed={focusMode}
+              onClick={() => setFocusMode((current) => !current)}
+            >
+              {focusMode ? 'Show story' : 'Focus view'}
+            </button>
+          </div>
         </div>
       </header>
 
