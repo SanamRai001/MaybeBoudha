@@ -165,8 +165,15 @@ export function SurfaceReconstructionCanvas({
 
         camera.position.set(radius * 0.95, finalSize.y * 0.64, radius * 1.28)
         camera.lookAt(controls.target)
+        camera.updateMatrixWorld(true)
 
         scene.add(mesh)
+        mesh.updateMatrixWorld(true)
+
+        // Headless Chromium may throttle requestAnimationFrame. Render one
+        // deterministic frame before reporting ready so the smoke screenshot
+        // proves actual surface visibility rather than only PLY parsing.
+        renderer.render(scene, camera)
 
         const index = geometry.getIndex()
         const positionCount = geometry.getAttribute('position').count
