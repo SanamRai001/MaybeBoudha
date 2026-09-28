@@ -1,0 +1,150 @@
+name: Surface Reconstruction
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/surface-reconstruction.yml"
+      - "scripts/reconstruct-surface.py"
+      - "scripts/runtime-smoke.mjs"
+      - "src/App.tsx"
+      - "src/experienceMode.ts"
+      - "src/experienceMode.test.ts"
+      - "src/surface/**"
+      - "boudhanath_stupa_-_pointcloud.glb"
+      - "package.json"
+      - "package-lock.json"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/surface-reconstruction.yml"
+      - "scripts/reconstruct-surface.py"
+      - "scripts/runtime-smoke.mjs"
+      - "src/App.tsx"
+      - "src/experienceMode.ts"
+      - "src/experienceMode.test.ts"
+      - "src/surface/**"
+      - "boudhanath_stupa_-_pointcloud.glb"
+      - "package.json"
+      - "package-lock.json"
+
+permissions:
+  contents: read
+
+jobs:
+  reconstruct:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install locked application dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Run application tests
+        run: npm test
+
+      - name: Use Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deterministic reconstruction dependency
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --only-binary=:all: open3d==0.20.0
+
+      - name: Reconstruct licensed point cloud
+        run: |
+          mkdir -p .phase3p4
+          python scripts/reconstruct-surface.py \
+            boudhanath_stupa_-_pointcloud.glb \
+            .phase3p4/boudha-poisson.ply \
+            .phase3p4/surface-report.json \
+            --depth 9 \
+            --density-quantile 0.02 \
+            --target-triangles 220000
+
+      - name: Validate reconstruction outputs
+        run: |
+          test -s .phase3p4/boudha-poisson.ply
+          test -s .phase3p4/surface-report.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          report = json.loads(Path(".phase3p4/surface-report.json").read_text())
+          output = report["output"]
+
+          assert output["vertexCount"] > 1000, output
+          assert output["triangleCount"] > 1000, output
+          assert output["bytes"] > 10000, output
+
+          print(json.dumps(report, indent=2))
+          PY
+
+      - name: Stage generated surface for browser proof
+        run: |
+          mkdir -p public/generated
+          cp .phase3p4/boudha-poisson.ply public/generated/
+          cp .phase3p4/surface-report.json public/generated/
+
+      - name: Build application bundle
+        run: npm run build
+
+      - name: Start preview server
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/maybeboudha-surface-preview.log 2>&1 &
+          echo $! > /tmp/maybeboudha-surface-preview.pid
+
+          for attempt in $(seq 1 40); do
+            if curl --silent --fail http://127.0.0.1:4173/ > /dev/null; then
+              exit 0
+            fi
+            sleep 0.25
+          done
+
+          cat /tmp/maybeboudha-surface-preview.log
+          exit 1
+
+      - name: Install Chromium
+        run: npx --yes playwright@1.55.0 install --with-deps chromium
+
+      - name: Resolve full Chromium binary
+        run: |
+          CHROME="$(find "$HOME/.cache/ms-playwright" -type f -path "*/chromium-*/chrome-linux/chrome" | head -n 1)"
+          if [ -z "$CHROME" ]; then
+            echo "Unable to locate full Playwright Chromium binary."
+            exit 1
+          fi
+          echo "CHROME=$CHROME" >> "$GITHUB_ENV"
+
+      - name: Probe reconstructed surface
+        run: |
+          timeout 90s node scripts/runtime-smoke.mjs \
+            surface \
+            /tmp/maybeboudha-phase-3p4-surface.png
+
+      - name: Upload Phase 3P.4 proof artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase-3p4-surface-proof
+          path: |
+            .phase3p4/boudha-poisson.ply
+            .phase3p4/surface-report.json
+            /tmp/maybeboudha-phase-3p4-surface.png
+            /tmp/maybeboudha-surface-preview.log
+          if-no-files-found: warn
