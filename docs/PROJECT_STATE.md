@@ -144,9 +144,17 @@ The Pages PR build successfully validated a `/MaybeBoudha/` bundle.
 
 ## Current blocker
 
-The first real deployment run:
+Latest verified `main`:
 
-`Deploy GitHub Pages #2`
+`8054f681fe92c8cdbb850fe2c3f28f146c52f88b`
+
+Normal CI:
+
+`CI #250 — green`
+
+Latest deployment run:
+
+`Deploy GitHub Pages #4`
 
 built and validated the production bundle successfully, then failed at:
 
@@ -156,7 +164,7 @@ with:
 
 `Get Pages site failed ... repository has Pages enabled and configured to build using GitHub Actions ... Not Found`
 
-This means the repository does not yet have a GitHub Pages site enabled.
+The application tests, production Pages build, and project-path integrity check all passed. The failure is still only at `Configure GitHub Pages`, which means the repository does not yet have a GitHub Pages site enabled.
 
 ### Required one-time user action
 
@@ -171,7 +179,7 @@ MaybeBoudha
 → GitHub Actions
 ```
 
-After that, rerun the failed `Deploy GitHub Pages #2` workflow or trigger `Deploy GitHub Pages` manually.
+After that, rerun the failed `Deploy GitHub Pages #4` workflow or trigger `Deploy GitHub Pages` manually.
 
 No code change is required for this blocker.
 
