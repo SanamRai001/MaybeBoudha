@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3P.4 — Deterministic Boudhanath surface reconstruction: complete and merged in PR #9. Phase 3P.5 is next.**
+**Phase 3P.5 — Selective geometry hybridization: engineering proof complete; default visual remains the Phase 3P.2 hybrid.**
 
 The project now has verified browser evidence for both the renderer choice and the selected large-scene delivery path:
 
@@ -142,6 +142,7 @@ Technical renderer/delivery modes:
 ?renderer=playcanvas  # Phase 2 fallback comparison
 ?pointcloud=1         # Phase 3P.3 licensed point-cloud A/B
 ?surface=1            # Phase 3P.4 deterministic Poisson surface A/B
+?selective=1          # Phase 3P.5 selective source-derived dome A/B (requires generated surface staged)
 ```
 
 The Phase 1 recoverable preparation failure path remains available with:
@@ -168,6 +169,7 @@ The `?renderer=rad` route expects generated RAD/RADC files under `/rad/`; normal
 - [Visual Prototype](docs/VISUAL_PROTOTYPE.md)
 - [Point-Cloud Spike](docs/POINT_CLOUD_SPIKE.md)
 - [Surface Reconstruction Spike](docs/SURFACE_RECONSTRUCTION_SPIKE.md)
+- [Selective Hybrid Spike](docs/SELECTIVE_HYBRID_SPIKE.md)
 - [Project State](docs/PROJECT_STATE.md)
 
 ## Development rules
@@ -222,14 +224,31 @@ The resulting surface is recognizable and useful as geometry, but its monochrome
 
 See [Surface Reconstruction Spike](docs/SURFACE_RECONSTRUCTION_SPIKE.md).
 
+## Phase 3P.5 selective-hybrid result
+
+The deterministic Poisson mesh was tested as a **dome/body-only** source layer while preserving the stronger MiniWorld base, photographic eyes, refined harmika/spire, and photographic surroundings.
+
+Final crop:
+
+- source triangles: **220,000**;
+- selected triangles: **59,011**;
+- region: **7.10–23.45 m Y**, maximum radius **19.70 m**;
+- deterministic Chromium proof: passed.
+
+The source-derived dome is useful geometric evidence, but the lower transition remains visibly rougher than the existing hybrid.
+
+**Decision: keep the Phase 3P.2 hybrid as the default.**
+
+See [Selective Hybrid Spike](docs/SELECTIVE_HYBRID_SPIKE.md).
+
 ## Immediate next step
 
-**Phase 3P.5 — Selective geometry hybridization**
+**Phase 3P.6 — Real-capture go/no-go review**
 
-Use only the reconstructed regions that materially improve the existing hybrid while preserving the stronger photographic environment, materials, eye treatment, refined upper monument, and cinematic composition.
+The strong existing-source path has now been tested far enough to make the next decision a product decision rather than another geometry experiment.
 
-Field clearance remains prepared and documented, but intentionally deferred until the strongest legally reusable existing-source path is exhausted.
+Review the current default experience and decide whether its promise justifies reactivating **Phase 3C.2 field clearance** for a controlled partial real capture.
 
-Do not begin a real systematic Boudhanath photo dataset until Phase 3C.2 is deliberately reactivated and satisfied.
+Do **not** send permission outreach automatically.
 
 See [ROADMAP.md](docs/ROADMAP.md) for phase boundaries.

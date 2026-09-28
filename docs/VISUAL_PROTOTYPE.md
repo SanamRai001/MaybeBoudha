@@ -230,3 +230,58 @@ continue integrating/optimizing it without requiring a new field capture.
 If no:
 
 we now have enough evidence to decide whether a controlled Boudhanath capture is worth reactivating Phase 3C.2 field clearance.
+
+
+## Phase 3P.4 — Deterministic reconstructed surface
+
+The licensed 99,992-point source was converted into a deterministic Open3D Poisson surface.
+
+Result:
+
+- 110,643 vertices;
+- 220,000 triangles;
+- recognizable Boudhanath geometry;
+- successful browser proof.
+
+The full surface was rejected as the default because it lacked photographic color/detail and produced weaker ground/base and upper-monument presentation than the Phase 3P.2 hybrid.
+
+See `SURFACE_RECONSTRUCTION_SPIKE.md`.
+
+## Phase 3P.5 — Selective source-derived geometry
+
+The final existing-source experiment kept only the Poisson dome/body while preserving the visually stronger parts of Phase 3P.2.
+
+Final composition tested:
+
+```text
+MiniWorld plinth/base
+        +
+selected Poisson dome/body
+        +
+photographic eye façade
+        +
+refined harmika / 13-stage spire
+        +
+photographic courtyard panorama
+```
+
+Final selection:
+
+- source triangles: **220,000**;
+- selected triangles: **59,011**;
+- Y range: **7.10–23.45 m**;
+- max radius: **19.70 m**.
+
+The final Chromium A/B was technically successful but did not beat the Phase 3P.2 default.
+
+The reconstructed dome is smoother/source-specific, but its lower transition still contains visible irregularity and the monochrome source cannot provide the missing photographic surface realism.
+
+### Phase 3P.5 verdict
+
+**Reject the selective mesh as the default visual.**
+
+Keep the Phase 3P.2 hybrid.
+
+The project has now reached diminishing returns from this existing monochrome geometric source. A further major realism jump requires better source data rather than more hand-modeling/cropping.
+
+See `SELECTIVE_HYBRID_SPIKE.md`.

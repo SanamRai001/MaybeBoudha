@@ -3,8 +3,8 @@ import { writeFile } from 'node:fs/promises'
 
 const [renderer, outputPath] = process.argv.slice(2)
 
-if (!['spark', 'playcanvas', 'rad', 'prototype', 'licensed', 'pointcloud', 'surface'].includes(renderer) || !outputPath) {
-  console.error('Usage: node scripts/runtime-smoke.mjs <spark|playcanvas|rad|prototype|licensed|pointcloud|surface> <output.png>')
+if (!['spark', 'playcanvas', 'rad', 'prototype', 'licensed', 'pointcloud', 'surface', 'selective'].includes(renderer) || !outputPath) {
+  console.error('Usage: node scripts/runtime-smoke.mjs <spark|playcanvas|rad|prototype|licensed|pointcloud|surface|selective> <output.png>')
   process.exit(2)
 }
 
@@ -14,7 +14,7 @@ if (!chrome) {
   process.exit(2)
 }
 
-const port = renderer === 'spark' ? 9222 : renderer === 'playcanvas' ? 9223 : renderer === 'rad' ? 9224 : renderer === 'prototype' ? 9225 : renderer === 'licensed' ? 9226 : renderer === 'pointcloud' ? 9227 : 9228
+const port = renderer === 'spark' ? 9222 : renderer === 'playcanvas' ? 9223 : renderer === 'rad' ? 9224 : renderer === 'prototype' ? 9225 : renderer === 'licensed' ? 9226 : renderer === 'pointcloud' ? 9227 : renderer === 'surface' ? 9228 : 9229
 const targetUrl = renderer === 'prototype'
   ? 'http://127.0.0.1:4173/'
   : renderer === 'licensed'
@@ -23,7 +23,9 @@ const targetUrl = renderer === 'prototype'
       ? 'http://127.0.0.1:4173/?pointcloud=1'
       : renderer === 'surface'
         ? 'http://127.0.0.1:4173/?surface=1'
-        : `http://127.0.0.1:4173/?renderer=${renderer}`
+        : renderer === 'selective'
+          ? 'http://127.0.0.1:4173/?selective=1'
+          : `http://127.0.0.1:4173/?renderer=${renderer}`
 const headful = process.env.MAYBEBOUDHA_HEADFUL === '1'
 const browserArgs = [
   '--no-sandbox',
