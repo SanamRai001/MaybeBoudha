@@ -234,4 +234,4 @@ Phase 3P.3 exit criteria are met:
 5. limitations documented — **met**
 6. explicit decision made — **met**
 
-**Phase 3P.3 status: engineering complete on PR #7; final documentation verification and merge pending.**
+**Phase 3P.3 status: complete and merged in PR #7.**
