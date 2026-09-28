@@ -1,6 +1,6 @@
 # MaybeBoudha
 
-An experimental browser-based **photorealistic digital heritage experience** centered on Boudhanath Stupa in Kathmandu, Nepal.
+An experimental browser-based **digital heritage visual study** centered on Boudhanath Stupa in Kathmandu, Nepal.
 
 The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudha aims to make the visitor feel spatially present at Boudhanath through a real-scene reconstruction, calm interaction, and respectful storytelling.
 
@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3P.7C — Environment, atmosphere and performance polish is complete and merged in PR #13. Phase 3P.7D ambient sound and release readiness is next.**
+**Phase 3P.7D — Ambient sound and release readiness is implemented and verified on PR #14; final documentation-complete verification is pending.**
 
 The project now has verified browser evidence for both the renderer choice and the selected large-scene delivery path:
 
@@ -91,6 +91,7 @@ It combines:
 - cinematic camera entrance;
 - orbit/zoom interaction;
 - atmospheric lighting/fog;
+- optional procedural ambience that is off by default;
 - explicit disclosure that the monument is **not scan data**.
 
 This is still a **visual-feasibility study**, not a measured reconstruction or digital twin.
@@ -173,6 +174,7 @@ The `?renderer=rad` route expects generated RAD/RADC files under `/rad/`; normal
 - [Real-Capture Go / No-Go](docs/REAL_CAPTURE_GO_NO_GO.md)
 - [Phase 3P.7B Interaction + Mobile Proof](docs/PHASE_3P7B_INTERACTION_MOBILE.md)
 - [Phase 3P.7C Atmosphere + Performance Proof](docs/PHASE_3P7C_ATMOSPHERE_PERFORMANCE.md)
+- [Phase 3P.7D Audio + Release Readiness](docs/PHASE_3P7D_AUDIO_RELEASE.md)
 - [Project State](docs/PROJECT_STATE.md)
 
 ## Development rules
@@ -246,14 +248,17 @@ See [Selective Hybrid Spike](docs/SELECTIVE_HYBRID_SPIKE.md).
 
 ## Immediate next step
 
-Continue with **Phase 3P.7D — ambient sound and release readiness**:
+Finish the documentation-complete verification for **Phase 3P.7D** and merge PR #14.
 
-- optional ambient sound with explicit controls;
-- no forced audio playback;
-- pause/suppress audio when appropriate;
-- audio licensing/provenance;
-- public-deployment metadata;
-- portfolio screenshots/media;
+After that, continue with **Phase 3P.7E — public prototype deployment and portfolio packaging**:
+
+- choose an actual static hosting target;
+- deploy the current release candidate unchanged;
+- add canonical / `og:url` from the real deployment URL;
+- publish a social-preview image;
+- verify production asset/cache behavior;
+- run production URL desktop/mobile smoke;
+- capture final portfolio media;
 - no monument/source geometry changes.
 
 The current decision remains **NO-GO for field capture right now**.
