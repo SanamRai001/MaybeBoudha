@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3P.7B — Camera, interaction, mobile and accessibility polish is complete and merged in PR #12; Phase 3P.7C environment/atmosphere/performance polish is next.**
+**Phase 3P.7C — Environment, atmosphere and performance polish is complete on PR #13; final documentation-complete verification is pending.**
 
 The project now has verified browser evidence for both the renderer choice and the selected large-scene delivery path:
 
@@ -172,6 +172,7 @@ The `?renderer=rad` route expects generated RAD/RADC files under `/rad/`; normal
 - [Selective Hybrid Spike](docs/SELECTIVE_HYBRID_SPIKE.md)
 - [Real-Capture Go / No-Go](docs/REAL_CAPTURE_GO_NO_GO.md)
 - [Phase 3P.7B Interaction + Mobile Proof](docs/PHASE_3P7B_INTERACTION_MOBILE.md)
+- [Phase 3P.7C Atmosphere + Performance Proof](docs/PHASE_3P7C_ATMOSPHERE_PERFORMANCE.md)
 - [Project State](docs/PROJECT_STATE.md)
 
 ## Development rules
@@ -245,16 +246,17 @@ See [Selective Hybrid Spike](docs/SELECTIVE_HYBRID_SPIKE.md).
 
 ## Immediate next step
 
-Continue with **Phase 3P.7C — environment, atmosphere and performance polish**:
+Finish the final documentation-complete verification for **Phase 3P.7C** and merge PR #13.
 
-- prayer-flag motion quality;
-- photographic environment blending;
-- lighting/fog balance;
-- pixel-ratio / quality policy;
-- lightweight runtime performance instrumentation;
-- screenshot-driven atmosphere review.
+After that, continue with **Phase 3P.7D — ambient sound and release readiness**:
 
-Do not change monument source geometry in this subphase.
+- optional ambient sound with explicit controls;
+- no forced audio playback;
+- pause/suppress audio when appropriate;
+- audio licensing/provenance;
+- public-deployment metadata;
+- portfolio screenshots/media;
+- no monument/source geometry changes.
 
 The current decision remains **NO-GO for field capture right now**.
 

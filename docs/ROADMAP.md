@@ -269,17 +269,44 @@ See `PHASE_3P7B_INTERACTION_MOBILE.md`.
 
 #### Phase 3P.7C — Environment, atmosphere and performance polish
 
-**Status: next.**
+**Status: implementation complete on PR #13; final documentation-complete verification pending.**
+
+Delivered:
+
+- calmer multi-axis prayer-flag motion;
+- reduced-motion-safe flag behavior;
+- eased photographic-environment cross-fade;
+- refined fog/exposure/sun/fill balance;
+- device-aware mobile / balanced / high quality tiers;
+- bounded renderer DPR;
+- tier-aware shadow-map size and anisotropy;
+- lightweight smoothed FPS telemetry;
+- deterministic browser assertions for quality/DPR/FPS;
+- desktop/mobile/reduced-motion screenshot review;
+- existing MiniWorld / point-cloud / Spark / PlayCanvas / RAD / surface regressions preserved.
+
+Verified on implementation head `61e5cdf1149264c51e00362508e98ca7193bd7f0`:
+
+- CI #231 — green;
+- RAD Pipeline #128 — green;
+- Surface Reconstruction #37 — green.
+
+See `PHASE_3P7C_ATMOSPHERE_PERFORMANCE.md`.
+
+#### Phase 3P.7D — Ambient sound and release readiness
+
+**Status: next after 3P.7C merge.**
 
 Build:
 
-- improve prayer-flag motion quality;
-- refine photographic-environment blending;
-- refine lighting/fog balance;
-- define pixel-ratio / quality behavior;
-- add lightweight runtime performance instrumentation;
-- use screenshot evidence for visual decisions;
-- keep monument/source geometry unchanged.
+- optional ambient sound;
+- explicit user audio control;
+- no forced audio playback;
+- pause/suppress audio when appropriate;
+- audio licensing/provenance;
+- public-deployment metadata;
+- portfolio screenshots/media;
+- no monument/source geometry changes.
 
 Later 3P.7 work may include:
 
