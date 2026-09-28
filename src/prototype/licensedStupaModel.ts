@@ -10,8 +10,8 @@ import {
   Vector3,
 } from 'three'
 
-const TARGET_HEIGHT_METERS = 43.25
-const TARGET_FOOTPRINT_METERS = 43.5
+export const BOUDHA_TARGET_HEIGHT_METERS = 43.25
+export const BOUDHA_TARGET_FOOTPRINT_METERS = 82.2
 const QUANTIZATION_MAX = 65_535
 const DEFAULT_MODEL_HEIGHT_FRACTION = 0.55
 
@@ -342,13 +342,15 @@ export async function loadLicensedStupaModel(
   mesh.receiveShadow = true
 
   // The downloaded STL is a printable interpretation (~108 × 54.4 × 108).
-  // Uniform scaling to the monument's real height would create an implausible
-  // ~86 m footprint. For this visual study we adapt the footprint and height
-  // independently; this is explicitly not survey-grade geometry.
+  // Its broad footprint-to-height proportion is much closer to Boudhanath's
+  // documented mandala mass than the previous 43.5 m horizontal compression.
+  // Keep the published 43.25 m height and use an ~82.2 m visual footprint,
+  // approximately the square-equivalent width of the published 6,756 m²
+  // stupa area. This remains visual calibration, not survey-grade geometry.
   mesh.scale.set(
-    TARGET_FOOTPRINT_METERS / sourceSize.x,
-    TARGET_HEIGHT_METERS / sourceSize.y,
-    TARGET_FOOTPRINT_METERS / sourceSize.z,
+    BOUDHA_TARGET_FOOTPRINT_METERS / sourceSize.x,
+    BOUDHA_TARGET_HEIGHT_METERS / sourceSize.y,
+    BOUDHA_TARGET_FOOTPRINT_METERS / sourceSize.z,
   )
 
   const group = new Group()
