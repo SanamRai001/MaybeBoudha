@@ -20,11 +20,11 @@ export type LicensedStupaModelOptions = {
 }
 
 const MODEL_PART_URLS = [
-  '/models/boudha/mbv2-0.b64',
-  '/models/boudha/mbv2-1.b64',
-  '/models/boudha/mbv2-2.b64',
-  '/models/boudha/mbv2-3.b64',
-] as const
+  'models/boudha/mbv2-0.b64',
+  'models/boudha/mbv2-1.b64',
+  'models/boudha/mbv2-2.b64',
+  'models/boudha/mbv2-3.b64',
+].map((path) => `${import.meta.env.BASE_URL}${path}`)
 
 type Cursor = {
   offset: number

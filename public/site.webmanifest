@@ -2,7 +2,8 @@
   "name": "MaybeBoudha",
   "short_name": "MaybeBoudha",
   "description": "An interactive synthetic visual study of Boudhanath Stupa in Kathmandu.",
-  "start_url": "/",
+  "start_url": ".",
+  "scope": ".",
   "display": "standalone",
   "background_color": "#0b0d0c",
   "theme_color": "#0b0d0c"

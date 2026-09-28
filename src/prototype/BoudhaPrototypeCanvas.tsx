@@ -66,7 +66,7 @@ const MONUMENT_HEIGHT = 43.25
 const BOUDHA_REFERENCE_TEXTURE_URL =
   'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Boudha_eyes.jpg/960px-Boudha_eyes.jpg'
 
-const BOUDHA_SURROUNDINGS_PANORAMA_URL = '/images/boudha-surroundings.jpg'
+const BOUDHA_SURROUNDINGS_PANORAMA_URL = `${import.meta.env.BASE_URL}images/boudha-surroundings.jpg`
 
 function makeContactShadowTexture() {
   const canvas = document.createElement('canvas')
