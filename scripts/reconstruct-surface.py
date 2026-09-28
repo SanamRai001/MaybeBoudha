@@ -289,6 +289,10 @@ def main() -> None:
         n_threads=-1,
     )
 
+    density_values = np.asarray(densities)
+    threshold = float(np.quantile(density_values, args.density_quantile))
+    mesh.remove_vertices_by_mask(density_values < threshold)
+
     source_box = pcd.get_axis_aligned_bounding_box()
     extent = source_box.get_extent()
     padding = max(float(np.max(extent)) * 0.015, 1e-6)
@@ -297,13 +301,6 @@ def main() -> None:
         source_box.max_bound + padding,
     )
     mesh = mesh.crop(crop_box)
-
-    density_values = np.asarray(densities)
-    if len(density_values) == len(np.asarray(mesh.vertices)):
-        threshold = float(np.quantile(density_values, args.density_quantile))
-        mesh.remove_vertices_by_mask(density_values < threshold)
-    else:
-        threshold = None
 
     triangle_count_before_components = len(mesh.triangles)
 
