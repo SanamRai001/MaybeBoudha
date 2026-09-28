@@ -892,7 +892,7 @@ h1 {
   gap: 20px;
 }
 
-.prototype-focus-toggle {
+.prototype-view-button {
   min-height: 34px;
   padding: 0 12px;
   border: 1px solid rgba(255, 241, 215, 0.17);
@@ -911,14 +911,14 @@ h1 {
     background 180ms ease;
 }
 
-.prototype-focus-toggle:hover,
-.prototype-focus-toggle:focus-visible {
+.prototype-view-button:hover,
+.prototype-view-button:focus-visible {
   border-color: rgba(239, 201, 121, 0.46);
   background: rgba(31, 24, 17, 0.52);
   color: #f4d99d;
 }
 
-.prototype-focus-toggle:focus-visible {
+.prototype-view-button:focus-visible {
   outline: 2px solid rgba(239, 201, 121, 0.75);
   outline-offset: 3px;
 }
@@ -1038,7 +1038,7 @@ h1 {
     gap: 10px;
   }
 
-  .prototype-focus-toggle {
+  .prototype-view-button {
     min-height: 32px;
     padding-inline: 10px;
   }
@@ -1057,7 +1057,7 @@ h1 {
     margin-left: auto;
   }
 
-  .prototype-focus-toggle {
+  .prototype-view-button {
     font-size: 0.58rem;
   }
 
@@ -1094,5 +1094,36 @@ h1 {
 
   .prototype-page.is-ready .prototype-explore-hint {
     display: none;
+  }
+}
+
+
+/* Phase 3P.7B — camera and interaction controls */
+
+.prototype-view-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.prototype-view-button:disabled {
+  opacity: 0.38;
+  cursor: default;
+  pointer-events: none;
+}
+
+@media (max-width: 620px) {
+  .prototype-header-meta {
+    display: none;
+  }
+
+  .prototype-view-actions {
+    gap: 6px;
+  }
+
+  .prototype-view-button {
+    min-height: 30px;
+    padding-inline: 9px;
+    font-size: 0.56rem;
   }
 }
