@@ -2,11 +2,15 @@ export const BOUDHA_TOTAL_HEIGHT_METERS = 43.25
 export const BOUDHA_DOME_DIAMETER_METERS = 120 * 0.3048
 export const BOUDHA_DOME_RADIUS_METERS = BOUDHA_DOME_DIAMETER_METERS / 2
 
-// Visual calibration from multiple front / side references. This is not a
-// survey dimension: the official UNESCO/DoA material gives the dome diameter
-// and total height, while the outer terrace width is calibrated by comparing
-// the terrace-to-dome ratio across the cited reference photographs.
-export const BOUDHA_BASE_FOOTPRINT_METERS = 52
+// Gutschow's architectural dimensions are quoted by Tevonian (2024):
+// lowest plinth 270.20 ft × 272.40 ft. Keep the two axes independently rather
+// than turning the published area into an invented square dimension.
+export const BOUDHA_BASE_FOOTPRINT_X_METERS = 270.2 * 0.3048
+export const BOUDHA_BASE_FOOTPRINT_Z_METERS = 272.4 * 0.3048
+export const BOUDHA_BASE_FOOTPRINT_MAX_METERS = Math.max(
+  BOUDHA_BASE_FOOTPRINT_X_METERS,
+  BOUDHA_BASE_FOOTPRINT_Z_METERS,
+)
 
 export const BOUDHA_DOME_BASE_Y_METERS = 5.15
 export const BOUDHA_DOME_TOP_Y_METERS = 23.2
