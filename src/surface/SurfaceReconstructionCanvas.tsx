@@ -5,6 +5,7 @@ import {
   Box3,
   Color,
   DirectionalLight,
+  DoubleSide,
   Mesh,
   MeshPhysicalMaterial,
   PerspectiveCamera,
@@ -139,6 +140,7 @@ export function SurfaceReconstructionCanvas({
           metalness: 0.02,
           clearcoat: 0.04,
           clearcoatRoughness: 0.72,
+          side: DoubleSide,
         })
 
         mesh = new Mesh(geometry, material)
