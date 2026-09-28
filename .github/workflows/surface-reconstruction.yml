@@ -34,19 +34,18 @@ on:
 permissions:
   contents: read
 
-env:
-  SOURCE_GLB_SHA256: ff5ef7d2c124953b6e053a98b945ef3cad50b8ab524e31c7d78bb6737307169c
-  OPEN3D_VERSION: 0.20.0
-  PYTHON_VERSION: "3.11"
-
 jobs:
   reconstruct:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 35
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Verify source GLB checksum
+        run: |
+          echo "ff5ef7d2c124953b6e053a98b945ef3cad50b8ab524e31c7d78bb6737307169c  boudhanath_stupa_-_pointcloud.glb" | sha256sum --check -
 
       - name: Use Node.js 24
         uses: actions/setup-node@v4
@@ -61,26 +60,23 @@ jobs:
       - name: Run application tests
         run: npm test
 
-      - name: Verify unchanged source GLB
-        run: |
-          echo "$SOURCE_GLB_SHA256  boudhanath_stupa_-_pointcloud.glb" | sha256sum --check -
-
-      - name: Extract transformed points and normals
+      - name: Extract transformed source points and normals
         run: |
           mkdir -p .phase3p4
-          node scripts/surface/extract-pointcloud-ply.mjs \
-            boudhanath_stupa_-_pointcloud.glb \
-            .phase3p4/boudha-source-oriented.ply \
-            .phase3p4/extraction-report.json
+          node scripts/surface/extract-pointcloud-ply.mjs             boudhanath_stupa_-_pointcloud.glb             .phase3p4/boudha-points.ply             .phase3p4/extraction-report.json
 
+      - name: Validate extracted point cloud
+        run: |
+          test -s .phase3p4/boudha-points.ply
+          test -s .phase3p4/extraction-report.json
           node - <<'NODE'
           const fs = require('node:fs')
           const report = JSON.parse(fs.readFileSync('.phase3p4/extraction-report.json', 'utf8'))
           if (report.extraction.pointCount !== 99992) {
-            throw new Error(`Expected 99,992 points, got ${report.extraction.pointCount}`)
+            throw new Error(`Expected 99,992 points, received ${report.extraction.pointCount}`)
           }
-          if (report.source.sha256 !== process.env.SOURCE_GLB_SHA256) {
-            throw new Error('Extraction report source SHA-256 changed.')
+          if (report.extraction.primitiveCount !== 2) {
+            throw new Error(`Expected 2 point primitives, received ${report.extraction.primitiveCount}`)
           }
           console.log(JSON.stringify(report, null, 2))
           NODE
@@ -88,53 +84,41 @@ jobs:
       - name: Use Python 3.11
         uses: actions/setup-python@v5
         with:
-          python-version: "${{ env.PYTHON_VERSION }}"
+          python-version: "3.11"
 
-      - name: Install pinned Open3D
+      - name: Install deterministic reconstruction dependency
         run: |
           python -m pip install --upgrade pip
-          python -m pip install --only-binary=:all: "open3d==$OPEN3D_VERSION"
+          python -m pip install --only-binary=:all: open3d==0.20.0
 
-      - name: Reconstruct deterministic Poisson surface
+      - name: Reconstruct Poisson surface
         run: |
-          python scripts/surface/reconstruct_poisson.py \
-            --input .phase3p4/boudha-source-oriented.ply \
-            --output .phase3p4/boudha-poisson.ply \
-            --manifest .phase3p4/surface-manifest.json \
-            --source-report .phase3p4/extraction-report.json \
-            --depth 9 \
-            --scale 1.08 \
-            --density-quantile 0.02 \
-            --orient-k 30 \
-            --max-triangles 300000
+          python scripts/surface/reconstruct_poisson.py             --input .phase3p4/boudha-points.ply             --output .phase3p4/boudha-poisson.ply             --manifest .phase3p4/surface-report.json             --source-report .phase3p4/extraction-report.json             --depth 9             --scale 1.08             --density-quantile 0.02             --orient-k 30             --max-triangles 220000
 
       - name: Validate reconstruction outputs
         run: |
           test -s .phase3p4/boudha-poisson.ply
-          test -s .phase3p4/surface-manifest.json
-
+          test -s .phase3p4/surface-report.json
           python - <<'PY'
           import json
           from pathlib import Path
 
-          manifest = json.loads(Path(".phase3p4/surface-manifest.json").read_text())
-          output = manifest["output"]
+          report = json.loads(Path(".phase3p4/surface-report.json").read_text())
+          output = report["output"]
 
-          assert manifest["toolchain"]["open3d"] == "0.20.0", manifest["toolchain"]
-          assert manifest["source"]["pointCount"] == 99992, manifest["source"]
           assert output["vertexCount"] > 1000, output
           assert output["triangleCount"] > 1000, output
           assert output["bytes"] > 10000, output
+          assert report["source"]["pointCount"] == 99992, report["source"]
 
-          print(json.dumps(manifest, indent=2))
+          print(json.dumps(report, indent=2))
           PY
 
       - name: Stage generated surface for browser proof
         run: |
           mkdir -p public/generated
           cp .phase3p4/boudha-poisson.ply public/generated/
-          cp .phase3p4/surface-manifest.json public/generated/
-          cp .phase3p4/extraction-report.json public/generated/
+          cp .phase3p4/surface-report.json public/generated/
 
       - name: Build application bundle
         run: npm run build
@@ -168,9 +152,7 @@ jobs:
 
       - name: Probe reconstructed surface
         run: |
-          timeout 90s node scripts/runtime-smoke.mjs \
-            surface \
-            /tmp/maybeboudha-phase-3p4-surface.png
+          timeout 90s node scripts/runtime-smoke.mjs             surface             /tmp/maybeboudha-phase-3p4-surface.png
 
       - name: Upload Phase 3P.4 proof artifacts
         if: always()
@@ -178,10 +160,10 @@ jobs:
         with:
           name: phase-3p4-surface-proof
           path: |
-            .phase3p4/boudha-source-oriented.ply
+            .phase3p4/boudha-points.ply
             .phase3p4/extraction-report.json
             .phase3p4/boudha-poisson.ply
-            .phase3p4/surface-manifest.json
+            .phase3p4/surface-report.json
             /tmp/maybeboudha-phase-3p4-surface.png
             /tmp/maybeboudha-surface-preview.log
           if-no-files-found: warn
