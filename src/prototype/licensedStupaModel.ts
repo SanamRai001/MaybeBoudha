@@ -13,7 +13,11 @@ import {
 const TARGET_HEIGHT_METERS = 43.25
 const TARGET_FOOTPRINT_METERS = 43.5
 const QUANTIZATION_MAX = 65_535
-const LOWER_MODEL_HEIGHT_FRACTION = 0.55
+const DEFAULT_MODEL_HEIGHT_FRACTION = 0.55
+
+export type LicensedStupaModelOptions = {
+  heightFraction?: number
+}
 
 const MODEL_PART_URLS = [
   '/models/boudha/mbv2-0.b64',
@@ -116,7 +120,10 @@ function plasterColor(
   return base
 }
 
-function parsePackedModel(bytes: Uint8Array): PackedModel {
+function parsePackedModel(
+  bytes: Uint8Array,
+  heightFraction: number,
+): PackedModel {
   if (
     bytes.length < 36 ||
     String.fromCharCode(...bytes.subarray(0, 4)) !== 'MBV2'
@@ -240,7 +247,7 @@ function parsePackedModel(bytes: Uint8Array): PackedModel {
   const translatedPositions = geometry.getAttribute('position') as BufferAttribute
   const translatedIndex = geometry.getIndex()
   const lowerIndices: number[] = []
-  const cutoffY = sourceSize.y * LOWER_MODEL_HEIGHT_FRACTION
+  const cutoffY = sourceSize.y * heightFraction
 
   if (!translatedIndex) {
     geometry.dispose()
@@ -280,7 +287,7 @@ function parsePackedModel(bytes: Uint8Array): PackedModel {
   }
 }
 
-async function fetchPackedModel() {
+async function fetchPackedModel(heightFraction: number) {
   const parts = await Promise.all(
     MODEL_PART_URLS.map(async (url) => {
       const response = await fetch(url)
@@ -296,16 +303,29 @@ async function fetchPackedModel() {
   )
 
   const compressed = decodeBase64(parts.join(''))
-  return parsePackedModel(await gunzip(compressed))
+  return parsePackedModel(await gunzip(compressed), heightFraction)
 }
 
-export async function loadLicensedStupaModel() {
+export async function loadLicensedStupaModel(
+  options: LicensedStupaModelOptions = {},
+) {
+  const heightFraction =
+    options.heightFraction ?? DEFAULT_MODEL_HEIGHT_FRACTION
+
+  if (
+    !Number.isFinite(heightFraction) ||
+    heightFraction <= 0 ||
+    heightFraction > 1
+  ) {
+    throw new Error('Licensed Boudhanath model height fraction must be within (0, 1].')
+  }
+
   const {
     geometry,
     vertexCount,
     triangleCount,
     sourceSize,
-  } = await fetchPackedModel()
+  } = await fetchPackedModel(heightFraction)
 
   const material = new MeshPhysicalMaterial({
     color: '#e9e2d7',
@@ -345,6 +365,7 @@ export async function loadLicensedStupaModel() {
       vertexCount,
       triangleCount,
       renderedTriangleCount,
+      heightFraction,
       heightMeters: scaledBounds.getSize(new Vector3()).y,
       footprintMeters: {
         x: scaledBounds.getSize(new Vector3()).x,
