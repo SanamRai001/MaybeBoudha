@@ -77,14 +77,23 @@ The normalized radius anchors are stored in:
 
 ### Terrace / base width
 
-The outer lower footprint is a **visual calibration**, not a claimed survey
-measurement.
+The previous 82.2 m value happened to be close to the real lower-plinth scale,
+but its derivation from `sqrt(6,756 m²)` was invalid and remains retired.
 
-Across the front and side references, the visible outer terrace width is
-roughly 1.4 times the dome diameter. MaybeBoudha therefore uses **52 m** as a
-working synthetic-study footprint.
+Tevonian's 2024 Lawrence University honors project, citing Niels Gutschow,
+reports the lowest plinth as **270.20 ft × 272.40 ft**.
 
-This value is intentionally kept separate from the published 6,756 m² area.
+Converted directly:
+
+- X: **82.35696 m**;
+- Z: **83.02752 m**.
+
+MaybeBoudha now uses those two cited dimensions independently. The published
+6,756 m² area is no longer used to infer a square footprint.
+
+Source:
+
+https://lux.lawrence.edu/luhp/188/
 
 ### Harmika
 
