@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3P.3 — Licensed Boudhanath point-cloud spike: complete and merged in PR #7. Phase 3P.4 is next.**
+**Phase 3P.4 — Deterministic Boudhanath surface reconstruction: engineering proof complete on PR #9; final documentation verification pending.**
 
 The project now has verified browser evidence for both the renderer choice and the selected large-scene delivery path:
 
@@ -141,6 +141,7 @@ Technical renderer/delivery modes:
 ?renderer=rad         # generated paged RAD proof
 ?renderer=playcanvas  # Phase 2 fallback comparison
 ?pointcloud=1         # Phase 3P.3 licensed point-cloud A/B
+?surface=1            # Phase 3P.4 deterministic Poisson surface A/B
 ```
 
 The Phase 1 recoverable preparation failure path remains available with:
@@ -166,6 +167,7 @@ The `?renderer=rad` route expects generated RAD/RADC files under `/rad/`; normal
 - [Capture Permission Request Template](docs/CAPTURE_PERMISSION_REQUEST_TEMPLATE.md)
 - [Visual Prototype](docs/VISUAL_PROTOTYPE.md)
 - [Point-Cloud Spike](docs/POINT_CLOUD_SPIKE.md)
+- [Surface Reconstruction Spike](docs/SURFACE_RECONSTRUCTION_SPIKE.md)
 - [Project State](docs/PROJECT_STATE.md)
 
 ## Development rules
@@ -205,15 +207,28 @@ The point cloud does **not** replace the current hybrid because its lack of real
 
 See [Point-Cloud Spike](docs/POINT_CLOUD_SPIKE.md).
 
+## Deterministic surface reconstruction
+
+Phase 3P.4 now proves that the licensed point source can be turned into a real triangle surface without generative AI:
+
+- **99,992** oriented source points;
+- Open3D **0.20.0** Poisson reconstruction;
+- **110,643** output vertices;
+- **220,000** output triangles;
+- deterministic source/output checksums;
+- browser rendering verified after converting Open3D Float64 PLY attributes to GPU-safe Float32 attributes.
+
+The resulting surface is recognizable and useful as geometry, but its monochrome/coarse presentation does **not** beat the current hybrid as the finished experience.
+
+See [Surface Reconstruction Spike](docs/SURFACE_RECONSTRUCTION_SPIKE.md).
+
 ## Immediate next step
 
-**Phase 3P.4 — Deterministic surface reconstruction spike**
+**Phase 3P.5 — Selective geometry hybridization**
 
-Use the licensed 99,992-point source plus its stored normals to test a reproducible Poisson/equivalent surface reconstruction, then apply the existing MaybeBoudha material/eye/panorama treatment and compare it against the current hybrid.
+Use only the reconstructed regions that materially improve the existing hybrid while preserving the stronger photographic environment, materials, eye treatment, refined upper monument, and cinematic composition.
 
-No AI training or generative-AI processing will be used.
-
-Field clearance remains prepared and documented, but intentionally deferred.
+Field clearance remains prepared and documented, but intentionally deferred until the strongest legally reusable existing-source path is exhausted.
 
 Do not begin a real systematic Boudhanath photo dataset until Phase 3C.2 is deliberately reactivated and satisfied.
 
