@@ -40,7 +40,10 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader.js'
 
 import { SURFACE_ASSET_URL } from '../surface/surfaceConfig'
-import { loadLicensedStupaModel } from './licensedStupaModel'
+import {
+  BOUDHA_TARGET_FOOTPRINT_METERS,
+  loadLicensedStupaModel,
+} from './licensedStupaModel'
 import { licensedModelRequested } from './prototypeModelMode'
 import { selectiveHybridRequested } from './selectiveHybridMode'
 import { createSelectiveDomeGeometry } from './selectiveSurfaceHybrid'
@@ -313,20 +316,21 @@ function addPrayerFlags(
   scene: Scene,
   animatedFlags: AnimatedFlag[],
   top: Vector3,
+  anchorRadius = 47,
 ) {
   const flagColors = ['#2e6ca4', '#e8e1d0', '#ba3c36', '#34724d', '#d5a631']
 
   for (let ray = 0; ray < 10; ray += 1) {
     const angle = (ray / 10) * Math.PI * 2 + 0.12
     const anchor = new Vector3(
-      Math.cos(angle) * 47,
+      Math.cos(angle) * anchorRadius,
       7.5 + (ray % 3) * 1.2,
-      Math.sin(angle) * 47,
+      Math.sin(angle) * anchorRadius,
     )
     const midpoint = new Vector3(
-      Math.cos(angle) * 25,
+      Math.cos(angle) * anchorRadius * 0.53,
       23 - (ray % 2) * 1.4,
-      Math.sin(angle) * 25,
+      Math.sin(angle) * anchorRadius * 0.53,
     )
 
     const curve = new CatmullRomCurve3([top.clone(), midpoint, anchor])
@@ -384,7 +388,7 @@ function addPrayerFlags(
   }
 }
 
-function addPrayerWheelRing(scene: Scene) {
+function addPrayerWheelRing(scene: Scene, ringRadius = 21.9) {
   const whiteMaterial = new MeshStandardMaterial({
     color: '#e7dfd1',
     roughness: 0.92,
@@ -396,7 +400,14 @@ function addPrayerWheelRing(scene: Scene) {
   })
 
   const wall = new Mesh(
-    new CylinderGeometry(21.7, 21.7, 1.35, 96, 1, true),
+    new CylinderGeometry(
+      ringRadius - 0.2,
+      ringRadius - 0.2,
+      1.35,
+      96,
+      1,
+      true,
+    ),
     whiteMaterial,
   )
   wall.position.y = 4.15
@@ -408,9 +419,9 @@ function addPrayerWheelRing(scene: Scene) {
     const angle = (i / 72) * Math.PI * 2
     const wheel = new Mesh(wheelGeometry, goldMaterial)
     wheel.position.set(
-      Math.cos(angle) * 21.9,
+      Math.cos(angle) * ringRadius,
       4.2,
-      Math.sin(angle) * 21.9,
+      Math.sin(angle) * ringRadius,
     )
     wheel.castShadow = true
     scene.add(wheel)
@@ -540,14 +551,14 @@ function addSurroundingBuildings(scene: Group) {
   }
 }
 
-function addScaleFigures(scene: Group) {
+function addScaleFigures(scene: Group, baseRadius = 28) {
   const bodyGeometry = new CylinderGeometry(0.16, 0.22, 1.25, 10)
   const headGeometry = new SphereGeometry(0.16, 10, 8)
   const colors = ['#5d302a', '#3e4851', '#6c4b35', '#7e2f29', '#2e4241']
 
   for (let i = 0; i < 24; i += 1) {
     const angle = (i / 24) * Math.PI * 2 + (i % 2) * 0.08
-    const radius = 28 + (i % 3) * 2.25
+    const radius = baseRadius + (i % 3) * 2.25
     const material = new MeshStandardMaterial({
       color: colors[i % colors.length],
       roughness: 0.92,
@@ -927,6 +938,28 @@ export function BoudhaPrototypeCanvas({
     let licensedModelDispose: (() => void) | null = null
     const useLicensedModel = licensedModelRequested(window.location.search)
     const useSelectiveSurface = selectiveHybridRequested(window.location.search)
+    const licensedFootprintRadius =
+      BOUDHA_TARGET_FOOTPRINT_METERS / 2
+    const licensedFootprintCorner =
+      licensedFootprintRadius * Math.SQRT2
+    const prayerWheelRadius = useLicensedModel
+      ? licensedFootprintRadius + 1.1
+      : 21.9
+    const koraInnerRadius = useLicensedModel
+      ? licensedFootprintCorner + 2
+      : 24.5
+    const koraOuterRadius = useLicensedModel
+      ? koraInnerRadius + 12
+      : 45.5
+    const contactShadowSize = useLicensedModel
+      ? BOUDHA_TARGET_FOOTPRINT_METERS * 1.2
+      : 56
+    const flagAnchorRadius = useLicensedModel
+      ? licensedFootprintCorner + 2
+      : 47
+    const scaleFigureRadius = useLicensedModel
+      ? licensedFootprintCorner + 4
+      : 28
     let licensedModelReady = !useLicensedModel
     let selectiveSurfaceReady = !useSelectiveSurface
     const quality = browserPrototypeQuality()
@@ -1011,7 +1044,7 @@ export function BoudhaPrototypeCanvas({
     scene.add(courtyard)
 
     const koraPath = new Mesh(
-      new RingGeometry(24.5, 45.5, 128),
+      new RingGeometry(koraInnerRadius, koraOuterRadius, 128),
       new MeshStandardMaterial({
         color: '#9c7559',
         roughness: 0.94,
@@ -1025,7 +1058,7 @@ export function BoudhaPrototypeCanvas({
 
     const contactShadowTexture = makeContactShadowTexture()
     const contactShadow = new Mesh(
-      new PlaneGeometry(56, 56),
+      new PlaneGeometry(contactShadowSize, contactShadowSize),
       new MeshBasicMaterial({
         map: contactShadowTexture,
         transparent: true,
@@ -1132,13 +1165,13 @@ export function BoudhaPrototypeCanvas({
         })
     }
 
-    addPrayerWheelRing(scene)
+    addPrayerWheelRing(scene, prayerWheelRadius)
 
     const syntheticSurroundings = new Group()
     syntheticSurroundings.name = 'synthetic-surroundings-fallback'
     scene.add(syntheticSurroundings)
     addSurroundingBuildings(syntheticSurroundings)
-    addScaleFigures(syntheticSurroundings)
+    addScaleFigures(syntheticSurroundings, scaleFigureRadius)
 
     const photographicEnvironment = new Group()
     photographicEnvironment.name = 'photographic-boudhanath-environment'
@@ -1255,7 +1288,12 @@ export function BoudhaPrototypeCanvas({
     )
 
     const animatedFlags: AnimatedFlag[] = []
-    addPrayerFlags(scene, animatedFlags, flagTop)
+    addPrayerFlags(
+      scene,
+      animatedFlags,
+      flagTop,
+      flagAnchorRadius,
+    )
 
     const resizeObserver = new ResizeObserver(() => {
       const width = Math.max(1, canvas.clientWidth)
