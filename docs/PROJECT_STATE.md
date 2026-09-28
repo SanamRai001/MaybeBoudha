@@ -12,7 +12,7 @@ The current public release is an **honest synthetic visual feasibility study**, 
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Current branch: `main`
+- Current branch: `fix/reference-grounded-boudha-silhouette`
 - Public URL: `https://sanamrai001.github.io/MaybeBoudha/`
 
 ## Last completed phase
@@ -263,11 +263,80 @@ The live public URL now contains the broader base and corrected dome/middle-body
 
 `https://sanamrai001.github.io/MaybeBoudha/`
 
+## Current corrective phase
+
+**Phase 3P.7G — Reference-grounded Boudhanath silhouette**
+
+Status: **implementation complete; verification pending on `fix/reference-grounded-boudha-silhouette`**
+
+The user rejected the Phase 3P.7F result after inspecting the live render because the dome became artificially bulbous. That feedback exposed a methodology problem: the 3P.7F geometry used global scaling and a hand-authored radial inflation function rather than matching real references.
+
+### 3P.7F assumptions now superseded
+
+The **82.2 m** lower-footprint value is retired. It was derived from `sqrt(6,756 m²)`, but the published 6,756 m² stupa area is not a square-footprint dimension.
+
+The +30–35% middle-body inflation function is also retired.
+
+Do not restore either assumption.
+
+### Reference hierarchy for 3P.7G
+
+See:
+
+`docs/REFERENCE_SILHOUETTE.md`
+
+Ground truth used in this phase:
+
+- published total monument height: **43.25 m**;
+- published dome diameter: **120 ft / 36.576 m**;
+- supplied MiniWorld3D source geometry for the lower terraces/base;
+- multiple real Boudhanath front, side, and three-quarter photographs for relative silhouette calibration.
+
+Visual-study calibration values, explicitly not survey claims:
+
+- lower/base footprint: **52 m**;
+- harmika width: **10.8 m**;
+- eye-panel width: **10.0 m**.
+
+### Structural correction
+
+The default visual route no longer tries to deform the supplied printable-model dome.
+
+Instead:
+
+```text
+MiniWorld3D source
+    -> lower/base crop only
+
+published dome diameter + traced real-photo profile
+    -> visible dome
+
+photo-derived relative proportions
+    -> harmika / eye block
+
+existing synthetic geometry
+    -> upper spire / crown
+```
+
+The default source-model crop is now 13% of source height, which overlaps the traced dome base without becoming the dome itself.
+
+Selective reconstructed-surface mode retains a 19% source crop intentionally because the selective dome begins at approximately 7.1 m and needs a transition overlap.
+
+### Guardrails
+
+- do not infer architectural widths from area by square-root conversion;
+- do not use generic global "fatter/thinner" deformation;
+- every future silhouette change must state the real reference being matched;
+- keep published dimensions distinct from photo-calibrated working values;
+- do not merge 3P.7G until desktop/mobile runtime screenshots are inspected.
+
 ## Next phase
 
-Do not make another global geometry-scale change.
+Run the full existing CI, Pages-build, surface, desktop, mobile, reduced-motion, source-model, point-cloud, Spark, and PlayCanvas gates.
 
-If the live wide-screen composition still needs refinement, the next phase should be a small camera/framing pass only. Preserve the 43.25 m height, 82.2 m outer footprint calibration, and the corrected fuller dome profile unless a specific visual defect is identified.
+Then inspect the generated desktop/mobile screenshots against the cited real Boudhanath references.
+
+Only after visual inspection should this branch be merged.
 
 ## Resume rule
 
