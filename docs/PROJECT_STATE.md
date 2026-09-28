@@ -146,15 +146,15 @@ The Pages PR build successfully validated a `/MaybeBoudha/` bundle.
 
 Latest verified `main`:
 
-`8054f681fe92c8cdbb850fe2c3f28f146c52f88b`
+`b515610a18700907187ad5f3d1f713399913a7e2`
 
 Normal CI:
 
-`CI #250 — green`
+`CI #251 — green`
 
 Latest deployment run:
 
-`Deploy GitHub Pages #4`
+`Deploy GitHub Pages #5`
 
 built and validated the production bundle successfully, then failed at:
 
@@ -179,7 +179,7 @@ MaybeBoudha
 → GitHub Actions
 ```
 
-After that, rerun the failed `Deploy GitHub Pages #4` workflow or trigger `Deploy GitHub Pages` manually.
+After that, rerun the failed `Deploy GitHub Pages #5` workflow or trigger `Deploy GitHub Pages` manually.
 
 No code change is required for this blocker.
 
