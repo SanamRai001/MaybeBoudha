@@ -295,7 +295,7 @@ See `PHASE_3P7C_ATMOSPHERE_PERFORMANCE.md`.
 
 #### Phase 3P.7D — Ambient sound and release readiness
 
-**Status: implementation complete on PR #14; final documentation-complete verification pending.**
+**Status: complete and merged in PR #14.**
 
 Delivered:
 
@@ -322,7 +322,7 @@ See `PHASE_3P7D_AUDIO_RELEASE.md`.
 
 #### Phase 3P.7E — Public prototype deployment and portfolio packaging
 
-**Status: next after 3P.7D merge.**
+**Status: next.**
 
 Build:
 
