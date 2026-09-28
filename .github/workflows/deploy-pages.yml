@@ -55,6 +55,37 @@ jobs:
       - name: Build GitHub Pages bundle
         run: npm run build
 
+      - name: Install Chromium for release capture
+        if: github.event_name != 'pull_request'
+        run: npx --yes playwright@1.55.0 install --with-deps chromium
+
+      - name: Resolve full Chromium binary
+        if: github.event_name != 'pull_request'
+        run: |
+          CHROME="$(find "$HOME/.cache/ms-playwright" -type f -path "*/chromium-*/chrome-linux/chrome" | head -n 1)"
+          if [ -z "$CHROME" ]; then
+            echo "Unable to locate full Playwright Chromium binary."
+            exit 1
+          fi
+          echo "CHROME=$CHROME" >> "$GITHUB_ENV"
+
+      - name: Start project-path preview server
+        if: github.event_name != 'pull_request'
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/maybeboudha-pages-preview.log 2>&1 &
+          echo $! > /tmp/maybeboudha-pages-preview.pid
+
+      - name: Capture release social preview
+        if: github.event_name != 'pull_request'
+        env:
+          MAYBEBOUDHA_TARGET_BASE_URL: http://127.0.0.1:4173/MaybeBoudha/
+          MAYBEBOUDHA_VIEWPORT_WIDTH: 1200
+          MAYBEBOUDHA_VIEWPORT_HEIGHT: 630
+        run: |
+          timeout 75s node scripts/runtime-smoke.mjs \
+            prototype \
+            dist/images/social-preview.png
+
       - name: Verify project-path-safe build
         run: node scripts/verify-pages-build.mjs dist "$VITE_BASE_PATH"
 
@@ -81,3 +112,88 @@ jobs:
       - name: Deploy GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+
+
+  production-smoke:
+    if: github.event_name != 'pull_request'
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      MAYBEBOUDHA_PRODUCTION_URL: https://sanamrai001.github.io/MaybeBoudha/
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Verify deployed HTTP surface
+        run: node scripts/verify-production-pages.mjs "$MAYBEBOUDHA_PRODUCTION_URL"
+
+      - name: Install Chromium
+        run: npx --yes playwright@1.55.0 install --with-deps chromium
+
+      - name: Resolve full Chromium binary
+        run: |
+          CHROME="$(find "$HOME/.cache/ms-playwright" -type f -path "*/chromium-*/chrome-linux/chrome" | head -n 1)"
+          if [ -z "$CHROME" ]; then
+            echo "Unable to locate full Playwright Chromium binary."
+            exit 1
+          fi
+          echo "CHROME=$CHROME" >> "$GITHUB_ENV"
+
+      - name: Probe production desktop
+        id: production-desktop
+        continue-on-error: true
+        env:
+          MAYBEBOUDHA_TARGET_BASE_URL: ${{ env.MAYBEBOUDHA_PRODUCTION_URL }}
+        run: |
+          timeout 75s node scripts/runtime-smoke.mjs \
+            prototype \
+            /tmp/maybeboudha-production-desktop.png
+
+      - name: Probe production mobile
+        id: production-mobile
+        continue-on-error: true
+        env:
+          MAYBEBOUDHA_TARGET_BASE_URL: ${{ env.MAYBEBOUDHA_PRODUCTION_URL }}
+        run: |
+          timeout 75s node scripts/runtime-smoke.mjs \
+            prototype-mobile \
+            /tmp/maybeboudha-production-mobile.png
+
+      - name: Probe production reduced motion
+        id: production-reduced
+        continue-on-error: true
+        env:
+          MAYBEBOUDHA_TARGET_BASE_URL: ${{ env.MAYBEBOUDHA_PRODUCTION_URL }}
+        run: |
+          timeout 75s node scripts/runtime-smoke.mjs \
+            prototype-reduced \
+            /tmp/maybeboudha-production-reduced.png
+
+      - name: Upload production release media
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase-3p7e-production-release-media
+          path: |
+            /tmp/maybeboudha-production-desktop.png
+            /tmp/maybeboudha-production-mobile.png
+            /tmp/maybeboudha-production-reduced.png
+          if-no-files-found: warn
+
+      - name: Require production browser probes
+        if: always()
+        run: |
+          echo "Production desktop: ${{ steps.production-desktop.outcome }}"
+          echo "Production mobile: ${{ steps.production-mobile.outcome }}"
+          echo "Production reduced motion: ${{ steps.production-reduced.outcome }}"
+          test "${{ steps.production-desktop.outcome }}" = "success"
+          test "${{ steps.production-mobile.outcome }}" = "success"
+          test "${{ steps.production-reduced.outcome }}" = "success"

@@ -14,6 +14,10 @@ const index = await readFile(join(dist, 'index.html'), 'utf8')
 const requiredIndexFragments = [
   `href="${base}site.webmanifest"`,
   `src="${base}assets/`,
+  `<link rel="canonical" href="https://sanamrai001.github.io/MaybeBoudha/" />`,
+  `<meta property="og:url" content="https://sanamrai001.github.io/MaybeBoudha/" />`,
+  `<meta property="og:image" content="https://sanamrai001.github.io/MaybeBoudha/images/social-preview.png" />`,
+  `<meta name="twitter:image" content="https://sanamrai001.github.io/MaybeBoudha/images/social-preview.png" />`,
 ]
 
 for (const fragment of requiredIndexFragments) {
@@ -26,6 +30,7 @@ for (const path of [
   'site.webmanifest',
   'robots.txt',
   'images/boudha-surroundings.jpg',
+  'images/social-preview.png',
   'models/boudha/mbv2-0.b64',
   'models/boudha/mbv2-1.b64',
   'models/boudha/mbv2-2.b64',

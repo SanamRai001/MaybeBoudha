@@ -8,7 +8,9 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3P.7E — GitHub Pages deployment is implemented and merged in PR #15. The production bundle is green; deployment is blocked only by one-time GitHub Pages enablement in repository Settings.**
+**Phase 3P.7E — the public prototype is live on GitHub Pages with project-path-safe deployment. Release hardening adds canonical/social metadata and post-deploy desktop/mobile production smoke coverage.**
+
+Live prototype: [https://sanamrai001.github.io/MaybeBoudha/](https://sanamrai001.github.io/MaybeBoudha/)
 
 The project now has verified browser evidence for both the renderer choice and the selected large-scene delivery path:
 
