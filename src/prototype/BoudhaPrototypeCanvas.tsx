@@ -37,9 +37,13 @@ import {
   WebGLRenderer,
 } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader.js'
 
+import { SURFACE_ASSET_URL } from '../surface/surfaceConfig'
 import { loadLicensedStupaModel } from './licensedStupaModel'
 import { licensedModelRequested } from './prototypeModelMode'
+import { selectiveHybridRequested } from './selectiveHybridMode'
+import { createSelectiveDomeGeometry } from './selectiveSurfaceHybrid'
 
 type BoudhaPrototypeCanvasProps = {
   reducedMotion: boolean
@@ -907,7 +911,9 @@ export function BoudhaPrototypeCanvas({
     let disposed = false
     let licensedModelDispose: (() => void) | null = null
     const useLicensedModel = licensedModelRequested(window.location.search)
+    const useSelectiveSurface = selectiveHybridRequested(window.location.search)
     let licensedModelReady = !useLicensedModel
+    let selectiveSurfaceReady = !useSelectiveSurface
     const scene = new Scene()
     scene.fog = new FogExp2('#c8ad86', 0.0034)
     addSky(scene)
@@ -1009,7 +1015,9 @@ export function BoudhaPrototypeCanvas({
     const { lower, flagTop } = createStupa(scene)
 
     if (useLicensedModel) {
-      void loadLicensedStupaModel()
+      void loadLicensedStupaModel({
+        heightFraction: useSelectiveSurface ? 0.145 : undefined,
+      })
         .then(({ group, dispose, metadata }) => {
           if (disposed) {
             dispose()
@@ -1046,6 +1054,50 @@ export function BoudhaPrototypeCanvas({
         .catch((error: unknown) => {
           console.error(
             'Licensed Boudhanath model failed to load.',
+            error,
+          )
+        })
+    }
+
+    if (useSelectiveSurface) {
+      const surfaceLoader = new PLYLoader()
+
+      void surfaceLoader
+        .loadAsync(SURFACE_ASSET_URL)
+        .then((sourceGeometry) => {
+          if (disposed) {
+            sourceGeometry.dispose()
+            return
+          }
+
+          const { geometry, metadata } =
+            createSelectiveDomeGeometry(sourceGeometry)
+          sourceGeometry.dispose()
+
+          const material = new MeshPhysicalMaterial({
+            color: '#e5ded2',
+            roughness: 0.93,
+            metalness: 0,
+            clearcoat: 0.015,
+            clearcoatRoughness: 0.88,
+          })
+
+          const mesh = new Mesh(geometry, material)
+          mesh.name = 'selective-reconstructed-dome'
+          mesh.castShadow = true
+          mesh.receiveShadow = true
+          scene.add(mesh)
+
+          selectiveSurfaceReady = true
+
+          console.info(
+            'Selective reconstructed Boudhanath dome ready',
+            JSON.stringify(metadata),
+          )
+        })
+        .catch((error: unknown) => {
+          console.error(
+            'Selective reconstructed Boudhanath dome failed to load.',
             error,
           )
         })
@@ -1215,7 +1267,11 @@ export function BoudhaPrototypeCanvas({
 
       renderer.render(scene, camera)
 
-      if (!readyAnnounced && licensedModelReady) {
+      if (
+        !readyAnnounced &&
+        licensedModelReady &&
+        selectiveSurfaceReady
+      ) {
         readyAnnounced = true
         onReady()
       }
