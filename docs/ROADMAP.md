@@ -269,7 +269,7 @@ See `PHASE_3P7B_INTERACTION_MOBILE.md`.
 
 #### Phase 3P.7C — Environment, atmosphere and performance polish
 
-**Status: implementation complete on PR #13; final documentation-complete verification pending.**
+**Status: complete and merged in PR #13.**
 
 Delivered:
 
@@ -295,7 +295,7 @@ See `PHASE_3P7C_ATMOSPHERE_PERFORMANCE.md`.
 
 #### Phase 3P.7D — Ambient sound and release readiness
 
-**Status: next after 3P.7C merge.**
+**Status: next.**
 
 Build:
 
