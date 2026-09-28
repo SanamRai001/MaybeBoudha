@@ -1127,3 +1127,35 @@ h1 {
     font-size: 0.56rem;
   }
 }
+
+
+/* Phase 3P.7D — opt-in audio and release controls */
+
+.prototype-audio-toggle[aria-pressed="true"] {
+  border-color: rgba(239, 201, 121, 0.48);
+  background: rgba(45, 33, 20, 0.58);
+  color: #f2d495;
+}
+
+.prototype-audio-toggle:disabled {
+  color: rgba(255, 245, 227, 0.38);
+}
+
+@media (max-width: 620px) {
+  .prototype-header {
+    flex-wrap: wrap;
+  }
+
+  .prototype-header-actions {
+    max-width: calc(100% - 92px);
+  }
+
+  .prototype-view-actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .prototype-audio-toggle {
+    min-width: 68px;
+  }
+}
