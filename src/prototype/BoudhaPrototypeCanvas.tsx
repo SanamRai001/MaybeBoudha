@@ -662,7 +662,7 @@ function createStupa(scene: Scene) {
   let platformBaseY = 0
   const platforms = BOUDHA_PLINTH_HEIGHTS_METERS.map(
     (height, index) => {
-      const scale = [1, 0.93, 0.86][index]
+      const scale = [1, 0.93, 0.86][index] ?? 1
 
       const platform = {
         x: BOUDHA_BASE_FOOTPRINT_X_METERS * scale,
