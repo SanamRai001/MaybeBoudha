@@ -7,6 +7,10 @@ describe('experienceModeFromSearch', () => {
     expect(experienceModeFromSearch('')).toBe('prototype')
   })
 
+  it('selects the licensed point-cloud spike explicitly', () => {
+    expect(experienceModeFromSearch('?pointcloud=1')).toBe('pointcloud')
+  })
+
   it('keeps renderer query modes available for engineering verification', () => {
     expect(experienceModeFromSearch('?renderer=spark')).toBe('technical')
     expect(experienceModeFromSearch('?renderer=rad')).toBe('technical')

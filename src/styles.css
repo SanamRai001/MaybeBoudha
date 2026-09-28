@@ -651,3 +651,157 @@ h1 {
   text-decoration-color: rgba(255, 236, 196, 0.28);
   text-underline-offset: 3px;
 }
+
+
+/* Phase 3P.3 — licensed point-cloud comparison */
+
+.pointcloud-page {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  color: #f2eee5;
+  background: #080b0e;
+}
+
+.pointcloud-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+.pointcloud-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(4, 7, 10, 0.9) 0%, rgba(4, 7, 10, 0.46) 36%, rgba(4, 7, 10, 0.05) 67%, rgba(4, 7, 10, 0.28) 100%),
+    linear-gradient(0deg, rgba(4, 7, 10, 0.78) 0%, rgba(4, 7, 10, 0.08) 48%, rgba(4, 7, 10, 0.18) 100%);
+}
+
+.pointcloud-copy {
+  position: absolute;
+  left: clamp(22px, 5vw, 76px);
+  bottom: clamp(88px, 12vh, 146px);
+  z-index: 4;
+  width: min(620px, calc(100% - 44px));
+}
+
+.pointcloud-copy h1 {
+  max-width: none;
+  margin: 0;
+  font-size: clamp(3.3rem, 7vw, 7rem);
+  line-height: 0.87;
+  letter-spacing: -0.06em;
+  text-shadow: 0 18px 54px rgba(0, 0, 0, 0.38);
+}
+
+.pointcloud-copy h1 span {
+  display: block;
+  color: rgba(231, 226, 214, 0.58);
+  font-style: italic;
+}
+
+.pointcloud-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  max-width: 620px;
+  margin: 26px 0 0;
+  overflow: hidden;
+  border: 1px solid rgba(231, 226, 214, 0.12);
+  border-radius: 14px;
+  background: rgba(7, 10, 13, 0.56);
+  backdrop-filter: blur(14px);
+}
+
+.pointcloud-metrics div {
+  padding: 12px 14px;
+  border-right: 1px solid rgba(231, 226, 214, 0.08);
+}
+
+.pointcloud-metrics dt {
+  margin: 0 0 5px;
+  color: rgba(212, 207, 196, 0.45);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pointcloud-metrics dd {
+  margin: 0;
+  color: rgba(246, 242, 233, 0.88);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.pointcloud-source {
+  position: absolute;
+  right: clamp(22px, 4vw, 58px);
+  top: 50%;
+  z-index: 4;
+  display: grid;
+  gap: 6px;
+  width: min(230px, 24vw);
+  padding-left: 16px;
+  border-left: 1px solid rgba(231, 226, 214, 0.18);
+  transform: translateY(-42%);
+}
+
+.pointcloud-source span,
+.pointcloud-source small {
+  color: rgba(231, 226, 214, 0.45);
+  font-size: 0.65rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.pointcloud-source strong {
+  color: rgba(248, 244, 235, 0.88);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.pointcloud-source a {
+  margin-top: 6px;
+  color: #d8bd79;
+  font-size: 0.7rem;
+  text-underline-offset: 3px;
+}
+
+.pointcloud-error {
+  max-width: 52ch;
+  margin: 18px 0 0;
+  color: #d9a39a;
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+@media (max-width: 900px) {
+  .pointcloud-vignette {
+    background:
+      linear-gradient(0deg, rgba(4, 7, 10, 0.88) 0%, rgba(4, 7, 10, 0.16) 56%, rgba(4, 7, 10, 0.2) 100%);
+  }
+
+  .pointcloud-source {
+    display: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .pointcloud-copy {
+    left: 18px;
+    bottom: 88px;
+    width: calc(100% - 36px);
+  }
+
+  .pointcloud-copy h1 {
+    font-size: clamp(3rem, 17vw, 5rem);
+  }
+
+  .pointcloud-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

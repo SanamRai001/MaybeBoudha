@@ -3,8 +3,8 @@ import { writeFile } from 'node:fs/promises'
 
 const [renderer, outputPath] = process.argv.slice(2)
 
-if (!['spark', 'playcanvas', 'rad', 'prototype', 'licensed'].includes(renderer) || !outputPath) {
-  console.error('Usage: node scripts/runtime-smoke.mjs <spark|playcanvas|rad|prototype|licensed> <output.png>')
+if (!['spark', 'playcanvas', 'rad', 'prototype', 'licensed', 'pointcloud'].includes(renderer) || !outputPath) {
+  console.error('Usage: node scripts/runtime-smoke.mjs <spark|playcanvas|rad|prototype|licensed|pointcloud> <output.png>')
   process.exit(2)
 }
 
@@ -14,12 +14,14 @@ if (!chrome) {
   process.exit(2)
 }
 
-const port = renderer === 'spark' ? 9222 : renderer === 'playcanvas' ? 9223 : renderer === 'rad' ? 9224 : renderer === 'prototype' ? 9225 : 9226
+const port = renderer === 'spark' ? 9222 : renderer === 'playcanvas' ? 9223 : renderer === 'rad' ? 9224 : renderer === 'prototype' ? 9225 : renderer === 'licensed' ? 9226 : 9227
 const targetUrl = renderer === 'prototype'
   ? 'http://127.0.0.1:4173/'
   : renderer === 'licensed'
     ? 'http://127.0.0.1:4173/?model=licensed'
-    : `http://127.0.0.1:4173/?renderer=${renderer}`
+    : renderer === 'pointcloud'
+      ? 'http://127.0.0.1:4173/?pointcloud=1'
+      : `http://127.0.0.1:4173/?renderer=${renderer}`
 const headful = process.env.MAYBEBOUDHA_HEADFUL === '1'
 const browserArgs = [
   '--no-sandbox',
@@ -171,9 +173,10 @@ async function waitForRenderer(client, timeoutMs = 45_000) {
         const spark = document.querySelector('[data-splat-state]')?.getAttribute('data-splat-state')
         const playcanvas = document.querySelector('[data-playcanvas-state]')?.getAttribute('data-playcanvas-state')
         const prototype = document.querySelector('[data-prototype-state]')?.getAttribute('data-prototype-state')
+        const pointcloud = document.querySelector('[data-pointcloud-state]')?.getAttribute('data-pointcloud-state')
         const error = document.querySelector('.viewer-state-error')?.innerText ?? null
         return {
-          state: spark ?? playcanvas ?? prototype ?? null,
+          state: spark ?? playcanvas ?? prototype ?? pointcloud ?? null,
           error,
           mode: document.querySelector('[data-splat-mode]')?.getAttribute('data-splat-mode') ?? null,
           title: document.title,
