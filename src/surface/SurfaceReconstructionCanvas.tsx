@@ -62,6 +62,7 @@ export function SurfaceReconstructionCanvas({
       canvas,
       antialias: true,
       alpha: false,
+      preserveDrawingBuffer: true,
       powerPreference: 'high-performance',
     })
     renderer.outputColorSpace = SRGBColorSpace
