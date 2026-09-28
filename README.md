@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3P.7D — Ambient sound and release readiness is implemented and verified on PR #14; final documentation-complete verification is pending.**
+**Phase 3P.7D — Ambient sound and release readiness is complete and merged in PR #14. Phase 3P.7E public prototype deployment and portfolio packaging is next.**
 
 The project now has verified browser evidence for both the renderer choice and the selected large-scene delivery path:
 
@@ -248,9 +248,7 @@ See [Selective Hybrid Spike](docs/SELECTIVE_HYBRID_SPIKE.md).
 
 ## Immediate next step
 
-Finish the documentation-complete verification for **Phase 3P.7D** and merge PR #14.
-
-After that, continue with **Phase 3P.7E — public prototype deployment and portfolio packaging**:
+Continue with **Phase 3P.7E — public prototype deployment and portfolio packaging**:
 
 - choose an actual static hosting target;
 - deploy the current release candidate unchanged;
