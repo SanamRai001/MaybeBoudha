@@ -13,6 +13,11 @@ on:
       - "src/experienceMode.ts"
       - "src/experienceMode.test.ts"
       - "src/surface/**"
+      - "src/prototype/BoudhaPrototypeCanvas.tsx"
+      - "src/prototype/licensedStupaModel.ts"
+      - "src/prototype/selectiveHybridMode.ts"
+      - "src/prototype/selectiveSurfaceHybrid.ts"
+      - "src/prototype/selectiveSurfaceHybrid.test.ts"
       - "boudhanath_stupa_-_pointcloud.glb"
       - "package.json"
       - "package-lock.json"
@@ -27,6 +32,11 @@ on:
       - "src/experienceMode.ts"
       - "src/experienceMode.test.ts"
       - "src/surface/**"
+      - "src/prototype/BoudhaPrototypeCanvas.tsx"
+      - "src/prototype/licensedStupaModel.ts"
+      - "src/prototype/selectiveHybridMode.ts"
+      - "src/prototype/selectiveSurfaceHybrid.ts"
+      - "src/prototype/selectiveSurfaceHybrid.test.ts"
       - "boudhanath_stupa_-_pointcloud.glb"
       - "package.json"
       - "package-lock.json"
@@ -159,7 +169,11 @@ jobs:
         run: |
           timeout 90s node scripts/runtime-smoke.mjs             surface             /tmp/maybeboudha-phase-3p4-surface.png
 
-      - name: Upload Phase 3P.4 proof artifacts
+      - name: Probe selective geometry hybrid
+        run: |
+          timeout 90s node scripts/runtime-smoke.mjs             selective             /tmp/maybeboudha-phase-3p5-selective.png
+
+      - name: Upload Phase 3P.4 / 3P.5 proof artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -170,5 +184,6 @@ jobs:
             .phase3p4/boudha-poisson.ply
             .phase3p4/surface-report.json
             /tmp/maybeboudha-phase-3p4-surface.png
+            /tmp/maybeboudha-phase-3p5-selective.png
             /tmp/maybeboudha-surface-preview.log
           if-no-files-found: warn
