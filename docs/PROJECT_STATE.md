@@ -273,7 +273,9 @@ The user rejected the Phase 3P.7F result after inspecting the live render becaus
 
 ### 3P.7F assumptions now superseded
 
-The **82.2 m** lower-footprint value is retired. It was derived from `sqrt(6,756 m²)`, but the published 6,756 m² stupa area is not a square-footprint dimension.
+The **sqrt(area) derivation** of the former 82.2 m lower-footprint value is retired. The published 6,756 m² stupa area is not a square-footprint dimension.
+
+A separate architectural source now supports an approximately 82–83 m lowest plinth, so 3P.7G uses the cited 270.20 ft × 272.40 ft dimensions directly instead.
 
 The +30–35% middle-body inflation function is also retired.
 
@@ -292,9 +294,16 @@ Ground truth used in this phase:
 - supplied MiniWorld3D source geometry for the lower terraces/base;
 - multiple real Boudhanath front, side, and three-quarter photographs for relative silhouette calibration.
 
-Visual-study calibration values, explicitly not survey claims:
+Reference-backed lower-plinth dimensions:
 
-- lower/base footprint: **52 m**;
+- X: **82.35696 m** (270.20 ft);
+- Z: **83.02752 m** (272.40 ft).
+
+These are taken from Tevonian (2024), citing Gutschow's architectural work,
+rather than inferred from the 6,756 m² area.
+
+Photo-calibrated working values, explicitly not survey claims:
+
 - harmika width: **10.8 m**;
 - eye-panel width: **10.0 m**.
 
