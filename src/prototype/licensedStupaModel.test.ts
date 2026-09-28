@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 
 import {
-  BOUDHA_BASE_FOOTPRINT_METERS,
+  BOUDHA_BASE_FOOTPRINT_X_METERS,
+  BOUDHA_BASE_FOOTPRINT_Z_METERS,
   BOUDHA_DOME_DIAMETER_METERS,
   BOUDHA_DOME_RADIUS_METERS,
   BOUDHA_HARMIKA_WIDTH_METERS,
@@ -32,18 +33,18 @@ describe('reference-grounded Boudhanath geometry', () => {
     expect(BOUDHA_DOME_RADIUS_METERS).toBeCloseTo(18.288, 3)
   })
 
-  it('does not derive the terrace footprint from the published area', () => {
-    expect(BOUDHA_BASE_FOOTPRINT_METERS).toBe(52)
-    expect(BOUDHA_BASE_FOOTPRINT_METERS).not.toBeCloseTo(
+  it('uses the cited lower-plinth dimensions instead of deriving a square from area', () => {
+    expect(BOUDHA_BASE_FOOTPRINT_X_METERS).toBeCloseTo(82.35696, 4)
+    expect(BOUDHA_BASE_FOOTPRINT_Z_METERS).toBeCloseTo(83.02752, 4)
+    expect(BOUDHA_BASE_FOOTPRINT_X_METERS).not.toBe(
       Math.sqrt(6756),
-      0,
     )
     expect(
-      BOUDHA_BASE_FOOTPRINT_METERS / BOUDHA_DOME_DIAMETER_METERS,
-    ).toBeGreaterThan(1.35)
+      BOUDHA_BASE_FOOTPRINT_X_METERS / BOUDHA_DOME_DIAMETER_METERS,
+    ).toBeGreaterThan(2.2)
     expect(
-      BOUDHA_BASE_FOOTPRINT_METERS / BOUDHA_DOME_DIAMETER_METERS,
-    ).toBeLessThan(1.5)
+      BOUDHA_BASE_FOOTPRINT_Z_METERS / BOUDHA_DOME_DIAMETER_METERS,
+    ).toBeLessThan(2.3)
   })
 
   it('keeps the traced dome profile broad and monotonically narrowing', () => {
