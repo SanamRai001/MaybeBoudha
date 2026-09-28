@@ -1,5 +1,4 @@
 import {
-  Box3,
   BufferAttribute,
   BufferGeometry,
   Float32BufferAttribute,
