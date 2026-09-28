@@ -12,7 +12,7 @@ The current public release is an **honest synthetic visual feasibility study**, 
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Current branch: `main`
+- Current branch: `fix/reference-dome-hemisphere`
 - Public URL: `https://sanamrai001.github.io/MaybeBoudha/`
 
 ## Last completed phase
@@ -408,6 +408,93 @@ pass rather than changing global monument proportions.
 
 Do not return to the retired 82.2 m square-root-of-area derivation or the
 30–35% radial belly inflation.
+
+## Current refinement phase
+
+**Phase 3P.7H — Reference-backed dome / kumbha refinement**
+
+Status: **implementation and visual verification complete on `fix/reference-dome-hemisphere`**
+
+This phase responds to another visual review of the central white dome.
+
+Reference check found a concrete vertical-geometry mismatch:
+
+- published / cited descriptions give the three plinths as approximately
+  **7 ft + 6 ft + 6 ft**;
+- the drum above them is approximately **4 ft**;
+- therefore the dome should spring from about **7.0104 m** above the base;
+- the current production geometry starts the dome at **5.15 m**.
+
+That lower start makes the dome too tall and steep.
+
+3P.7H therefore:
+
+- raises the dome spring line to the reference-backed 7.0104 m;
+- aligns the fallback plinth/drum heights to the same cited dimensions;
+- increases the supplied-model lower/base crop just enough to overlap the new
+  spring line;
+- replaces the hand-authored piecewise radius curve with a smooth **truncated
+  hemisphere**, matching architectural descriptions of Boudhanath's dome;
+- keeps the published 36.576 m dome diameter;
+- truncates the hemisphere where its radius matches the existing
+  reference-calibrated harmika width;
+- preserves the upper monument position, plinth X/Z dimensions, camera,
+  environment, and release structure.
+
+Guardrails:
+
+- no global scale change;
+- no arbitrary "fatter/thinner" multiplier;
+- no camera/FOV change;
+- no plinth footprint change;
+- do not merge until new desktop/mobile screenshots are visually inspected.
+
+Reference note:
+
+`docs/REFERENCE_SILHOUETTE.md`
+
+### Phase 3P.7H verification
+
+PR:
+
+`#20 — fix: refine Boudha dome from hemispherical references`
+
+Verified branch head before this documentation checkpoint:
+
+`d432ad98b529ff2beca84d74d68bf5ab1f70bb1e`
+
+Verification:
+
+- `CI #271` — **passed**;
+- `Deploy GitHub Pages #24` PR build — **passed**;
+- `Surface Reconstruction #61` — **passed**;
+- default desktop runtime — **passed**;
+- mobile runtime — **passed**;
+- reduced-motion runtime — **passed**;
+- uploaded-model probe — **passed**;
+- licensed point-cloud probe — **passed**;
+- Spark runtime — **passed**;
+- PlayCanvas runtime — **passed**.
+
+Runtime screenshot artifact:
+
+`phase-2-runtime-smoke` — artifact ID `10983048734`.
+
+Visual review confirms:
+
+- dome now reads as a broad hemispherical body rather than a tall conical/bulbous one;
+- the lower shoulder begins higher, consistent with the cited plinth + drum stack;
+- the top radius still meets the existing harmika footprint cleanly;
+- desktop and mobile layouts remain visually healthy;
+- camera/FOV, plinth X/Z dimensions, upper monument position, and environment are unchanged.
+
+## Next phase
+
+Merge PR #20 after its documentation-only check is green, then verify the live
+Pages deployment and production desktop/mobile/reduced-motion probes.
+
+After production verification, freeze the dome profile unless a specific
+mismatch against a cited real reference is identified.
 
 ## Resume rule
 

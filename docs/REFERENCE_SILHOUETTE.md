@@ -67,11 +67,25 @@ file pages contain the photographer and license information.
 
 The dome diameter is fixed to the published 120 ft / 36.576 m value.
 
-The visible dome curve is represented by a normalized traced profile rather
-than by inflating the supplied mesh. Multiple references show the same broad,
-shallow shoulder and a substantial crown beneath the harmika.
+The visible dome is now represented as a **smooth truncated hemisphere** rather
+than a manually inflated mesh or a hand-tuned chain of radius anchors.
 
-The normalized radius anchors are stored in:
+This is grounded in architectural descriptions that explicitly call
+Boudhanath's middle body a hemispherical dome. The 120 ft / 36.576 m diameter
+sets the sphere radius, while the top is truncated where the circular radius
+matches the working harmika width.
+
+The three plinths are described as approximately 7 ft, 6 ft, and 6 ft high,
+with a roughly 4 ft drum above them. That places the dome spring line at
+approximately **7.0104 m**, replacing the older 5.15 m synthetic start height.
+
+Supporting descriptions:
+
+https://www.insidehimalayas.com/boudhanath-stupa/
+
+https://greatstupa.intersearch.com.au/uploads/eBooks/Boudhanath_Stupa_Tom_Young.pdf
+
+The resulting analytical profile is stored in:
 
 `src/prototype/boudhaReferenceGeometry.ts`
 
