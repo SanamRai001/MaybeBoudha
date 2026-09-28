@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3P.2 — Synthetic realism/material pass: complete and merged in PR #6. Phase 3P.3 is next.**
+**Phase 3P.3 — Licensed Boudhanath point-cloud spike: engineering complete on PR #7; final merge verification pending.**
 
 The project now has verified browser evidence for both the renderer choice and the selected large-scene delivery path:
 
@@ -140,6 +140,7 @@ Technical renderer/delivery modes:
 ?renderer=spark       # pinned compressed PLY through Spark
 ?renderer=rad         # generated paged RAD proof
 ?renderer=playcanvas  # Phase 2 fallback comparison
+?pointcloud=1         # Phase 3P.3 licensed point-cloud A/B
 ```
 
 The Phase 1 recoverable preparation failure path remains available with:
@@ -164,6 +165,7 @@ The `?renderer=rad` route expects generated RAD/RADC files under `/rad/`; normal
 - [Phase 3C Field Readiness](docs/PHASE_3C_FIELD_READINESS.md)
 - [Capture Permission Request Template](docs/CAPTURE_PERMISSION_REQUEST_TEMPLATE.md)
 - [Visual Prototype](docs/VISUAL_PROTOTYPE.md)
+- [Point-Cloud Spike](docs/POINT_CLOUD_SPIKE.md)
 - [Project State](docs/PROJECT_STATE.md)
 
 ## Development rules
@@ -177,19 +179,41 @@ The `?renderer=rad` route expects generated RAD/RADC files under `/rad/`; normal
 7. Keep reconstruction processing separate from ordinary web-app builds.
 8. Record architecture changes in an ADR when they materially alter the production path.
 
+## Licensed point-cloud spike
+
+The uploaded Sketchfab GLB has now been inspected and rendered directly in the browser.
+
+Verified:
+
+- **99,992 points**
+- **0 triangles**
+- normals present
+- ~**3.82 MiB** GLB
+- source SHA-256:
+  `ff5ef7d2c124953b6e053a98b945ef3cad50b8ab524e31c7d78bb6737307169c`
+- stored point color is uniform gray, not photographic RGB
+- direct point rendering works
+- normal-based inspection shading works
+
+View the A/B route locally:
+
+```text
+/?pointcloud=1
+```
+
+The point cloud does **not** replace the current hybrid because its lack of real RGB and visibly sparse point rendering reduce finished visual realism.
+
+See [Point-Cloud Spike](docs/POINT_CLOUD_SPIKE.md).
+
 ## Immediate next step
 
-**Phase 3P.3 — Licensed Boudhanath point-cloud spike**
+After PR #7 is merged:
 
-A Sketchfab candidate has been identified:
+**Phase 3P.4 — Deterministic surface reconstruction spike**
 
-- `BOUDHANATH STUPA - POINTCLOUD`;
-- approximately 100k vertices;
-- CC Attribution;
-- downloadable model;
-- NoAI restriction respected: it will not be used for model training or generative-AI input.
+Use the licensed 99,992-point source plus its stored normals to test a reproducible Poisson/equivalent surface reconstruction, then apply the existing MaybeBoudha material/eye/panorama treatment and compare it against the current hybrid.
 
-The next engineering task is to obtain that asset with its provenance intact, inspect its actual format/color data, and test whether it can replace the synthetic monument inside the existing viewer.
+No AI training or generative-AI processing will be used.
 
 Field clearance remains prepared and documented, but intentionally deferred.
 
