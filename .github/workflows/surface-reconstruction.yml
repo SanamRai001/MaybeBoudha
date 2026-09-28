@@ -81,6 +81,11 @@ jobs:
           console.log(JSON.stringify(report, null, 2))
           NODE
 
+      - name: Install Open3D system runtime
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libegl1 libgl1
+
       - name: Use Python 3.11
         uses: actions/setup-python@v5
         with:
