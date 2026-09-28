@@ -3,23 +3,30 @@ import {
   ACESFilmicToneMapping,
   Box3,
   Color,
+  Material,
   PerspectiveCamera,
   Points,
   PointsMaterial,
   Scene,
+  ShaderMaterial,
   SRGBColorSpace,
   Vector3,
   WebGLRenderer,
+  type BufferAttribute,
+  type InterleavedBufferAttribute,
 } from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 import { POINT_CLOUD_ASSET_URL } from './pointCloudConfig'
 
+export type PointCloudColorMode = 'varied' | 'uniform' | 'missing'
+
 export type PointCloudRuntimeMetadata = {
   pointCount: number
   pointObjectCount: number
-  hasVertexColors: boolean
+  colorMode: PointCloudColorMode
+  hasNormals: boolean
   sourceBounds: {
     min: [number, number, number]
     max: [number, number, number]
@@ -40,6 +47,95 @@ function toErrorMessage(error: unknown) {
   return error instanceof Error ? error.message : String(error)
 }
 
+function attributeHasVariation(
+  attribute: BufferAttribute | InterleavedBufferAttribute,
+) {
+  if (attribute.count <= 1) {
+    return false
+  }
+
+  const first = [
+    attribute.getX(0),
+    attribute.itemSize > 1 ? attribute.getY(0) : 0,
+    attribute.itemSize > 2 ? attribute.getZ(0) : 0,
+  ]
+  const stride = Math.max(1, Math.floor(attribute.count / 2048))
+
+  for (let index = stride; index < attribute.count; index += stride) {
+    if (
+      Math.abs(attribute.getX(index) - first[0]) > 0.0001 ||
+      (attribute.itemSize > 1 &&
+        Math.abs(attribute.getY(index) - first[1]) > 0.0001) ||
+      (attribute.itemSize > 2 &&
+        Math.abs(attribute.getZ(index) - first[2]) > 0.0001)
+    ) {
+      return true
+    }
+  }
+
+  return false
+}
+
+function createNormalInspectionMaterial() {
+  return new ShaderMaterial({
+    transparent: true,
+    depthWrite: true,
+    uniforms: {
+      uPointScale: { value: 1.15 },
+      uHeight: { value: TARGET_HEIGHT_METERS },
+    },
+    vertexShader: `
+      uniform float uPointScale;
+      uniform float uHeight;
+
+      varying float vLight;
+      varying float vHeight;
+
+      void main() {
+        vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+        vec3 worldNormal = normalize(mat3(modelMatrix) * normal);
+        vec3 lightDirection = normalize(vec3(0.42, 0.86, 0.28));
+
+        vLight = 0.52 + 0.48 * abs(dot(worldNormal, lightDirection));
+        vHeight = clamp(worldPosition.y / uHeight, 0.0, 1.0);
+
+        vec4 mvPosition = viewMatrix * worldPosition;
+        gl_PointSize = clamp(
+          uPointScale * (220.0 / max(1.0, -mvPosition.z)),
+          1.35,
+          4.6
+        );
+        gl_Position = projectionMatrix * mvPosition;
+      }
+    `,
+    fragmentShader: `
+      varying float vLight;
+      varying float vHeight;
+
+      void main() {
+        float radius = length(gl_PointCoord - vec2(0.5));
+        if (radius > 0.5) {
+          discard;
+        }
+
+        vec3 stone = vec3(0.43, 0.40, 0.36);
+        vec3 plaster = vec3(0.84, 0.82, 0.76);
+        vec3 gold = vec3(0.72, 0.50, 0.17);
+
+        float plasterMix = smoothstep(0.08, 0.2, vHeight);
+        vec3 baseColor = mix(stone, plaster, plasterMix);
+        float goldMix = smoothstep(0.57, 0.68, vHeight);
+        baseColor = mix(baseColor, gold, goldMix);
+
+        float edge = 1.0 - smoothstep(0.36, 0.5, radius);
+        vec3 shaded = baseColor * vLight;
+
+        gl_FragColor = vec4(shaded, edge);
+      }
+    `,
+  })
+}
+
 export function PointCloudCanvas({
   reducedMotion,
   onReady,
@@ -56,7 +152,7 @@ export function PointCloudCanvas({
 
     let disposed = false
     let loadedRoot: import('three').Group | null = null
-    const pointMaterials: PointsMaterial[] = []
+    const pointMaterials: Material[] = []
 
     const renderer = new WebGLRenderer({
       canvas,
@@ -66,11 +162,11 @@ export function PointCloudCanvas({
     })
     renderer.outputColorSpace = SRGBColorSpace
     renderer.toneMapping = ACESFilmicToneMapping
-    renderer.toneMappingExposure = 1.05
+    renderer.toneMappingExposure = 1.08
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.6))
 
     const scene = new Scene()
-    scene.background = new Color('#080b0e')
+    scene.background = new Color('#090b0d')
 
     const camera = new PerspectiveCamera(42, 1, 0.05, 500)
     camera.position.set(55, 30, 72)
@@ -120,7 +216,9 @@ export function PointCloudCanvas({
 
         let pointCount = 0
         let pointObjectCount = 0
-        let hasVertexColors = false
+        let sawColor = false
+        let sawColorVariation = false
+        let hasNormals = false
 
         root.traverse((object) => {
           if (!(object instanceof Points)) {
@@ -130,18 +228,38 @@ export function PointCloudCanvas({
           pointObjectCount += 1
           const positions = object.geometry.getAttribute('position')
           const colors = object.geometry.getAttribute('color')
-          pointCount += positions?.count ?? 0
-          hasVertexColors ||= Boolean(colors)
+          const normals = object.geometry.getAttribute('normal')
 
-          const material = new PointsMaterial({
-            size: 0.085,
-            sizeAttenuation: true,
-            vertexColors: Boolean(colors),
-            color: colors ? '#ffffff' : '#d7c69e',
-            transparent: true,
-            opacity: 0.98,
-            depthWrite: true,
-          })
+          pointCount += positions?.count ?? 0
+          sawColor ||= Boolean(colors)
+          sawColorVariation ||=
+            colors ? attributeHasVariation(colors) : false
+          hasNormals ||= Boolean(normals)
+
+          let material: Material
+
+          if (colors && attributeHasVariation(colors)) {
+            material = new PointsMaterial({
+              size: 0.085,
+              sizeAttenuation: true,
+              vertexColors: true,
+              color: '#ffffff',
+              transparent: true,
+              opacity: 0.98,
+              depthWrite: true,
+            })
+          } else if (normals) {
+            material = createNormalInspectionMaterial()
+          } else {
+            material = new PointsMaterial({
+              size: 0.1,
+              sizeAttenuation: true,
+              color: '#d7c69e',
+              transparent: true,
+              opacity: 0.98,
+              depthWrite: true,
+            })
+          }
 
           pointMaterials.push(material)
 
@@ -191,10 +309,17 @@ export function PointCloudCanvas({
 
         scene.add(root)
 
+        const colorMode: PointCloudColorMode = sawColorVariation
+          ? 'varied'
+          : sawColor
+            ? 'uniform'
+            : 'missing'
+
         const metadata: PointCloudRuntimeMetadata = {
           pointCount,
           pointObjectCount,
-          hasVertexColors,
+          colorMode,
+          hasNormals,
           sourceBounds: {
             min: [sourceBounds.min.x, sourceBounds.min.y, sourceBounds.min.z],
             max: [sourceBounds.max.x, sourceBounds.max.y, sourceBounds.max.z],
@@ -203,7 +328,10 @@ export function PointCloudCanvas({
           normalizedScale: scale,
         }
 
-        console.log('Boudhanath point cloud ready', metadata)
+        console.log(
+          'Boudhanath point cloud ready',
+          JSON.stringify(metadata),
+        )
         onReady(metadata)
       })
       .catch((error: unknown) => {
