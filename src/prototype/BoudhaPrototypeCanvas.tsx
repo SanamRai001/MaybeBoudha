@@ -47,6 +47,7 @@ import { createSelectiveDomeGeometry } from './selectiveSurfaceHybrid'
 
 type BoudhaPrototypeCanvasProps = {
   reducedMotion: boolean
+  resetViewToken: number
   onReady: () => void
 }
 
@@ -897,9 +898,15 @@ function disposeScene(scene: Scene) {
 
 export function BoudhaPrototypeCanvas({
   reducedMotion,
+  resetViewToken,
   onReady,
 }: BoudhaPrototypeCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const resetViewTokenRef = useRef(resetViewToken)
+
+  useEffect(() => {
+    resetViewTokenRef.current = resetViewToken
+  }, [resetViewToken])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -932,9 +939,10 @@ export function BoudhaPrototypeCanvas({
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.7))
 
     const camera = new PerspectiveCamera(34, 1, 0.1, 420)
-    const finalCamera = new Vector3(48, 10.25, 57)
+    const homePosition = new Vector3(48, 10.25, 57)
+    const homeTarget = new Vector3(0, 15.2, 0)
     const startCamera = reducedMotion
-      ? finalCamera.clone()
+      ? homePosition.clone()
       : new Vector3(78, 18, 92)
 
     camera.position.copy(startCamera)
@@ -943,11 +951,13 @@ export function BoudhaPrototypeCanvas({
     controls.enableDamping = true
     controls.dampingFactor = 0.055
     controls.enablePan = false
+    controls.rotateSpeed = 0.62
+    controls.zoomSpeed = 0.82
     controls.minDistance = 28
     controls.maxDistance = 125
     controls.minPolarAngle = 0.35
     controls.maxPolarAngle = Math.PI * 0.49
-    controls.target.set(0, 15.2, 0)
+    controls.target.copy(homeTarget)
     controls.enabled = reducedMotion
     controls.update()
 
@@ -1241,26 +1251,121 @@ export function BoudhaPrototypeCanvas({
 
     const startedAt = performance.now()
     let readyAnnounced = false
+    let introActive = !reducedMotion
+    let resetActive = false
+    let resetStartedAt = 0
+    let handledResetViewToken = resetViewTokenRef.current
+    const resetFromPosition = new Vector3()
+    const resetFromTarget = new Vector3()
+
+    canvas.dataset.cameraState = reducedMotion ? 'home' : 'intro'
+
+    const cancelCameraMotionForInteraction = () => {
+      if (!introActive && !resetActive) {
+        return
+      }
+
+      introActive = false
+      resetActive = false
+      controls.enabled = true
+      canvas.dataset.cameraState = 'explore'
+    }
+
+    const markExploring = () => {
+      if (!introActive && !resetActive) {
+        canvas.dataset.cameraState = 'explore'
+      }
+    }
+
+    const startHomeReset = () => {
+      introActive = false
+
+      if (reducedMotion) {
+        resetActive = false
+        camera.position.copy(homePosition)
+        controls.target.copy(homeTarget)
+        controls.enabled = true
+        controls.update()
+        canvas.dataset.cameraState = 'home'
+        return
+      }
+
+      resetFromPosition.copy(camera.position)
+      resetFromTarget.copy(controls.target)
+      resetStartedAt = performance.now()
+      resetActive = true
+      controls.enabled = false
+      canvas.dataset.cameraState = 'resetting'
+    }
+
+    canvas.addEventListener(
+      'pointerdown',
+      cancelCameraMotionForInteraction,
+      { capture: true, passive: true },
+    )
+    canvas.addEventListener(
+      'wheel',
+      cancelCameraMotionForInteraction,
+      { capture: true, passive: true },
+    )
+    controls.addEventListener('start', markExploring)
 
     renderer.setAnimationLoop((time) => {
       if (disposed) {
         return
       }
 
-      if (!reducedMotion && !controls.enabled) {
+      if (resetViewTokenRef.current !== handledResetViewToken) {
+        handledResetViewToken = resetViewTokenRef.current
+        startHomeReset()
+      }
+
+      if (resetActive) {
+        const progress = Math.min(
+          1,
+          (performance.now() - resetStartedAt) / 1050,
+        )
+        const eased = 1 - Math.pow(1 - progress, 3)
+
+        camera.position.lerpVectors(
+          resetFromPosition,
+          homePosition,
+          eased,
+        )
+        controls.target.lerpVectors(
+          resetFromTarget,
+          homeTarget,
+          eased,
+        )
+        camera.lookAt(controls.target)
+
+        if (progress >= 1) {
+          resetActive = false
+          controls.enabled = true
+          camera.position.copy(homePosition)
+          controls.target.copy(homeTarget)
+          controls.update()
+          canvas.dataset.cameraState = 'home'
+        }
+      } else if (introActive) {
         const elapsed = (performance.now() - startedAt) / 1000
         const progress = Math.min(1, elapsed / 4.8)
         const eased = 1 - Math.pow(1 - progress, 3)
 
-        camera.position.lerpVectors(startCamera, finalCamera, eased)
-        camera.lookAt(controls.target)
+        camera.position.lerpVectors(startCamera, homePosition, eased)
+        camera.lookAt(homeTarget)
 
         if (progress >= 1) {
+          introActive = false
           controls.enabled = true
+          camera.position.copy(homePosition)
+          controls.target.copy(homeTarget)
+          controls.update()
+          canvas.dataset.cameraState = 'home'
         }
+      } else {
+        controls.update()
       }
-
-      controls.update()
 
       for (const flag of animatedFlags) {
         flag.mesh.rotation.z =
@@ -1284,6 +1389,17 @@ export function BoudhaPrototypeCanvas({
       disposed = true
       resizeObserver.disconnect()
       renderer.setAnimationLoop(null)
+      canvas.removeEventListener(
+        'pointerdown',
+        cancelCameraMotionForInteraction,
+        true,
+      )
+      canvas.removeEventListener(
+        'wheel',
+        cancelCameraMotionForInteraction,
+        true,
+      )
+      controls.removeEventListener('start', markExploring)
       controls.dispose()
       courtyardTexture?.dispose()
       contactShadowTexture?.dispose()
@@ -1300,6 +1416,7 @@ export function BoudhaPrototypeCanvas({
     <canvas
       ref={canvasRef}
       className="prototype-canvas"
+      data-camera-state="loading"
       aria-label="Synthetic interactive Boudhanath architectural study"
     />
   )
