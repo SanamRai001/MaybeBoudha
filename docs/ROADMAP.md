@@ -117,7 +117,7 @@ Verdict:
 
 ### Phase 3P.3 — Licensed point-cloud spike
 
-**Status: engineering complete on PR #7; final merge verification pending.**
+**Status: complete and merged in PR #7.**
 
 Verified source:
 
@@ -140,7 +140,7 @@ Decision:
 
 ### Phase 3P.4 — Deterministic surface reconstruction spike
 
-**Status: next after PR #7 merge.**
+**Status: next.**
 
 Goal:
 
