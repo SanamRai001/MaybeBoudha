@@ -18,6 +18,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader.js'
 
 import { SURFACE_ASSET_URL } from './surfaceConfig'
+import { prepareSurfaceGeometryForWebGL } from './surfaceGeometry'
 
 export type SurfaceRuntimeMetadata = {
   vertexCount: number
@@ -118,7 +119,7 @@ export function SurfaceReconstructionCanvas({
           return
         }
 
-        geometry.computeVertexNormals()
+        prepareSurfaceGeometryForWebGL(geometry)
 
         geometry.computeBoundingBox()
         const sourceBounds = geometry.boundingBox
