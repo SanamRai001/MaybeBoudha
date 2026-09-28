@@ -421,6 +421,71 @@ async function verifyMobileTouchInteraction(client) {
   )
 }
 
+async function verifyPrototypeRuntimeProfile(
+  client,
+  renderer,
+  timeoutMs = 5_000,
+) {
+  const deadline = Date.now() + timeoutMs
+  let profile = null
+
+  while (Date.now() < deadline) {
+    profile = await evaluate(
+      client,
+      `(() => {
+        const canvas = document.querySelector('.prototype-canvas')
+        return {
+          qualityTier: canvas?.getAttribute('data-quality-tier') ?? null,
+          rendererDpr: Number(canvas?.getAttribute('data-renderer-dpr') ?? 0),
+          fps: Number(canvas?.getAttribute('data-fps') ?? 0),
+        }
+      })()`,
+    )
+
+    if (
+      profile?.qualityTier &&
+      profile.qualityTier !== 'pending' &&
+      profile.rendererDpr > 0 &&
+      profile.fps > 0
+    ) {
+      break
+    }
+
+    await sleep(100)
+  }
+
+  if (
+    !profile?.qualityTier ||
+    profile.qualityTier === 'pending' ||
+    !Number.isFinite(profile.rendererDpr) ||
+    profile.rendererDpr <= 0 ||
+    profile.rendererDpr > 1.6 ||
+    !Number.isFinite(profile.fps) ||
+    profile.fps <= 0
+  ) {
+    throw new Error(
+      `Prototype runtime profile was invalid: ${JSON.stringify(profile)}`,
+    )
+  }
+
+  if (
+    renderer === 'prototype-mobile' &&
+    (
+      profile.qualityTier !== 'mobile' ||
+      profile.rendererDpr > 1.15
+    )
+  ) {
+    throw new Error(
+      `Mobile quality policy was not applied: ${JSON.stringify(profile)}`,
+    )
+  }
+
+  console.log(
+    `[${renderer}] performance profile:`,
+    JSON.stringify(profile),
+  )
+}
+
 async function verifyReducedMotion(client) {
   const state = await evaluate(
     client,
@@ -521,6 +586,7 @@ try {
   }
 
   if (['prototype', 'prototype-mobile', 'prototype-reduced'].includes(renderer)) {
+    await verifyPrototypeRuntimeProfile(client, renderer)
     await verifyPrototypeControls(client)
   }
 
