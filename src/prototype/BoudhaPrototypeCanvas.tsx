@@ -46,9 +46,12 @@ import {
   BOUDHA_BASE_FOOTPRINT_MAX_METERS,
   BOUDHA_BASE_FOOTPRINT_X_METERS,
   BOUDHA_BASE_FOOTPRINT_Z_METERS,
+  BOUDHA_DOME_BASE_Y_METERS,
   BOUDHA_DOME_TOP_Y_METERS,
+  BOUDHA_DRUM_HEIGHT_METERS,
   BOUDHA_EYE_PANEL_WIDTH_METERS,
   BOUDHA_HARMIKA_WIDTH_METERS,
+  BOUDHA_PLINTH_HEIGHTS_METERS,
   BOUDHA_REFERENCE_DOME_PROFILE,
   BOUDHA_TOTAL_HEIGHT_METERS,
   referenceDomeRadiusMeters,
@@ -656,26 +659,22 @@ function createStupa(scene: Scene) {
   const blue = new MeshStandardMaterial({ color: '#264c6e', roughness: 0.76 })
   const yellow = new MeshStandardMaterial({ color: '#d39d34', roughness: 0.76 })
 
-  const platforms = [
-    {
-      x: BOUDHA_BASE_FOOTPRINT_X_METERS,
-      z: BOUDHA_BASE_FOOTPRINT_Z_METERS,
-      height: 1.2,
-      y: 0.6,
+  let platformBaseY = 0
+  const platforms = BOUDHA_PLINTH_HEIGHTS_METERS.map(
+    (height, index) => {
+      const scale = [1, 0.93, 0.86][index]
+
+      const platform = {
+        x: BOUDHA_BASE_FOOTPRINT_X_METERS * scale,
+        z: BOUDHA_BASE_FOOTPRINT_Z_METERS * scale,
+        height,
+        y: platformBaseY + height / 2,
+      }
+
+      platformBaseY += height
+      return platform
     },
-    {
-      x: BOUDHA_BASE_FOOTPRINT_X_METERS * 0.93,
-      z: BOUDHA_BASE_FOOTPRINT_Z_METERS * 0.93,
-      height: 1.05,
-      y: 1.72,
-    },
-    {
-      x: BOUDHA_BASE_FOOTPRINT_X_METERS * 0.86,
-      z: BOUDHA_BASE_FOOTPRINT_Z_METERS * 0.86,
-      height: 0.95,
-      y: 2.72,
-    },
-  ]
+  )
 
   for (const platform of platforms) {
     const mesh = new Mesh(
@@ -689,10 +688,16 @@ function createStupa(scene: Scene) {
   }
 
   const drum = new Mesh(
-    new CylinderGeometry(18.85, 19.25, 2.0, 96),
+    new CylinderGeometry(
+      18.85,
+      19.25,
+      BOUDHA_DRUM_HEIGHT_METERS,
+      96,
+    ),
     plaster,
   )
-  drum.position.y = 4.2
+  drum.position.y =
+    platformBaseY + BOUDHA_DRUM_HEIGHT_METERS / 2
   drum.receiveShadow = true
   drum.castShadow = true
   sourceBaseFallback.add(drum)
@@ -710,7 +715,7 @@ function createStupa(scene: Scene) {
     new CylinderGeometry(18.95, 18.95, 0.58, 96),
     warmWhite,
   )
-  domeBand.position.y = 5.12
+  domeBand.position.y = BOUDHA_DOME_BASE_Y_METERS - 0.03
   domeAssembly.add(domeBand)
 
   const nicheMaterial = new MeshStandardMaterial({
@@ -724,7 +729,7 @@ function createStupa(scene: Scene) {
     const niche = new Mesh(nicheGeometry, nicheMaterial)
     niche.position.set(
       Math.cos(angle) * 19.28,
-      5.7,
+      BOUDHA_DOME_BASE_Y_METERS - 0.62,
       Math.sin(angle) * 19.28,
     )
     niche.rotation.y = -angle + Math.PI / 2
