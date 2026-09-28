@@ -285,3 +285,55 @@ Keep the Phase 3P.2 hybrid.
 The project has now reached diminishing returns from this existing monochrome geometric source. A further major realism jump requires better source data rather than more hand-modeling/cropping.
 
 See `SELECTIVE_HYBRID_SPIKE.md`.
+
+
+## Phase 3P.7A — Presentation polish
+
+Phase 3P.7A improves the finished experience around the strongest Phase 3P.2 hybrid without changing monument geometry or source data.
+
+Delivered:
+
+- non-blocking scene loader/reveal;
+- staged editorial UI entrance;
+- accessible Focus view / Show story toggle;
+- temporary interaction hint;
+- mobile-safe header/control refinements;
+- reduced-motion treatment for all new presentation transitions.
+
+Implementation head reviewed:
+
+`93f95f4045d9b78c12a2b983a799ea7175498962`
+
+Verification:
+
+- CI **#214** — green;
+- tests/build — passed;
+- default hybrid probe — passed;
+- uploaded-model probe — passed;
+- point-cloud probe — passed;
+- Spark/PlayCanvas regressions — passed;
+- final Chromium screenshot — inspected directly.
+
+### Screenshot-driven correction
+
+The first 3P.7A screenshot showed the new `Drag to explore` hint too close to the existing footer.
+
+The hint was moved upward and reduced in prominence.
+
+The second screenshot was accepted.
+
+### Verdict
+
+**Keep Phase 3P.7A.**
+
+It improves:
+
+- first-load polish;
+- visual hierarchy;
+- ability to view the scene with minimal UI;
+- presentation clarity;
+- mobile compositional resilience.
+
+It does not change the Phase 3P.6 real-capture decision.
+
+The monument remains an honestly labeled synthetic hybrid.

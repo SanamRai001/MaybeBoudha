@@ -203,22 +203,53 @@ See `REAL_CAPTURE_GO_NO_GO.md`.
 
 ### Phase 3P.7 — Prototype polish and portfolio-ready release
 
-**Status: next.**
-
 Goal:
 
 Polish the strongest current hybrid as an honest, deployable visual/engineering prototype without repeating low-value geometry experiments on the same source.
 
+#### Phase 3P.7A — Presentation polish
+
+**Status: implementation/visual review complete on PR #11; final documentation verification pending.**
+
+Delivered:
+
+- non-blocking loader/reveal;
+- staged story-chrome entrance;
+- accessible Focus view / Show story control;
+- cleaner interaction hinting;
+- mobile-safe header/footer adjustments;
+- reduced-motion handling for the new presentation layer;
+- screenshot-driven footer/hint correction.
+
+Verified on implementation head `93f95f4045d9b78c12a2b983a799ea7175498962`:
+
+- CI #214 — green;
+- tests/build — passed;
+- default prototype — passed;
+- uploaded-model probe — passed;
+- point-cloud probe — passed;
+- Spark / PlayCanvas regressions — passed;
+- final screenshot inspected directly.
+
+#### Phase 3P.7B — Camera, interaction, mobile and accessibility polish
+
+**Status: next after 3P.7A merge.**
+
 Build:
 
-- cinematic timing and camera polish;
-- loader/reveal;
-- responsive/mobile composition;
-- interaction affordances;
-- environment blending;
-- flag/atmosphere refinement;
+- cinematic camera timing/handoff;
+- reset/home framing;
+- orbit/touch review;
+- keyboard/focus-mode verification;
+- mobile viewport screenshot coverage;
+- reduced-motion browser verification;
+- responsive overlap fixes.
+
+Later 3P.7 work may include:
+
+- environment/flag/atmosphere refinement;
 - optional ambient sound with explicit controls;
-- performance/accessibility review;
+- performance review;
 - public deployment readiness;
 - portfolio media/screenshots.
 

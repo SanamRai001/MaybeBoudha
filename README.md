@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3P.6 — Real-capture review complete: keep the Phase 3P.2 hybrid and defer field capture for now.**
+**Phase 3P.7A — Presentation polish is complete on PR #11; the current hybrid now has a cleaner loader/reveal and Focus view.**
 
 The project now has verified browser evidence for both the renderer choice and the selected large-scene delivery path:
 
@@ -244,11 +244,18 @@ See [Selective Hybrid Spike](docs/SELECTIVE_HYBRID_SPIKE.md).
 
 ## Immediate next step
 
-**Phase 3P.7 — Prototype polish and portfolio-ready release**
+Finish the documentation-complete verification and merge **Phase 3P.7A**.
 
-The existing-source geometry track has reached diminishing returns. The current decision is **NO-GO for field capture right now**.
+Then continue with **Phase 3P.7B — camera, interaction, mobile and accessibility polish**:
 
-Next, polish the strongest hybrid as an honest interactive prototype: cinematic timing, responsive composition, interaction polish, environment blending, accessibility/performance, and deployment media.
+- cinematic camera handoff;
+- reset/home framing;
+- orbit/touch review;
+- mobile screenshot coverage;
+- reduced-motion browser verification;
+- keyboard/focus-mode review.
+
+The current decision remains **NO-GO for field capture right now**.
 
 Field-clearance outreach remains prepared but deferred.
 

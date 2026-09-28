@@ -6,11 +6,18 @@ import { BoudhaPrototypeCanvas } from './BoudhaPrototypeCanvas'
 export function BoudhaPrototypeExperience() {
   const reducedMotion = useReducedMotion()
   const [ready, setReady] = useState(false)
+  const [focusMode, setFocusMode] = useState(false)
   const handleReady = useCallback(() => setReady(true), [])
 
   return (
     <main
-      className="prototype-page"
+      className={[
+        'prototype-page',
+        ready ? 'is-ready' : 'is-loading',
+        focusMode ? 'is-focus-mode' : '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
       data-prototype-state={ready ? 'ready' : 'loading'}
     >
       <BoudhaPrototypeCanvas
@@ -20,13 +27,42 @@ export function BoudhaPrototypeExperience() {
 
       <div className="prototype-vignette" aria-hidden="true" />
 
+      <div
+        className="prototype-loader"
+        role="status"
+        aria-live="polite"
+        aria-hidden={ready}
+      >
+        <div className="prototype-loader-mark" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </div>
+        <div>
+          <strong>MaybeBoudha</strong>
+          <small>Preparing the visual study</small>
+        </div>
+      </div>
+
       <header className="prototype-header">
         <a className="prototype-brand" href="/" aria-label="MaybeBoudha">
           MaybeBoudha
         </a>
-        <div className="prototype-header-meta">
-          <span>Visual Study 01</span>
-          <a href="?renderer=rad">Engineering proof</a>
+
+        <div className="prototype-header-actions">
+          <div className="prototype-header-meta">
+            <span>Visual Study 01</span>
+            <a href="?renderer=rad">Engineering proof</a>
+          </div>
+
+          <button
+            className="prototype-focus-toggle"
+            type="button"
+            aria-pressed={focusMode}
+            onClick={() => setFocusMode((current) => !current)}
+          >
+            {focusMode ? 'Show story' : 'Focus view'}
+          </button>
         </div>
       </header>
 
@@ -62,6 +98,11 @@ export function BoudhaPrototypeExperience() {
           <small>Light · depth · motion</small>
         </div>
       </aside>
+
+      <div className="prototype-explore-hint" aria-hidden="true">
+        <span />
+        Drag to explore
+      </div>
 
       <footer className="prototype-controls">
         <span>Drag to orbit</span>
