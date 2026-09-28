@@ -165,7 +165,7 @@ The continuous surface is recognizable and geometrically useful, but lacks photo
 
 ### Phase 3P.5 — Selective geometry hybridization
 
-**Status: engineering proof complete on PR #10; final merge pending.**
+**Status: complete and merged in PR #10.**
 
 Verified:
 
@@ -189,18 +189,42 @@ See `SELECTIVE_HYBRID_SPIKE.md`.
 
 ### Phase 3P.6 — Real-capture go/no-go review
 
-**Status: next after Phase 3P.5 merge.**
+**Status: complete.**
+
+Decision:
+
+**NO-GO for field capture right now.**
+
+The current hybrid proves the product direction but remains visibly synthetic and does not yet meet the user's threshold for spending time on permission outreach/new capture.
+
+Keep Phase 3C.2 prepared but deferred.
+
+See `REAL_CAPTURE_GO_NO_GO.md`.
+
+### Phase 3P.7 — Prototype polish and portfolio-ready release
+
+**Status: next.**
 
 Goal:
 
-Decide whether the current experience is promising enough to justify the cost and permission/provenance work of acquiring genuinely better real-world source data.
+Polish the strongest current hybrid as an honest, deployable visual/engineering prototype without repeating low-value geometry experiments on the same source.
 
-Decision options:
+Build:
 
-- **GO** → deliberately reactivate Phase 3C.2 field clearance for a small controlled partial capture;
-- **NO-GO** → retain MaybeBoudha as a strong visual/engineering prototype without additional field-capture effort.
+- cinematic timing and camera polish;
+- loader/reveal;
+- responsive/mobile composition;
+- interaction affordances;
+- environment blending;
+- flag/atmosphere refinement;
+- optional ambient sound with explicit controls;
+- performance/accessibility review;
+- public deployment readiness;
+- portfolio media/screenshots.
 
-Do not send permission outreach automatically. The user makes this decision after reviewing the current default experience.
+Guardrail:
+
+Do not restart field clearance or claim real reconstruction unless a genuinely better source path appears or the user explicitly changes the decision.
 
 ---
 
