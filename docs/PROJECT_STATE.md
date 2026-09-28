@@ -12,31 +12,43 @@ The rendering/delivery architecture is proven. The current product track is exha
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Current branch: `feat/phase-3p3-point-cloud-spike`
-- Pull request: `#7 — feat: Phase 3P.3 licensed Boudhanath point-cloud spike`
+- Current branch: `main`
 - Working title: `MaybeBoudha`
 
 ## Last completed merged milestone
 
-**Phase 3P.2 — Realism and material pass**
+**Phase 3P.3 — Licensed Boudhanath point-cloud spike**
 
 Status: **complete and merged**
 
 PR:
 
-`#6 — feat: Phase 3P synthetic Boudhanath visual prototype`
+`#7 — feat: Phase 3P.3 licensed Boudhanath point-cloud spike`
 
 Merge SHA:
 
-`3ff3d7bbeb4175f02f5fdcde758ca30864e43643`
+`54c724617751af6b595848bd74fe295d623e1718`
 
-Phase 3P.2 remains the default visual experience.
+Final documentation-complete verification:
+
+- CI **#171** — green;
+- GLB inspection — passed;
+- tests — passed;
+- production build — passed;
+- hybrid browser probe — passed;
+- uploaded-model browser probe — passed;
+- point-cloud browser probe — passed;
+- Spark regression — passed;
+- PlayCanvas regression — passed;
+- RAD Pipeline **#89** — green.
+
+Phase 3P.2 hybrid remains the default visual experience.
 
 ## Current milestone
 
-**Phase 3P.3 — Licensed Boudhanath point-cloud spike**
+**Phase 3P.4 — Deterministic point-cloud surface reconstruction**
 
-Status: **engineering complete on branch; final documentation verification pending**
+Status: **not started**
 
 ## Source asset
 
@@ -160,9 +172,7 @@ Keep:
 - `/?pointcloud=1` as an evidence/debug route;
 - source GLB as a licensed geometric input.
 
-## Next milestone after PR #7 merge
-
-**Phase 3P.4 — Deterministic point-cloud surface reconstruction**
+## Phase 3P.4 goal
 
 Goal:
 
@@ -194,7 +204,7 @@ Rules:
 6. do not claim survey accuracy;
 7. keep hybrid as fallback until visual evidence wins.
 
-Suggested branch:
+Next branch:
 
 `feat/phase-3p4-surface-reconstruction`
 
@@ -208,9 +218,10 @@ Reactivate it if Phase 3P.4 still cannot provide the realism/value needed from e
 
 ## Resume rule
 
-1. inspect actual PR #7 head and both workflow results;
+1. verify actual `main` and post-merge CI;
 2. read `docs/POINT_CLOUD_SPIKE.md`;
 3. repository state wins over docs if they differ;
-4. merge PR #7 only after final documentation-complete CI is green;
-5. checkpoint the real merge SHA on `main`;
-6. create Phase 3P.4 from verified main.
+4. create `feat/phase-3p4-surface-reconstruction` from verified main;
+5. keep the source GLB unchanged;
+6. perform only deterministic surface reconstruction;
+7. update this file at the Phase 3P.4 boundary.
