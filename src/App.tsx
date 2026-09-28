@@ -11,12 +11,12 @@ function App() {
     return <TechnicalSpikeApp />
   }
 
-  if (mode === 'surface') {
-    return <SurfaceReconstructionExperience />
-  }
-
   if (mode === 'pointcloud') {
     return <PointCloudSpikeExperience />
+  }
+
+  if (mode === 'surface') {
+    return <SurfaceReconstructionExperience />
   }
 
   return <BoudhaPrototypeExperience />
