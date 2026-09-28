@@ -7,7 +7,7 @@ on:
       - main
     paths:
       - ".github/workflows/surface-reconstruction.yml"
-      - "scripts/reconstruct-surface.py"
+      - "scripts/surface/**"
       - "scripts/runtime-smoke.mjs"
       - "src/App.tsx"
       - "src/experienceMode.ts"
@@ -21,7 +21,7 @@ on:
       - main
     paths:
       - ".github/workflows/surface-reconstruction.yml"
-      - "scripts/reconstruct-surface.py"
+      - "scripts/surface/**"
       - "scripts/runtime-smoke.mjs"
       - "src/App.tsx"
       - "src/experienceMode.ts"
@@ -34,10 +34,15 @@ on:
 permissions:
   contents: read
 
+env:
+  SOURCE_GLB_SHA256: ff5ef7d2c124953b6e053a98b945ef3cad50b8ab524e31c7d78bb6737307169c
+  OPEN3D_VERSION: 0.20.0
+  PYTHON_VERSION: "3.11"
+
 jobs:
   reconstruct:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 40
 
     steps:
       - name: Checkout
@@ -56,50 +61,80 @@ jobs:
       - name: Run application tests
         run: npm test
 
+      - name: Verify unchanged source GLB
+        run: |
+          echo "$SOURCE_GLB_SHA256  boudhanath_stupa_-_pointcloud.glb" | sha256sum --check -
+
+      - name: Extract transformed points and normals
+        run: |
+          mkdir -p .phase3p4
+          node scripts/surface/extract-pointcloud-ply.mjs \
+            boudhanath_stupa_-_pointcloud.glb \
+            .phase3p4/boudha-source-oriented.ply \
+            .phase3p4/extraction-report.json
+
+          node - <<'NODE'
+          const fs = require('node:fs')
+          const report = JSON.parse(fs.readFileSync('.phase3p4/extraction-report.json', 'utf8'))
+          if (report.extraction.pointCount !== 99992) {
+            throw new Error(`Expected 99,992 points, got ${report.extraction.pointCount}`)
+          }
+          if (report.source.sha256 !== process.env.SOURCE_GLB_SHA256) {
+            throw new Error('Extraction report source SHA-256 changed.')
+          }
+          console.log(JSON.stringify(report, null, 2))
+          NODE
+
       - name: Use Python 3.11
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "${{ env.PYTHON_VERSION }}"
 
-      - name: Install deterministic reconstruction dependency
+      - name: Install pinned Open3D
         run: |
           python -m pip install --upgrade pip
-          python -m pip install --only-binary=:all: open3d==0.20.0
+          python -m pip install --only-binary=:all: "open3d==$OPEN3D_VERSION"
 
-      - name: Reconstruct licensed point cloud
+      - name: Reconstruct deterministic Poisson surface
         run: |
-          mkdir -p .phase3p4
-          python scripts/reconstruct-surface.py \
-            boudhanath_stupa_-_pointcloud.glb \
-            .phase3p4/boudha-poisson.ply \
-            .phase3p4/surface-report.json \
+          python scripts/surface/reconstruct_poisson.py \
+            --input .phase3p4/boudha-source-oriented.ply \
+            --output .phase3p4/boudha-poisson.ply \
+            --manifest .phase3p4/surface-manifest.json \
+            --source-report .phase3p4/extraction-report.json \
             --depth 9 \
+            --scale 1.08 \
             --density-quantile 0.02 \
-            --target-triangles 220000
+            --orient-k 30 \
+            --max-triangles 300000
 
       - name: Validate reconstruction outputs
         run: |
           test -s .phase3p4/boudha-poisson.ply
-          test -s .phase3p4/surface-report.json
+          test -s .phase3p4/surface-manifest.json
+
           python - <<'PY'
           import json
           from pathlib import Path
 
-          report = json.loads(Path(".phase3p4/surface-report.json").read_text())
-          output = report["output"]
+          manifest = json.loads(Path(".phase3p4/surface-manifest.json").read_text())
+          output = manifest["output"]
 
+          assert manifest["toolchain"]["open3d"] == "0.20.0", manifest["toolchain"]
+          assert manifest["source"]["pointCount"] == 99992, manifest["source"]
           assert output["vertexCount"] > 1000, output
           assert output["triangleCount"] > 1000, output
           assert output["bytes"] > 10000, output
 
-          print(json.dumps(report, indent=2))
+          print(json.dumps(manifest, indent=2))
           PY
 
       - name: Stage generated surface for browser proof
         run: |
           mkdir -p public/generated
           cp .phase3p4/boudha-poisson.ply public/generated/
-          cp .phase3p4/surface-report.json public/generated/
+          cp .phase3p4/surface-manifest.json public/generated/
+          cp .phase3p4/extraction-report.json public/generated/
 
       - name: Build application bundle
         run: npm run build
@@ -143,8 +178,10 @@ jobs:
         with:
           name: phase-3p4-surface-proof
           path: |
+            .phase3p4/boudha-source-oriented.ply
+            .phase3p4/extraction-report.json
             .phase3p4/boudha-poisson.ply
-            .phase3p4/surface-report.json
+            .phase3p4/surface-manifest.json
             /tmp/maybeboudha-phase-3p4-surface.png
             /tmp/maybeboudha-surface-preview.log
           if-no-files-found: warn
