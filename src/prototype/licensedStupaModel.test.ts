@@ -1,10 +1,14 @@
 import { describe, expect, it } from 'vitest'
 
 import {
-  BOUDHA_TARGET_FOOTPRINT_METERS,
-  BOUDHA_TARGET_HEIGHT_METERS,
-  boudhaMiddleProfileScale,
-} from './licensedStupaModel'
+  BOUDHA_BASE_FOOTPRINT_METERS,
+  BOUDHA_DOME_DIAMETER_METERS,
+  BOUDHA_DOME_RADIUS_METERS,
+  BOUDHA_HARMIKA_WIDTH_METERS,
+  BOUDHA_REFERENCE_DOME_PROFILE,
+  BOUDHA_TOTAL_HEIGHT_METERS,
+  referenceDomeRadiusMeters,
+} from './boudhaReferenceGeometry'
 import { licensedModelRequested } from './prototypeModelMode'
 
 describe('licensedModelRequested', () => {
@@ -21,32 +25,61 @@ describe('licensedModelRequested', () => {
   })
 })
 
+describe('reference-grounded Boudhanath geometry', () => {
+  it('uses the published total height and 120 ft dome diameter', () => {
+    expect(BOUDHA_TOTAL_HEIGHT_METERS).toBe(43.25)
+    expect(BOUDHA_DOME_DIAMETER_METERS).toBeCloseTo(36.576, 3)
+    expect(BOUDHA_DOME_RADIUS_METERS).toBeCloseTo(18.288, 3)
+  })
 
-describe('licensed Boudhanath visual scale target', () => {
-  it('keeps the documented height while preserving a broad mandala footprint', () => {
-    expect(BOUDHA_TARGET_HEIGHT_METERS).toBe(43.25)
-    expect(BOUDHA_TARGET_FOOTPRINT_METERS).toBeCloseTo(
+  it('does not derive the terrace footprint from the published area', () => {
+    expect(BOUDHA_BASE_FOOTPRINT_METERS).toBe(52)
+    expect(BOUDHA_BASE_FOOTPRINT_METERS).not.toBeCloseTo(
       Math.sqrt(6756),
-      1,
+      0,
     )
     expect(
-      BOUDHA_TARGET_FOOTPRINT_METERS / BOUDHA_TARGET_HEIGHT_METERS,
-    ).toBeGreaterThan(1.8)
-  })
-})
-
-
-describe('boudhaMiddleProfileScale', () => {
-  it('keeps the terraces stable while giving the dome a fuller belly', () => {
-    expect(boudhaMiddleProfileScale(0.05)).toBeCloseTo(1, 3)
-    expect(boudhaMiddleProfileScale(0.2)).toBeGreaterThan(1.04)
-    expect(boudhaMiddleProfileScale(0.4)).toBeGreaterThan(1.3)
-    expect(boudhaMiddleProfileScale(0.55)).toBeGreaterThan(1.18)
-    expect(boudhaMiddleProfileScale(0.7)).toBeCloseTo(1, 3)
+      BOUDHA_BASE_FOOTPRINT_METERS / BOUDHA_DOME_DIAMETER_METERS,
+    ).toBeGreaterThan(1.35)
+    expect(
+      BOUDHA_BASE_FOOTPRINT_METERS / BOUDHA_DOME_DIAMETER_METERS,
+    ).toBeLessThan(1.5)
   })
 
-  it('clamps out-of-range normalized heights safely', () => {
-    expect(boudhaMiddleProfileScale(-1)).toBeCloseTo(1, 3)
-    expect(boudhaMiddleProfileScale(2)).toBeCloseTo(1, 3)
+  it('keeps the traced dome profile broad and monotonically narrowing', () => {
+    for (
+      let index = 1;
+      index < BOUDHA_REFERENCE_DOME_PROFILE.length;
+      index += 1
+    ) {
+      expect(
+        BOUDHA_REFERENCE_DOME_PROFILE[index][0],
+      ).toBeGreaterThan(
+        BOUDHA_REFERENCE_DOME_PROFILE[index - 1][0],
+      )
+      expect(
+        BOUDHA_REFERENCE_DOME_PROFILE[index][1],
+      ).toBeLessThanOrEqual(
+        BOUDHA_REFERENCE_DOME_PROFILE[index - 1][1],
+      )
+    }
+
+    expect(referenceDomeRadiusMeters(0)).toBeCloseTo(
+      BOUDHA_DOME_RADIUS_METERS,
+      3,
+    )
+    expect(referenceDomeRadiusMeters(0.54)).toBeCloseTo(
+      BOUDHA_DOME_RADIUS_METERS * 0.79,
+      3,
+    )
+  })
+
+  it('matches the traced dome crown to the broader harmika', () => {
+    const crownDiameter = referenceDomeRadiusMeters(1) * 2
+
+    expect(crownDiameter).toBeCloseTo(
+      BOUDHA_HARMIKA_WIDTH_METERS,
+      0,
+    )
   })
 })
