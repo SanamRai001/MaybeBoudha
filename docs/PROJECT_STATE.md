@@ -160,7 +160,7 @@ Still required before physical-device performance claims:
 
 **Phase 3P.7F-A — Monument scale/proportion correction**
 
-Status: **in progress on `fix/monument-scale-proportions`**
+Status: **implementation verified; visual approval pending on `fix/monument-scale-proportions`**
 
 User screenshot review found that the released monument reads as a small, thin model inside the photographic courtyard.
 
@@ -183,11 +183,53 @@ Guardrails for 3P.7F-A:
 - do not restart point-cloud/surface experiments;
 - do not merge until the new desktop/mobile screenshots are inspected.
 
+## Phase 3P.7F-A verification
+
+PR:
+
+`#18 — fix: restore Boudha monument scale and mass`
+
+Verified on branch head:
+
+`065aa58511372c1f98c63f72e884e3894c5ffc87`
+
+Gates:
+
+- `CI #258` — **passed**;
+- `Deploy GitHub Pages #11` PR build — **passed**;
+- `Surface Reconstruction #51` — **passed**;
+- default prototype — **passed**;
+- mobile prototype — **passed**;
+- reduced-motion prototype — **passed**;
+- uploaded-model probe — **passed**;
+- point-cloud probe — **passed**;
+- Spark / PlayCanvas regressions — **passed**.
+
+Runtime model metadata now reports:
+
+```json
+{
+  "heightMeters": 43.25,
+  "footprintMeters": {
+    "x": 82.2,
+    "z": 82.2
+  }
+}
+```
+
+Screenshot review:
+
+- desktop monument mass is dramatically stronger and no longer reads as a miniature;
+- mobile remains overflow-safe with all controls visible;
+- the camera/FOV was intentionally unchanged, so the visual difference comes from corrected monument mass rather than a framing trick.
+
+PR #18 remains **unmerged** pending user visual approval.
+
 ## Next phase
 
-Run the full existing test/runtime gates and inspect the new screenshot against the user-provided release screenshot.
+Compare the Phase 3P.7F-A screenshot with the released screenshot.
 
-If the monument mass is correct, keep the geometry correction and only make small camera/framing adjustments if still needed.
+If the new mass is approved, either merge as-is or make a small Phase 3P.7F-B camera/framing adjustment.
 
 If it is too wide, tune the footprint target before merge.
 
