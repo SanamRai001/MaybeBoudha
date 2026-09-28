@@ -11,7 +11,8 @@ import {
 } from 'three'
 
 import {
-  BOUDHA_BASE_FOOTPRINT_METERS,
+  BOUDHA_BASE_FOOTPRINT_X_METERS,
+  BOUDHA_BASE_FOOTPRINT_Z_METERS,
   BOUDHA_TOTAL_HEIGHT_METERS,
 } from './boudhaReferenceGeometry'
 
@@ -352,9 +353,9 @@ export async function loadLicensedStupaModel(
   // continues to use the published total monument height as the reference.
   // The actual visible dome is built separately from the traced photo profile.
   mesh.scale.set(
-    BOUDHA_BASE_FOOTPRINT_METERS / sourceSize.x,
+    BOUDHA_BASE_FOOTPRINT_X_METERS / sourceSize.x,
     BOUDHA_TOTAL_HEIGHT_METERS / sourceSize.y,
-    BOUDHA_BASE_FOOTPRINT_METERS / sourceSize.z,
+    BOUDHA_BASE_FOOTPRINT_Z_METERS / sourceSize.z,
   )
 
   const group = new Group()
