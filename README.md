@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3P.5 — Selective geometry hybridization: engineering proof complete; default visual remains the Phase 3P.2 hybrid.**
+**Phase 3P.6 — Real-capture review complete: keep the Phase 3P.2 hybrid and defer field capture for now.**
 
 The project now has verified browser evidence for both the renderer choice and the selected large-scene delivery path:
 
@@ -170,6 +170,7 @@ The `?renderer=rad` route expects generated RAD/RADC files under `/rad/`; normal
 - [Point-Cloud Spike](docs/POINT_CLOUD_SPIKE.md)
 - [Surface Reconstruction Spike](docs/SURFACE_RECONSTRUCTION_SPIKE.md)
 - [Selective Hybrid Spike](docs/SELECTIVE_HYBRID_SPIKE.md)
+- [Real-Capture Go / No-Go](docs/REAL_CAPTURE_GO_NO_GO.md)
 - [Project State](docs/PROJECT_STATE.md)
 
 ## Development rules
@@ -243,12 +244,12 @@ See [Selective Hybrid Spike](docs/SELECTIVE_HYBRID_SPIKE.md).
 
 ## Immediate next step
 
-**Phase 3P.6 — Real-capture go/no-go review**
+**Phase 3P.7 — Prototype polish and portfolio-ready release**
 
-The strong existing-source path has now been tested far enough to make the next decision a product decision rather than another geometry experiment.
+The existing-source geometry track has reached diminishing returns. The current decision is **NO-GO for field capture right now**.
 
-Review the current default experience and decide whether its promise justifies reactivating **Phase 3C.2 field clearance** for a controlled partial real capture.
+Next, polish the strongest hybrid as an honest interactive prototype: cinematic timing, responsive composition, interaction polish, environment blending, accessibility/performance, and deployment media.
 
-Do **not** send permission outreach automatically.
+Field-clearance outreach remains prepared but deferred.
 
-See [ROADMAP.md](docs/ROADMAP.md) for phase boundaries.
+See [Real-Capture Go / No-Go](docs/REAL_CAPTURE_GO_NO_GO.md) and [ROADMAP.md](docs/ROADMAP.md).
