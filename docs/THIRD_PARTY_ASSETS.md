@@ -88,26 +88,50 @@ If the photograph fails to load, the procedural surroundings remain visible.
 The panorama is contextual imagery only. It is not reconstruction source data and does not convert the synthetic/hybrid monument into a scan or digital twin.
 
 
-## Point-cloud candidate — not yet imported
+## Licensed Boudhanath point cloud
 
-A Phase 3P.3 candidate has been identified:
+Phase 3P.3 includes the downloaded Sketchfab GLB as a source/evidence asset:
 
 - title: `BOUDHANATH STUPA - POINTCLOUD`
-- author: Enea Le Fons / `@enealefons`
+- author: **Enea Le Fons / @enealefons**
 - source: Sketchfab
 - model page: https://sketchfab.com/3d-models/boudhanath-stupa-pointcloud-ba7da7bbf6cc4ce9ab17ce66bc9597a1
-- public listing: approximately **100k vertices**, **0 triangles**
-- license: **Creative Commons Attribution**
-- status: downloadable
+- model UID: `ba7da7bbf6cc4ce9ab17ce66bc9597a1`
+- license shown by public listing: **Creative Commons Attribution**
 - restriction: **NoAI**
+- repository source file: `boudhanath_stupa_-_pointcloud.glb`
+- bytes: **4,002,328**
+- SHA-256: `ff5ef7d2c124953b6e053a98b945ef3cad50b8ab524e31c7d78bb6737307169c`
+- glTF generator: **Sketchfab-12.68.0**
+- points: **99,992**
+- triangles: **0**
+- normals: **present**
 
-This asset is **not yet included** in MaybeBoudha.
+### Important color limitation
 
-If imported:
+The GLB includes `COLOR_0`, but all points contain the same value:
 
-1. preserve the original archive/file and source metadata outside derived browser assets;
-2. record SHA-256;
-3. retain author attribution;
-4. do not use it for AI training, model development, or generative-AI input;
-5. document all format/scale/color conversions;
-6. do not assume it is survey-grade simply because it is a point cloud.
+```text
+RGBA = [0.8, 0.8, 0.8, 1.0]
+```
+
+It is therefore not a photographic-color point cloud.
+
+The Phase 3P.3 browser comparison uses deterministic normal-based shading only to make geometry readable and labels the source color truthfully as uniform gray.
+
+### NoAI handling
+
+Do not use this asset:
+
+- for AI training;
+- for model development;
+- as generative-AI input;
+- to create synthetic training data.
+
+Allowed MaybeBoudha use is limited to ordinary 3D-product operations such as deterministic inspection, rendering, optimization, checksum/provenance work, and deterministic geometric reconstruction.
+
+### Accuracy note
+
+The asset is not treated as survey-grade.
+
+The project normalizes/recenters it only for visual A/B comparison and does not infer real-world measurement accuracy from its authored coordinate system.
