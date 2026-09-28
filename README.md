@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3P.7B — Camera, interaction, mobile and accessibility polish is complete on PR #12; final documentation verification is pending.**
+**Phase 3P.7B — Camera, interaction, mobile and accessibility polish is complete and merged in PR #12; Phase 3P.7C environment/atmosphere/performance polish is next.**
 
 The project now has verified browser evidence for both the renderer choice and the selected large-scene delivery path:
 
@@ -245,7 +245,7 @@ See [Selective Hybrid Spike](docs/SELECTIVE_HYBRID_SPIKE.md).
 
 ## Immediate next step
 
-After PR #12 merges, continue with **Phase 3P.7C — environment, atmosphere and performance polish**:
+Continue with **Phase 3P.7C — environment, atmosphere and performance polish**:
 
 - prayer-flag motion quality;
 - photographic environment blending;
