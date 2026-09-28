@@ -118,9 +118,14 @@ export function SurfaceReconstructionCanvas({
 
         geometry.computeVertexNormals()
 
-        const sourceBounds = new Box3().setFromBufferAttribute(
-          geometry.getAttribute('position'),
-        )
+        geometry.computeBoundingBox()
+        const sourceBounds = geometry.boundingBox
+
+        if (!sourceBounds) {
+          geometry.dispose()
+          throw new Error('Reconstructed surface bounds are unavailable.')
+        }
+
         const sourceSize = sourceBounds.getSize(new Vector3())
 
         if (!Number.isFinite(sourceSize.y) || sourceSize.y <= 0) {
