@@ -7,7 +7,7 @@ import {
   DirectionalLight,
   DoubleSide,
   Mesh,
-  MeshPhysicalMaterial,
+  MeshBasicMaterial,
   PerspectiveCamera,
   Scene,
   SRGBColorSpace,
@@ -134,16 +134,13 @@ export function SurfaceReconstructionCanvas({
           throw new Error('Reconstructed surface has an invalid Y-axis height.')
         }
 
-        const material = new MeshPhysicalMaterial({
-          color: '#ddd5c8',
-          roughness: 0.82,
-          metalness: 0.02,
-          clearcoat: 0.04,
-          clearcoatRoughness: 0.72,
+        const material = new MeshBasicMaterial({
+          color: '#d8c9ad',
           side: DoubleSide,
         })
 
         mesh = new Mesh(geometry, material)
+        mesh.frustumCulled = false
 
         const scale = TARGET_HEIGHT_METERS / sourceSize.y
         mesh.scale.setScalar(scale)
