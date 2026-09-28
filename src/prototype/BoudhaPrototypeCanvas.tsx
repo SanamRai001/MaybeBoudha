@@ -43,7 +43,9 @@ import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader.js'
 
 import { SURFACE_ASSET_URL } from '../surface/surfaceConfig'
 import {
-  BOUDHA_BASE_FOOTPRINT_METERS,
+  BOUDHA_BASE_FOOTPRINT_MAX_METERS,
+  BOUDHA_BASE_FOOTPRINT_X_METERS,
+  BOUDHA_BASE_FOOTPRINT_Z_METERS,
   BOUDHA_DOME_TOP_Y_METERS,
   BOUDHA_EYE_PANEL_WIDTH_METERS,
   BOUDHA_HARMIKA_WIDTH_METERS,
@@ -655,14 +657,21 @@ function createStupa(scene: Scene) {
   const yellow = new MeshStandardMaterial({ color: '#d39d34', roughness: 0.76 })
 
   const platforms = [
-    { size: BOUDHA_BASE_FOOTPRINT_METERS, height: 1.2, y: 0.6 },
     {
-      size: BOUDHA_BASE_FOOTPRINT_METERS * 0.93,
+      x: BOUDHA_BASE_FOOTPRINT_X_METERS,
+      z: BOUDHA_BASE_FOOTPRINT_Z_METERS,
+      height: 1.2,
+      y: 0.6,
+    },
+    {
+      x: BOUDHA_BASE_FOOTPRINT_X_METERS * 0.93,
+      z: BOUDHA_BASE_FOOTPRINT_Z_METERS * 0.93,
       height: 1.05,
       y: 1.72,
     },
     {
-      size: BOUDHA_BASE_FOOTPRINT_METERS * 0.86,
+      x: BOUDHA_BASE_FOOTPRINT_X_METERS * 0.86,
+      z: BOUDHA_BASE_FOOTPRINT_Z_METERS * 0.86,
       height: 0.95,
       y: 2.72,
     },
@@ -670,7 +679,7 @@ function createStupa(scene: Scene) {
 
   for (const platform of platforms) {
     const mesh = new Mesh(
-      new BoxGeometry(platform.size, platform.height, platform.size),
+      new BoxGeometry(platform.x, platform.height, platform.z),
       warmWhite,
     )
     mesh.position.y = platform.y
@@ -1023,9 +1032,11 @@ export function BoudhaPrototypeCanvas({
     const useLicensedModel = licensedModelRequested(window.location.search)
     const useSelectiveSurface = selectiveHybridRequested(window.location.search)
     const licensedFootprintRadius =
-      BOUDHA_BASE_FOOTPRINT_METERS / 2
-    const licensedFootprintCorner =
-      licensedFootprintRadius * Math.SQRT2
+      BOUDHA_BASE_FOOTPRINT_MAX_METERS / 2
+    const licensedFootprintCorner = Math.hypot(
+      BOUDHA_BASE_FOOTPRINT_X_METERS / 2,
+      BOUDHA_BASE_FOOTPRINT_Z_METERS / 2,
+    )
     const prayerWheelRadius = useLicensedModel
       ? licensedFootprintRadius + 1.1
       : 21.9
@@ -1036,7 +1047,7 @@ export function BoudhaPrototypeCanvas({
       ? koraInnerRadius + 12
       : 45.5
     const contactShadowSize = useLicensedModel
-      ? BOUDHA_BASE_FOOTPRINT_METERS * 1.2
+      ? BOUDHA_BASE_FOOTPRINT_MAX_METERS * 1.2
       : 56
     const flagAnchorRadius = useLicensedModel
       ? licensedFootprintCorner + 2
