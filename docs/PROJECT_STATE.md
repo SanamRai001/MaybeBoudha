@@ -12,14 +12,14 @@ The current public release is an **honest synthetic visual feasibility study**, 
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Current branch: `fix/reference-grounded-boudha-silhouette`
+- Current branch: `main`
 - Public URL: `https://sanamrai001.github.io/MaybeBoudha/`
 
 ## Last completed phase
 
-**Phase 3P.7E — Public prototype deployment and portfolio packaging**
+**Phase 3P.7G — Reference-grounded Boudhanath silhouette**
 
-Status: **complete and merged**
+Status: **complete, merged, deployed, and production-verified**
 
 Release-hardening PR:
 
@@ -92,9 +92,15 @@ Default production route:
 Composition:
 
 ```text
-MiniWorld3D lower monument
+MiniWorld3D lower/base crop
         +
-refined synthetic upper monument
+published 36.576 m dome diameter
+        +
+real-photo-traced dome silhouette
+        +
+reference-calibrated harmika / eye block
+        +
+existing synthetic spire / crown
         +
 licensed photographic eye treatment
         +
@@ -124,11 +130,16 @@ Completed experiments:
 - deterministic Open3D Poisson surface reconstruction;
 - selective source-derived dome/body hybridization.
 
-Decision remains:
+Decision:
 
-**keep the Phase 3P.2 hybrid as the default.**
+The processed GLB / reconstructed-surface experiments remain useful comparison
+evidence, but they are **not the default visible dome**.
 
-Do not repeat these experiments unless a genuinely better source appears.
+The default route now uses the supplied MiniWorld3D source only for the lower
+terraces/base, then uses a separately constructed reference-grounded dome.
+
+Do not repeat the point-cloud / Poisson experiments unless a genuinely better
+source appears.
 
 ## Field-clearance state
 
@@ -267,7 +278,7 @@ The live public URL now contains the broader base and corrected dome/middle-body
 
 **Phase 3P.7G — Reference-grounded Boudhanath silhouette**
 
-Status: **implementation complete; verification pending on `fix/reference-grounded-boudha-silhouette`**
+Status: **complete, merged, deployed, and production-verified**
 
 The user rejected the Phase 3P.7F result after inspecting the live render because the dome became artificially bulbous. That feedback exposed a methodology problem: the 3P.7F geometry used global scaling and a hand-authored radial inflation function rather than matching real references.
 
@@ -337,15 +348,64 @@ Selective reconstructed-surface mode retains a 19% source crop intentionally bec
 - do not use generic global "fatter/thinner" deformation;
 - every future silhouette change must state the real reference being matched;
 - keep published dimensions distinct from photo-calibrated working values;
-- do not merge 3P.7G until desktop/mobile runtime screenshots are inspected.
+- preserve the reference-backed plinth axes unless a stronger architectural source supersedes them.
+
+### Phase 3P.7G verification
+
+PR:
+
+`#19 — fix: ground Boudha silhouette in real references`
+
+Merge SHA:
+
+`b80e857c5923d4ab536e838d77d1c628b8b772a4`
+
+PR-head verification:
+
+- `CI #267` — **passed**;
+- `Deploy GitHub Pages #20` PR build — **passed**;
+- `Surface Reconstruction #59` — **passed**;
+- default desktop runtime — **passed**;
+- 390 × 844 mobile runtime — **passed**;
+- reduced-motion runtime — **passed**;
+- uploaded-model probe — **passed**;
+- licensed point-cloud probe — **passed**;
+- Spark runtime — **passed**;
+- PlayCanvas runtime — **passed**;
+- generated desktop/mobile screenshots were visually inspected against the cited real references.
+
+Post-merge production verification on
+`b80e857c5923d4ab536e838d77d1c628b8b772a4`:
+
+- `CI #268` — **passed**;
+- `Deploy GitHub Pages #21` — **passed**;
+- `Surface Reconstruction #60` — **passed**;
+- deployed HTTP/static surface — **passed**;
+- production desktop browser probe — **passed**;
+- production mobile browser probe — **passed**;
+- production reduced-motion browser probe — **passed**.
+
+Production release-media artifact:
+
+`phase-3p7e-production-release-media`
+
+Artifact ID:
+
+`10982410939`
+
+The production desktop, mobile, and reduced-motion screenshots were inspected
+after deployment and match the reference-grounded implementation.
 
 ## Next phase
 
-Run the full existing CI, Pages-build, surface, desktop, mobile, reduced-motion, source-model, point-cloud, Spark, and PlayCanvas gates.
+Freeze the monument geometry unless a **specific mismatch against a cited real
+reference** is identified.
 
-Then inspect the generated desktop/mobile screenshots against the cited real Boudhanath references.
+If further visual work is requested, prefer a small camera/framing or material
+pass rather than changing global monument proportions.
 
-Only after visual inspection should this branch be merged.
+Do not return to the retired 82.2 m square-root-of-area derivation or the
+30–35% radial belly inflation.
 
 ## Resume rule
 
