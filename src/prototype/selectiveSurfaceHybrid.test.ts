@@ -22,9 +22,9 @@ function geometryWithTriangles() {
         0, 0, 20,
 
         // Dome/body triangle after normalization: must survive.
-        -3, 7, 0,
-        3, 7, 0,
-        0, 12, 1,
+        -3, 4, 0,
+        3, 4, 0,
+        0, 8, 1,
 
         // Upper structure triangle: must be rejected.
         -1, 19, 0,
