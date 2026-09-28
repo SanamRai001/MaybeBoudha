@@ -237,20 +237,25 @@ async function waitForPrototypeHome(client, timeoutMs = 8_000) {
 }
 
 async function pressKey(client, key, code, virtualKeyCode) {
+  const text = key === 'Enter' ? '\r' : key === ' ' ? ' ' : undefined
   const event = {
     key,
     code,
     windowsVirtualKeyCode: virtualKeyCode,
     nativeVirtualKeyCode: virtualKeyCode,
+    text,
+    unmodifiedText: text,
   }
 
   await client.send('Input.dispatchKeyEvent', {
-    type: 'keyDown',
+    type: 'rawKeyDown',
     ...event,
   })
   await client.send('Input.dispatchKeyEvent', {
     type: 'keyUp',
     ...event,
+    text: undefined,
+    unmodifiedText: undefined,
   })
 }
 
@@ -510,6 +515,10 @@ try {
 
   const state = await waitForRenderer(client)
   console.log(`[${renderer}] renderer state:`, JSON.stringify(state))
+
+  if (['prototype', 'prototype-mobile', 'prototype-reduced'].includes(renderer)) {
+    await client.send('Page.bringToFront')
+  }
 
   if (['prototype', 'prototype-mobile', 'prototype-reduced'].includes(renderer)) {
     await verifyPrototypeControls(client)
