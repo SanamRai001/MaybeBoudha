@@ -7,6 +7,22 @@ import {
 } from './PointCloudCanvas'
 import { POINT_CLOUD_SOURCE } from './pointCloudConfig'
 
+function colorLabel(metadata: PointCloudRuntimeMetadata | null) {
+  if (!metadata) {
+    return '—'
+  }
+
+  if (metadata.colorMode === 'varied') {
+    return 'Per-point RGB'
+  }
+
+  if (metadata.colorMode === 'uniform') {
+    return 'Uniform gray'
+  }
+
+  return 'No color'
+}
+
 export function PointCloudSpikeExperience() {
   const reducedMotion = useReducedMotion()
   const [state, setState] = useState<'loading' | 'ready' | 'error'>('loading')
@@ -54,9 +70,10 @@ export function PointCloudSpikeExperience() {
           <span> as points.</span>
         </h1>
         <p className="prototype-description">
-          Direct browser rendering of the uploaded Sketchfab GLB. The original
-          asset is preserved unchanged; this view only recenters and uniformly
-          rescales it for comparison with the current MaybeBoudha prototype.
+          Direct browser rendering of the uploaded Sketchfab GLB. The source
+          contains geometry and normals but only uniform gray color, so this
+          inspection view uses deterministic normal-based shading to reveal the
+          captured shape without pretending it contains photographic RGB.
         </p>
 
         <dl className="pointcloud-metrics">
@@ -70,11 +87,11 @@ export function PointCloudSpikeExperience() {
           </div>
           <div>
             <dt>Color</dt>
-            <dd>{metadata?.hasVertexColors ? 'Per-point' : metadata ? 'No vertex color' : '—'}</dd>
+            <dd>{colorLabel(metadata)}</dd>
           </div>
           <div>
-            <dt>Objects</dt>
-            <dd>{metadata?.pointObjectCount ?? '—'}</dd>
+            <dt>Normals</dt>
+            <dd>{metadata ? (metadata.hasNormals ? 'Present' : 'Missing') : '—'}</dd>
           </div>
           <div>
             <dt>Source</dt>
