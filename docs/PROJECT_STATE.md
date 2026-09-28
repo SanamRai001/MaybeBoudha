@@ -12,27 +12,36 @@ The renderer/delivery architecture is proven. Existing-source geometry experimen
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Current branch: `feat/phase-3p7d-audio-release`
-- Pull request: `#14 — feat: Phase 3P.7D ambient sound and release readiness`
+- Current branch: `main`
 - Working title: `MaybeBoudha`
 
 ## Last completed subphase
 
-**Phase 3P.7C — Environment, atmosphere and performance polish**
+**Phase 3P.7D — Ambient sound and release readiness**
 
 Status: **complete and merged**
 
+PR:
+
+`#14 — feat: Phase 3P.7D ambient sound and release readiness`
+
 Merge SHA:
 
-`634442bdc5636ecd9769ab2b6378470e35f1441f`
+`1f269049c590d5615d01fbe88fbcfd334280dbd5`
 
-Final post-merge main checkpoint before 3P.7D:
+Documentation-complete head:
 
-`9dc8098df7890478b7832d926dd50d02368c9974`
+`038ab968e747d1794fa744f45d57b907ea3378c0`
 
-Main CI:
+Green on that head:
 
-`#238 — green`
+- CI **#242**
+- RAD Pipeline **#136**
+- Surface Reconstruction **#45**
+
+Detailed evidence:
+
+`docs/PHASE_3P7D_AUDIO_RELEASE.md`
 
 ## Current strongest visual
 
@@ -60,103 +69,70 @@ optional procedural ambience
 
 This remains a **synthetic visual feasibility study**, not a scan or digital twin.
 
-## Current subphase
+## Phase 3P.7D outcome
 
-**Phase 3P.7D — Ambient sound and release readiness**
+Delivered:
 
-Status: **implementation/proof complete on PR #14; final documentation-complete verification pending**
+- opt-in procedural Web Audio ambience;
+- sound off by default;
+- real keyboard off → on → off proof;
+- no autoplay audio element;
+- hidden-page suspension behavior;
+- no third-party/field-recording audio claim;
+- desktop/mobile/reduced-motion regressions preserved;
+- mobile Sound / Reset / Focus controls all visible at 390 × 844;
+- honest page/Open Graph/Twitter descriptive metadata;
+- manifest and robots policy;
+- audio provenance documentation;
+- deterministic portfolio screenshot artifacts.
 
-Implementation head:
+## Release-candidate state
 
-`e97313ad94137db2ff544af0ba2e45ffbc3fd125`
+Ready before deployment:
 
-Green:
+- desktop/mobile/reduced-motion presentation;
+- keyboard Focus/Reset/Sound controls;
+- touch orbit;
+- device-aware quality;
+- runtime profiling;
+- opt-in audio;
+- asset/audio provenance;
+- descriptive metadata;
+- screenshot artifacts;
+- renderer/RAD/source regressions.
 
-- CI **#239**
-- RAD Pipeline **#133**
-- Surface Reconstruction **#42**
+Still deployment-specific:
 
-Detailed evidence:
-
-`docs/PHASE_3P7D_AUDIO_RELEASE.md`
-
-## Phase 3P.7D delivered
-
-### Opt-in procedural ambience
-
-- generated through Web Audio API;
-- no external audio recording;
-- no field-recording claim;
-- deterministic filtered noise bed;
-- off by default;
-- created/resumed only after explicit user activation;
-- faded in/out;
-- suspends while the document is hidden;
-- resumes only when visible and previously enabled;
-- cleaned up on unmount.
-
-### Browser audio proof
-
-Initial:
-
-```text
-state = off
-aria-pressed = false
-autoplayAudio = false
-```
-
-Keyboard Enter activation:
-
-```text
-state = on
-aria-pressed = true
-```
-
-Second Enter activation:
-
-```text
-state = off
-aria-pressed = false
-```
-
-### Mobile proof
-
-Viewport:
-
-`390 × 844`
-
-Verified:
-
-- scrollWidth = 390;
-- no horizontal overflow;
-- Sound visible;
-- Reset visible;
-- Focus visible;
-- touch orbit still enters `explore`;
-- Reset still returns to `home`.
-
-### Release metadata
-
-Added:
-
-- honest title/description;
-- Open Graph descriptive metadata;
-- Twitter summary metadata;
-- manifest;
-- robots policy;
-- theme/color-scheme metadata.
-
-Intentionally deferred until a real deployment URL exists:
-
+- actual host and URL;
 - canonical URL;
 - `og:url`;
-- hosted `og:image`.
+- hosted social-preview image;
+- production cache/header verification;
+- production URL smoke.
 
-## GLB / source status
+Still required before performance claims:
 
-The uploaded Boudhanath GLB has already been fully evaluated.
+- physical desktop GPU measurement;
+- physical phone FPS/memory/battery behavior.
 
-Verified source facts:
+## Current deployment state
+
+No deployment configuration exists on `main` yet.
+
+No:
+
+- Vercel config;
+- Netlify config;
+- Cloudflare config;
+- GitHub Pages workflow;
+- CNAME;
+- deployment workflow.
+
+Do not invent a canonical production URL before a real host exists.
+
+## GLB / source decision
+
+The uploaded Boudhanath GLB has already been fully evaluated:
 
 - 99,992 points;
 - 0 triangles;
@@ -165,7 +141,7 @@ Verified source facts:
 - source SHA-256:
   `ff5ef7d2c124953b6e053a98b945ef3cad50b8ab524e31c7d78bb6737307169c`.
 
-Completed source experiments:
+Completed:
 
 - direct point-cloud rendering;
 - deterministic Open3D Poisson surface reconstruction;
@@ -173,19 +149,7 @@ Completed source experiments:
 
 Decision remains:
 
-**do not replace the Phase 3P.2 hybrid with the point cloud/surface.**
-
-Evidence routes:
-
-- `/?pointcloud=1`
-- `/?surface=1`
-- `/?selective=1`
-
-Engineering routes:
-
-- `?renderer=spark`
-- `?renderer=rad`
-- `?renderer=playcanvas`
+**keep the Phase 3P.2 hybrid as the default.**
 
 ## Field-clearance state
 
@@ -197,44 +161,17 @@ Current decision:
 
 Do not send permission emails automatically.
 
-## Release-candidate state
-
-Ready before deployment:
-
-- desktop/mobile/reduced-motion presentation;
-- keyboard Focus/Reset/Sound controls;
-- touch orbit;
-- device-aware quality;
-- runtime profiling;
-- audio opt-in policy;
-- asset/audio provenance;
-- descriptive metadata;
-- screenshot artifacts;
-- renderer/RAD/source regressions.
-
-Still deployment-specific:
-
-- production host/URL;
-- canonical URL;
-- `og:url`;
-- hosted social preview;
-- production cache/header validation;
-- production URL smoke.
-
-Still required before performance claims:
-
-- physical desktop GPU measurement;
-- physical phone FPS/memory/battery behavior.
-
-## Next subphase after merge
+## Current subphase
 
 **Phase 3P.7E — Public prototype deployment and portfolio packaging**
 
+Status: **not started**
+
 Scope:
 
-1. choose actual hosting target;
-2. deploy current release candidate without monument/source changes;
-3. set canonical / `og:url` from the real URL;
+1. choose the actual hosting target;
+2. deploy the current release candidate without monument/source changes;
+3. set canonical / `og:url` from the real deployed URL;
 4. publish a social-preview image;
 5. verify production caching and asset delivery;
 6. run production URL desktop/mobile smoke;
@@ -242,20 +179,25 @@ Scope:
 
 ## Guardrails
 
-Do not:
+Deployment work must not:
 
-- change monument/source geometry in deployment work;
+- change monument/source geometry;
 - restart point-cloud/surface experiments;
-- change the field-capture NO-GO decision;
+- change field-capture NO-GO;
 - send permission outreach;
-- claim the prototype is a scan/digital twin;
-- describe procedural audio as real Boudhanath sound.
+- claim scan/digital-twin status;
+- invent a domain/canonical URL;
+- weaken existing CI/RAD/surface gates.
+
+## Next branch
+
+`feat/phase-3p7e-public-deploy`
 
 ## Resume rule
 
-1. inspect PR #14 and all three workflow results;
+1. inspect actual `main` and post-merge CI;
 2. repository state wins over documentation if they differ;
-3. merge only after CI, RAD Pipeline and Surface Reconstruction are green on the documentation-complete head;
-4. checkpoint the actual merge SHA on `main`;
-5. only then start 3P.7E;
-6. choose/confirm a real hosting target before writing canonical deployment URLs.
+3. start 3P.7E only from verified `main`;
+4. inspect available deployment options before choosing a host;
+5. ask the user only if a deployment target cannot be determined safely;
+6. keep the release candidate visually/source-stable.
