@@ -90,7 +90,7 @@ Do not send permission emails automatically.
 
 **Phase 3P.7E — Public prototype deployment and portfolio packaging**
 
-Status: **deployment implementation merged; blocked on one-time GitHub Pages enablement**
+Status: **public deployment is live; release-hardening verification in progress**
 
 Deployment preparation PR:
 
@@ -142,59 +142,48 @@ Merged to `main`:
 
 The Pages PR build successfully validated a `/MaybeBoudha/` bundle.
 
-## Current blocker
+## Public deployment
 
-Latest verified `main`:
+GitHub Pages is enabled and the production deployment succeeded from:
 
-`b515610a18700907187ad5f3d1f713399913a7e2`
+`4b948ece4179461911f417a05f8f95b68a381571`
 
-Normal CI:
+Verified deployment run:
 
-`CI #251 — green`
+`Deploy GitHub Pages #6 — attempt 2 — success`
 
-Latest deployment run:
+Production URL:
 
-`Deploy GitHub Pages #5`
+`https://sanamrai001.github.io/MaybeBoudha/`
 
-built and validated the production bundle successfully, then failed at:
+The former `Configure GitHub Pages` blocker is resolved.
 
-`Configure GitHub Pages`
+## Release-hardening branch
 
-with:
+Current branch:
 
-`Get Pages site failed ... repository has Pages enabled and configured to build using GitHub Actions ... Not Found`
+`release/phase-3p7e-public-release`
 
-The application tests, production Pages build, and project-path integrity check all passed. The failure is still only at `Configure GitHub Pages`, which means the repository does not yet have a GitHub Pages site enabled.
+This branch is intentionally limited to:
 
-### Required one-time user action
+- canonical and Open Graph/Twitter production metadata;
+- an automatically captured real release-candidate social-preview image;
+- production HTTP/static-asset verification;
+- production desktop/mobile/reduced-motion browser smoke;
+- final release media artifact capture.
 
-In GitHub:
+No renderer, monument/source geometry, capture decision, or field-outreach behavior changes in this work.
 
-```text
-MaybeBoudha
-→ Settings
-→ Pages
-→ Build and deployment
-→ Source
-→ GitHub Actions
-```
-
-After that, rerun the failed `Deploy GitHub Pages #5` workflow or trigger `Deploy GitHub Pages` manually.
-
-No code change is required for this blocker.
-
-## After Pages deploys successfully
+## Remaining Phase 3P.7E work
 
 Continue Phase 3P.7E with:
 
-1. capture the actual Pages URL from the deployment output;
-2. add canonical URL;
-3. add `og:url`;
-4. publish a hosted social-preview image;
-5. verify production cache/static-asset behavior;
-6. run production desktop/mobile URL smoke;
-7. capture final portfolio screenshots/media;
-8. checkpoint the final public release state.
+1. merge the release-hardening PR after CI is green;
+2. confirm the post-merge Pages deploy is green;
+3. confirm production HTTP/static-asset verification is green;
+4. confirm production desktop/mobile/reduced-motion browser smoke is green;
+5. download/check the final release-media artifact if a manual visual review is needed;
+6. checkpoint the final public release state with the merge SHA and deployment run.
 
 Do not hard-code/invent the public URL before GitHub Pages succeeds.
 

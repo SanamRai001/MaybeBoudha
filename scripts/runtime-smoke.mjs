@@ -3,6 +3,12 @@ import { writeFile } from 'node:fs/promises'
 
 const [renderer, outputPath] = process.argv.slice(2)
 
+const targetBaseUrl = (
+  process.env.MAYBEBOUDHA_TARGET_BASE_URL || 'http://127.0.0.1:4173/'
+).replace(/\/?$/, '/')
+const viewportWidth = Number(process.env.MAYBEBOUDHA_VIEWPORT_WIDTH || 0)
+const viewportHeight = Number(process.env.MAYBEBOUDHA_VIEWPORT_HEIGHT || 0)
+
 if (!['spark', 'playcanvas', 'rad', 'prototype', 'prototype-mobile', 'prototype-reduced', 'licensed', 'pointcloud', 'surface', 'selective'].includes(renderer) || !outputPath) {
   console.error('Usage: node scripts/runtime-smoke.mjs <spark|playcanvas|rad|prototype|prototype-mobile|prototype-reduced|licensed|pointcloud|surface|selective> <output.png>')
   process.exit(2)
@@ -26,23 +32,23 @@ const port =
   renderer === 'prototype-mobile' ? 9230 :
   9231
 const targetUrl = ['prototype', 'prototype-mobile', 'prototype-reduced'].includes(renderer)
-  ? 'http://127.0.0.1:4173/'
+  ? targetBaseUrl
   : renderer === 'licensed'
-    ? 'http://127.0.0.1:4173/?model=licensed'
+    ? `${targetBaseUrl}?model=licensed`
     : renderer === 'pointcloud'
-      ? 'http://127.0.0.1:4173/?pointcloud=1'
+      ? `${targetBaseUrl}?pointcloud=1`
       : renderer === 'surface'
-        ? 'http://127.0.0.1:4173/?surface=1'
+        ? `${targetBaseUrl}?surface=1`
         : renderer === 'selective'
-          ? 'http://127.0.0.1:4173/?selective=1'
-          : `http://127.0.0.1:4173/?renderer=${renderer}`
+          ? `${targetBaseUrl}?selective=1`
+          : `${targetBaseUrl}?renderer=${renderer}`
 const headful = process.env.MAYBEBOUDHA_HEADFUL === '1'
 const browserArgs = [
   '--no-sandbox',
   '--disable-dev-shm-usage',
   '--ignore-gpu-blocklist',
   '--enable-webgl',
-  '--window-size=1440,1000',
+  `--window-size=${viewportWidth || 1440},${viewportHeight || 1000}`,
   `--remote-debugging-port=${port}`,
   'about:blank',
 ]
@@ -621,6 +627,22 @@ try {
   await client.send('Runtime.enable')
   await client.send('Page.enable')
   await client.send('Log.enable')
+
+  if (
+    renderer !== 'prototype-mobile' &&
+    viewportWidth > 0 &&
+    viewportHeight > 0
+  ) {
+    await client.send('Emulation.setDeviceMetricsOverride', {
+      width: viewportWidth,
+      height: viewportHeight,
+      deviceScaleFactor: 1,
+      mobile: false,
+      screenWidth: viewportWidth,
+      screenHeight: viewportHeight,
+    })
+    await client.send('Page.reload', { ignoreCache: true })
+  }
 
   if (renderer === 'prototype-mobile') {
     await client.send('Emulation.setDeviceMetricsOverride', {
