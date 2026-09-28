@@ -44,6 +44,7 @@ import { loadLicensedStupaModel } from './licensedStupaModel'
 import { licensedModelRequested } from './prototypeModelMode'
 import { selectiveHybridRequested } from './selectiveHybridMode'
 import { createSelectiveDomeGeometry } from './selectiveSurfaceHybrid'
+import { browserPrototypeQuality } from './prototypeQuality'
 
 type BoudhaPrototypeCanvasProps = {
   reducedMotion: boolean
@@ -53,8 +54,11 @@ type BoudhaPrototypeCanvasProps = {
 
 type AnimatedFlag = {
   mesh: Mesh
-  baseRotation: number
+  baseRotationZ: number
+  baseRotationX: number
+  baseY: number
   phase: number
+  amplitude: number
 }
 
 const DOME_RADIUS = 18.3
@@ -363,14 +367,18 @@ function addPrayerFlags(
       const flag = new Mesh(flagGeometry, material)
       flag.position.copy(point)
       flag.rotation.y = -angle + Math.PI / 2
-      flag.rotation.z = 0.1 * Math.sin(index * 0.7)
+      flag.rotation.x = -0.035 + 0.018 * Math.sin(index * 0.61)
+      flag.rotation.z = 0.085 * Math.sin(index * 0.7)
       flag.castShadow = false
       scene.add(flag)
 
       animatedFlags.push({
         mesh: flag,
-        baseRotation: flag.rotation.z,
+        baseRotationZ: flag.rotation.z,
+        baseRotationX: flag.rotation.x,
+        baseY: flag.position.y,
         phase: ray * 0.7 + index * 0.43,
+        amplitude: 0.052 + ((ray + index) % 4) * 0.008,
       })
     }
   }
@@ -921,8 +929,13 @@ export function BoudhaPrototypeCanvas({
     const useSelectiveSurface = selectiveHybridRequested(window.location.search)
     let licensedModelReady = !useLicensedModel
     let selectiveSurfaceReady = !useSelectiveSurface
+    const quality = browserPrototypeQuality()
+    canvas.dataset.qualityTier = quality.tier
+    canvas.dataset.rendererDpr = quality.maxPixelRatio.toFixed(2)
+    canvas.dataset.fps = '0'
+
     const scene = new Scene()
-    scene.fog = new FogExp2('#c8ad86', 0.0034)
+    scene.fog = new FogExp2('#c8b59a', 0.00295)
     addSky(scene)
 
     const renderer = new WebGLRenderer({
@@ -933,10 +946,10 @@ export function BoudhaPrototypeCanvas({
     })
     renderer.outputColorSpace = SRGBColorSpace
     renderer.toneMapping = ACESFilmicToneMapping
-    renderer.toneMappingExposure = 0.92
+    renderer.toneMappingExposure = 0.95
     renderer.shadowMap.enabled = true
     renderer.shadowMap.type = PCFSoftShadowMap
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.7))
+    renderer.setPixelRatio(quality.maxPixelRatio)
 
     const camera = new PerspectiveCamera(34, 1, 0.1, 420)
     const homePosition = new Vector3(48, 10.25, 57)
@@ -961,13 +974,16 @@ export function BoudhaPrototypeCanvas({
     controls.enabled = reducedMotion
     controls.update()
 
-    const hemisphere = new HemisphereLight('#dff0ff', '#785339', 1.55)
+    const hemisphere = new HemisphereLight('#e2eff8', '#76523d', 1.38)
     scene.add(hemisphere)
 
-    const sun = new DirectionalLight('#ffdda8', 4.05)
+    const sun = new DirectionalLight('#ffdda9', 3.65)
     sun.position.set(48, 62, 22)
     sun.castShadow = true
-    sun.shadow.mapSize.set(2048, 2048)
+    sun.shadow.mapSize.set(
+      quality.shadowMapSize,
+      quality.shadowMapSize,
+    )
     sun.shadow.camera.left = -70
     sun.shadow.camera.right = 70
     sun.shadow.camera.top = 70
@@ -977,7 +993,7 @@ export function BoudhaPrototypeCanvas({
     sun.shadow.bias = -0.00025
     scene.add(sun)
 
-    const fillLight = new DirectionalLight('#9fc5df', 1.05)
+    const fillLight = new DirectionalLight('#a9c7d9', 0.82)
     fillLight.position.set(-45, 38, -52)
     scene.add(fillLight)
 
@@ -1137,12 +1153,13 @@ export function BoudhaPrototypeCanvas({
       true,
     )
     const panoramaMaterial = new MeshBasicMaterial({
-      color: '#d8cec2',
+      color: '#ded2c4',
       side: BackSide,
       transparent: true,
       opacity: 0,
       fog: false,
-      toneMapped: false,
+      toneMapped: true,
+      depthWrite: false,
     })
     const panoramaMesh = new Mesh(panoramaGeometry, panoramaMaterial)
     panoramaMesh.position.y = 43
@@ -1150,6 +1167,7 @@ export function BoudhaPrototypeCanvas({
     photographicEnvironment.add(panoramaMesh)
 
     const referenceTextures: Texture[] = []
+    let panoramaBlendStartedAt: number | null = null
     const textureLoader = new TextureLoader()
     textureLoader.setCrossOrigin('anonymous')
     textureLoader.load(
@@ -1162,7 +1180,7 @@ export function BoudhaPrototypeCanvas({
 
         panoramaTexture.colorSpace = SRGBColorSpace
         panoramaTexture.anisotropy = Math.min(
-          8,
+          quality.maxAnisotropy,
           renderer.capabilities.getMaxAnisotropy(),
         )
         panoramaTexture.wrapS = RepeatWrapping
@@ -1174,11 +1192,14 @@ export function BoudhaPrototypeCanvas({
         referenceTextures.push(panoramaTexture)
 
         panoramaMaterial.map = panoramaTexture
-        panoramaMaterial.opacity = 1
+        panoramaMaterial.opacity = 0
         panoramaMaterial.needsUpdate = true
+        panoramaBlendStartedAt = performance.now()
 
-        syntheticSurroundings.visible = false
-        console.info('Photographic Boudhanath surroundings ready')
+        console.info(
+          'Photographic Boudhanath surroundings ready',
+          JSON.stringify({ qualityTier: quality.tier }),
+        )
       },
       undefined,
       () => {
@@ -1197,7 +1218,10 @@ export function BoudhaPrototypeCanvas({
         }
 
         sourceTexture.colorSpace = SRGBColorSpace
-        sourceTexture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy())
+        sourceTexture.anisotropy = Math.min(
+          quality.maxAnisotropy,
+          renderer.capabilities.getMaxAnisotropy(),
+        )
 
         const eyeTexture = sourceTexture.clone()
         eyeTexture.colorSpace = SRGBColorSpace
@@ -1251,6 +1275,10 @@ export function BoudhaPrototypeCanvas({
 
     const startedAt = performance.now()
     let readyAnnounced = false
+    let performanceSampleStartedAt = startedAt
+    let performanceFrames = 0
+    let smoothedFps = 0
+    let performanceLogged = false
     let introActive = !reducedMotion
     let resetActive = false
     let resetStartedAt = 0
@@ -1367,13 +1395,76 @@ export function BoudhaPrototypeCanvas({
         controls.update()
       }
 
-      for (const flag of animatedFlags) {
-        flag.mesh.rotation.z =
-          flag.baseRotation +
-          Math.sin(time * 0.0022 + flag.phase) * 0.065
+      if (!reducedMotion) {
+        const motionScale = quality.flagMotionScale
+
+        for (const flag of animatedFlags) {
+          const primary = Math.sin(time * 0.00175 + flag.phase)
+          const gust = Math.sin(time * 0.0041 + flag.phase * 1.7)
+
+          flag.mesh.rotation.z =
+            flag.baseRotationZ +
+            primary * flag.amplitude * motionScale +
+            gust * 0.014 * motionScale
+          flag.mesh.rotation.x =
+            flag.baseRotationX +
+            Math.cos(time * 0.00145 + flag.phase) * 0.028 * motionScale
+          flag.mesh.position.y =
+            flag.baseY +
+            Math.sin(time * 0.0012 + flag.phase * 0.8) * 0.028 * motionScale
+        }
+      }
+
+      if (panoramaBlendStartedAt !== null) {
+        const blendProgress = Math.min(
+          1,
+          (performance.now() - panoramaBlendStartedAt) / 1300,
+        )
+        const blendEase = 1 - Math.pow(1 - blendProgress, 3)
+
+        panoramaMaterial.opacity = 0.94 * blendEase
+
+        if (blendProgress >= 0.58) {
+          syntheticSurroundings.visible = false
+        }
+
+        if (blendProgress >= 1) {
+          panoramaBlendStartedAt = null
+        }
       }
 
       renderer.render(scene, camera)
+
+      performanceFrames += 1
+      const performanceNow = performance.now()
+      const performanceElapsed =
+        performanceNow - performanceSampleStartedAt
+
+      if (performanceElapsed >= 1000) {
+        const sampledFps =
+          (performanceFrames * 1000) / performanceElapsed
+        smoothedFps =
+          smoothedFps === 0
+            ? sampledFps
+            : smoothedFps * 0.72 + sampledFps * 0.28
+
+        canvas.dataset.fps = smoothedFps.toFixed(1)
+
+        if (!performanceLogged) {
+          performanceLogged = true
+          console.info(
+            'Prototype runtime profile',
+            JSON.stringify({
+              qualityTier: quality.tier,
+              rendererDpr: quality.maxPixelRatio,
+              fps: Number(smoothedFps.toFixed(1)),
+            }),
+          )
+        }
+
+        performanceFrames = 0
+        performanceSampleStartedAt = performanceNow
+      }
 
       if (
         !readyAnnounced &&
@@ -1417,6 +1508,9 @@ export function BoudhaPrototypeCanvas({
       ref={canvasRef}
       className="prototype-canvas"
       data-camera-state="loading"
+      data-quality-tier="pending"
+      data-renderer-dpr="0"
+      data-fps="0"
       aria-label="Synthetic interactive Boudhanath architectural study"
     />
   )
