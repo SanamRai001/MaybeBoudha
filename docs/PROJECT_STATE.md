@@ -12,7 +12,7 @@ The current public release is an **honest synthetic visual feasibility study**, 
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Current branch: `fix/reference-dome-hemisphere`
+- Current branch: `main`
 - Public URL: `https://sanamrai001.github.io/MaybeBoudha/`
 
 ## Last completed phase
@@ -413,7 +413,7 @@ Do not return to the retired 82.2 m square-root-of-area derivation or the
 
 **Phase 3P.7H — Reference-backed dome / kumbha refinement**
 
-Status: **implementation and visual verification complete on `fix/reference-dome-hemisphere`**
+Status: **complete, merged, deployed, and production-verified**
 
 This phase responds to another visual review of the central white dome.
 
@@ -488,13 +488,50 @@ Visual review confirms:
 - desktop and mobile layouts remain visually healthy;
 - camera/FOV, plinth X/Z dimensions, upper monument position, and environment are unchanged.
 
+### Post-merge production verification
+
+PR:
+
+`#20 — fix: refine Boudha dome from hemispherical references`
+
+Merge SHA:
+
+`798eccf2b74706228781a7ec297d64bb0c05261e`
+
+Post-merge verification:
+
+- `CI #273` — **passed**;
+- `Deploy GitHub Pages #26` — **passed**;
+- `Surface Reconstruction #63` — **passed**;
+- deployed HTTP/static surface — **passed**;
+- production desktop browser probe — **passed**;
+- production mobile browser probe — **passed**;
+- production reduced-motion browser probe — **passed**.
+
+Production release-media artifact:
+
+`phase-3p7e-production-release-media`
+
+Artifact ID:
+
+`10984230007`
+
+The deployed desktop and mobile screenshots were manually inspected after the
+production deploy and confirm the smoother hemispherical dome shape.
+
 ## Next phase
 
-Merge PR #20 after its documentation-only check is green, then verify the live
-Pages deployment and production desktop/mobile/reduced-motion probes.
+Freeze the dome profile unless a **specific mismatch against a cited real
+reference** is identified.
 
-After production verification, freeze the dome profile unless a specific
-mismatch against a cited real reference is identified.
+If further visual work is needed, prefer:
+
+1. small camera/framing refinement;
+2. material/lighting refinement;
+3. finer architectural detail work.
+
+Do not reintroduce hand-authored belly inflation or move the dome spring line
+away from the cited plinth + drum stack without stronger source evidence.
 
 ## Resume rule
 
