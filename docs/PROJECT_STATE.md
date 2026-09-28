@@ -21,13 +21,15 @@ The current public release is an **honest synthetic visual feasibility study**, 
 
 Status: **complete, merged, deployed, and production-verified**
 
-Release-hardening PR:
+Reference-grounding PR:
 
-`#16 — release: complete Phase 3P.7E public Pages hardening`
+`#19 — fix: ground Boudha silhouette in real references`
 
 Merge SHA:
 
-`ef577bca2b0253336a7c00781a85b17664b54a99`
+`b80e857c5923d4ab536e838d77d1c628b8b772a4`
+
+The earlier public-release hardening remains recorded below under Phase 3P.7E history.
 
 ## What shipped
 
