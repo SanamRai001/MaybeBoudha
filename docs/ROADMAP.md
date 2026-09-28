@@ -140,7 +140,7 @@ Decision:
 
 ### Phase 3P.4 — Deterministic surface reconstruction spike
 
-**Status: engineering proof complete on PR #9; final merge verification pending.**
+**Status: complete and merged in PR #9.**
 
 Verified:
 
@@ -165,7 +165,7 @@ The continuous surface is recognizable and geometrically useful, but lacks photo
 
 ### Phase 3P.5 — Selective geometry hybridization
 
-**Status: next after Phase 3P.4 merge.**
+**Status: next.**
 
 Goal:
 
