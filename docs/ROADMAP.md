@@ -117,29 +117,54 @@ Verdict:
 
 ### Phase 3P.3 — Licensed point-cloud spike
 
-**Status: next / not started.**
+**Status: engineering complete on PR #7; final merge verification pending.**
 
-Candidate:
+Verified source:
 
 - Sketchfab `BOUDHANATH STUPA - POINTCLOUD`;
-- about 100k vertices;
-- CC Attribution;
-- downloadable;
-- NoAI restriction must be respected.
+- **99,992 points**;
+- **0 triangles**;
+- normals present;
+- uniform gray `COLOR_0`, not photographic RGB;
+- 4,002,328-byte GLB;
+- SHA-256 recorded;
+- direct Three.js point rendering verified;
+- normal-shaded inspection pass verified;
+- Chromium screenshot A/B completed.
+
+Decision:
+
+- **keep Phase 3P.2 hybrid as the default**;
+- retain `/?pointcloud=1` as an evidence/debug route;
+- use the point cloud as a licensed geometric source rather than a finished visual replacement.
+
+### Phase 3P.4 — Deterministic surface reconstruction spike
+
+**Status: next after PR #7 merge.**
+
+Goal:
+
+Test whether the point cloud's geometry + normals can produce a materially better surface mesh without new field capture.
 
 Deliver:
 
-- obtain the original asset with license/provenance evidence;
-- inspect file format, per-point color, scale, orientation, and completeness;
-- preserve an immutable source checksum;
-- test direct point rendering and/or conversion to PLY;
-- compare visually against the Phase 3P.2 hybrid;
-- keep the existing hybrid scene as fallback;
-- do not claim survey accuracy unless the source itself supports it.
+- reproducible point extraction;
+- pinned deterministic Poisson/equivalent reconstruction;
+- generated mesh bounds/triangle count/checksum;
+- cleanup/crop rules;
+- existing MaybeBoudha material/eye/panorama treatment;
+- Chromium A/B against Phase 3P.2;
+- explicit adopt/reject decision.
 
-Exit decision:
+Guardrails:
 
-If the point cloud produces a substantial realism jump, use it as the next prototype source. If it does not, decide whether the expected improvement from a controlled real capture is sufficient to reactivate **Phase 3C.2 — Field clearance**.
+- no generative AI;
+- no AI training/model development;
+- preserve source GLB unchanged;
+- retain CC attribution and NoAI handling;
+- do not claim survey-grade accuracy.
+
+If Phase 3P.4 still does not produce a substantial realism jump, re-evaluate **Phase 3C.2 — Field clearance** as the next meaningful source-acquisition step.
 
 ---
 
