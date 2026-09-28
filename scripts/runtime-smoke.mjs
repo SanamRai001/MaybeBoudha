@@ -236,6 +236,24 @@ async function waitForPrototypeHome(client, timeoutMs = 8_000) {
   throw new Error('Prototype camera did not return to the home view.')
 }
 
+async function pressKey(client, key, code, virtualKeyCode) {
+  const event = {
+    key,
+    code,
+    windowsVirtualKeyCode: virtualKeyCode,
+    nativeVirtualKeyCode: virtualKeyCode,
+  }
+
+  await client.send('Input.dispatchKeyEvent', {
+    type: 'keyDown',
+    ...event,
+  })
+  await client.send('Input.dispatchKeyEvent', {
+    type: 'keyUp',
+    ...event,
+  })
+}
+
 async function verifyPrototypeControls(client) {
   const before = await evaluate(
     client,
@@ -252,8 +270,9 @@ async function verifyPrototypeControls(client) {
 
   await evaluate(
     client,
-    `document.querySelector('.prototype-focus-toggle')?.click()`,
+    `document.querySelector('.prototype-focus-toggle')?.focus()`,
   )
+  await pressKey(client, 'Enter', 'Enter', 13)
   await sleep(80)
 
   const focusOn = await evaluate(
@@ -268,10 +287,7 @@ async function verifyPrototypeControls(client) {
     throw new Error(`Focus mode did not activate: ${JSON.stringify(focusOn)}`)
   }
 
-  await evaluate(
-    client,
-    `document.querySelector('.prototype-focus-toggle')?.click()`,
-  )
+  await pressKey(client, 'Enter', 'Enter', 13)
   await sleep(80)
 
   const focusOff = await evaluate(
@@ -288,8 +304,9 @@ async function verifyPrototypeControls(client) {
 
   await evaluate(
     client,
-    `document.querySelector('.prototype-reset-view')?.click()`,
+    `document.querySelector('.prototype-reset-view')?.focus()`,
   )
+  await pressKey(client, 'Enter', 'Enter', 13)
   await sleep(80)
 
   const afterClick = await evaluate(
@@ -335,6 +352,68 @@ async function verifyMobileLayout(client) {
   }
 
   console.log('[prototype-mobile] layout proof:', JSON.stringify(layout))
+}
+
+async function verifyMobileTouchInteraction(client) {
+  const point = await evaluate(
+    client,
+    `(() => {
+      const rect = document.querySelector('.prototype-canvas')?.getBoundingClientRect()
+      if (!rect) return null
+      return {
+        x: rect.left + rect.width * 0.55,
+        y: rect.top + rect.height * 0.48,
+      }
+    })()`,
+  )
+
+  if (!point) {
+    throw new Error('Prototype canvas was unavailable for touch proof.')
+  }
+
+  const touch = (x, y) => ({
+    x,
+    y,
+    radiusX: 2,
+    radiusY: 2,
+    force: 1,
+    id: 1,
+  })
+
+  await client.send('Input.dispatchTouchEvent', {
+    type: 'touchStart',
+    touchPoints: [touch(point.x, point.y)],
+  })
+  await client.send('Input.dispatchTouchEvent', {
+    type: 'touchMove',
+    touchPoints: [touch(point.x - 42, point.y + 18)],
+  })
+  await client.send('Input.dispatchTouchEvent', {
+    type: 'touchEnd',
+    touchPoints: [],
+  })
+  await sleep(160)
+
+  const cameraState = await evaluate(
+    client,
+    `document.querySelector('.prototype-canvas')?.getAttribute('data-camera-state') ?? null`,
+  )
+
+  if (cameraState !== 'explore') {
+    throw new Error(`Touch orbit did not enter explore state: ${cameraState}`)
+  }
+
+  await evaluate(
+    client,
+    `document.querySelector('.prototype-reset-view')?.focus()`,
+  )
+  await pressKey(client, 'Enter', 'Enter', 13)
+  const home = await waitForPrototypeHome(client)
+
+  console.log(
+    '[prototype-mobile] touch proof:',
+    JSON.stringify({ cameraState, home }),
+  )
 }
 
 async function verifyReducedMotion(client) {
@@ -438,6 +517,7 @@ try {
 
   if (renderer === 'prototype-mobile') {
     await verifyMobileLayout(client)
+    await verifyMobileTouchInteraction(client)
   }
 
   if (renderer === 'prototype-reduced') {
