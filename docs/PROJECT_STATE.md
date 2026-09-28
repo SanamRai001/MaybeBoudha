@@ -4,36 +4,90 @@ This is the canonical checkpoint for continuing MaybeBoudha work. Repository sta
 
 ## Objective
 
-Build a browser-based interactive digital-heritage experience centered on Boudhanath Stupa.
+Build a browser-based interactive digital-heritage experience centered on Boudhanath Stupa while being explicit about source quality and provenance.
 
-The renderer/delivery architecture is proven. Existing-source geometry experiments have reached diminishing returns, so the current product track deploys and packages the strongest honest synthetic hybrid rather than claiming reconstruction quality the source data cannot support.
+The current public release is an **honest synthetic visual feasibility study**, not a scan or digital twin.
 
 ## Repository
 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
-- Current branch: `main`
-- Working title: `MaybeBoudha`
+- Current working branch for this checkpoint: `docs/phase-3p7e-release-checkpoint`
+- Public URL: `https://sanamrai001.github.io/MaybeBoudha/`
 
-## Last completed subphase
+## Last completed phase
 
-**Phase 3P.7D — Ambient sound and release readiness**
+**Phase 3P.7E — Public prototype deployment and portfolio packaging**
 
 Status: **complete and merged**
 
-PR:
+Release-hardening PR:
 
-`#14 — feat: Phase 3P.7D ambient sound and release readiness`
+`#16 — release: complete Phase 3P.7E public Pages hardening`
 
 Merge SHA:
 
-`1f269049c590d5615d01fbe88fbcfd334280dbd5`
+`ef577bca2b0253336a7c00781a85b17664b54a99`
+
+## What shipped
+
+The public release now includes:
+
+- GitHub Pages deployment at the real project-path URL;
+- project-path-safe Vite assets and relative web-manifest scope;
+- canonical URL and `og:url`;
+- large Open Graph/Twitter social metadata;
+- a 1200 × 630 social-preview image captured from the actual release-candidate scene during the Pages build;
+- production HTTP/static-asset verification;
+- production desktop, 390 × 844 mobile, and reduced-motion browser smoke;
+- final production screenshots uploaded as a release-media workflow artifact;
+- README live link.
+
+No renderer, monument/source geometry, capture decision, or field-outreach behavior changed in Phase 3P.7E.
+
+## Release verification
+
+Verified on release SHA:
+
+`ef577bca2b0253336a7c00781a85b17664b54a99`
+
+Post-merge gates:
+
+- `Deploy GitHub Pages #8` — **passed**;
+- production HTTP/static-asset verification — **passed**;
+- production desktop browser probe — **passed**;
+- production mobile browser probe — **passed**;
+- production reduced-motion browser probe — **passed**;
+- `CI #254` — **passed**;
+- `RAD Pipeline #139` — **passed**;
+- `Surface Reconstruction #50` — **passed**.
+
+Production delivery evidence:
+
+- root HTML: `text/html; charset=utf-8`;
+- root cache policy: `max-age=600`;
+- manifest: `application/manifest+json; charset=utf-8`;
+- hosted social preview: `image/png`, 1,051,696 bytes;
+- hosted panorama: `image/jpeg`, 1,137,268 bytes;
+- deployed JavaScript: 3,764,102 bytes;
+- deployed CSS: 16,155 bytes;
+- all verified production assets remained under `/MaybeBoudha/`.
+
+Final release-media artifact:
+
+`phase-3p7e-production-release-media`
+
+Artifact ID:
+
+`10975812936`
+
+The desktop, mobile, and reduced-motion screenshots were inspected and were visually healthy.
 
 ## Current strongest visual
 
-Default route:
+Default production route:
 
-`/`
+`https://sanamrai001.github.io/MaybeBoudha/`
 
 Composition:
 
@@ -53,8 +107,6 @@ cinematic / resettable orbit interaction
 optional procedural ambience
 ```
 
-This remains a **synthetic visual feasibility study**, not a scan or digital twin.
-
 ## GLB / source decision
 
 The uploaded Boudhanath GLB has already been fully evaluated:
@@ -63,10 +115,10 @@ The uploaded Boudhanath GLB has already been fully evaluated:
 - 0 triangles;
 - normals present;
 - uniform gray stored color;
-- source SHA-256:
+- SHA-256:
   `ff5ef7d2c124953b6e053a98b945ef3cad50b8ab524e31c7d78bb6737307169c`.
 
-Completed:
+Completed experiments:
 
 - direct point-cloud rendering;
 - deterministic Open3D Poisson surface reconstruction;
@@ -75,6 +127,8 @@ Completed:
 Decision remains:
 
 **keep the Phase 3P.2 hybrid as the default.**
+
+Do not repeat these experiments unless a genuinely better source appears.
 
 ## Field-clearance state
 
@@ -86,128 +140,36 @@ Current decision:
 
 Do not send permission emails automatically.
 
-## Current subphase
+## Performance caveat
 
-**Phase 3P.7E — Public prototype deployment and portfolio packaging**
+Hosted-runner FPS is only a functional telemetry signal and must not be presented as real-device performance.
 
-Status: **public deployment is live; release-hardening verification in progress**
-
-Deployment preparation PR:
-
-`#15 — deploy: Phase 3P.7E GitHub Pages prototype`
-
-Merge SHA:
-
-`e6637350e34ecee8e74a8583bd9856ebc4ecaac3`
-
-Verified on the PR head:
-
-- normal tests/build: **passed**;
-- Pages-specific project-path build: **passed**;
-- Pages build integrity check: **passed**;
-- desktop prototype: **passed**;
-- mobile prototype: **passed**;
-- reduced-motion prototype: **passed**;
-- uploaded Boudhanath model probe: **passed**;
-- licensed point-cloud probe: **passed**;
-- Spark probe: **passed**;
-- PlayCanvas probe: **passed**;
-- surface reconstruction regression: **passed**;
-- selective hybrid regression: **passed**.
-
-## Hosting decision
-
-First public host:
-
-**GitHub Pages**
-
-Reason:
-
-- repository is public;
-- application is static Vite;
-- no extra hosting account or secret is required;
-- deployment can stay inside GitHub Actions;
-- the release-candidate visual remains unchanged.
-
-## Deployment implementation
-
-Merged to `main`:
-
-- configurable Vite base path;
-- project-path-safe panorama/model/surface URLs;
-- base-aware brand navigation;
-- relative manifest `start_url` / `scope`;
-- `.github/workflows/deploy-pages.yml`;
-- Pages build integrity script.
-
-The Pages PR build successfully validated a `/MaybeBoudha/` bundle.
-
-## Public deployment
-
-GitHub Pages is enabled and the production deployment succeeded from:
-
-`4b948ece4179461911f417a05f8f95b68a381571`
-
-Verified deployment run:
-
-`Deploy GitHub Pages #6 — attempt 2 — success`
-
-Production URL:
-
-`https://sanamrai001.github.io/MaybeBoudha/`
-
-The former `Configure GitHub Pages` blocker is resolved.
-
-## Release-hardening branch
-
-Current branch:
-
-`release/phase-3p7e-public-release`
-
-This branch is intentionally limited to:
-
-- canonical and Open Graph/Twitter production metadata;
-- an automatically captured real release-candidate social-preview image;
-- production HTTP/static-asset verification;
-- production desktop/mobile/reduced-motion browser smoke;
-- final release media artifact capture.
-
-No renderer, monument/source geometry, capture decision, or field-outreach behavior changes in this work.
-
-## Remaining Phase 3P.7E work
-
-Continue Phase 3P.7E with:
-
-1. merge the release-hardening PR after CI is green;
-2. confirm the post-merge Pages deploy is green;
-3. confirm production HTTP/static-asset verification is green;
-4. confirm production desktop/mobile/reduced-motion browser smoke is green;
-5. download/check the final release-media artifact if a manual visual review is needed;
-6. checkpoint the final public release state with the merge SHA and deployment run.
-
-Do not hard-code/invent the public URL before GitHub Pages succeeds.
-
-## Still required before performance claims
+Still required before physical-device performance claims:
 
 - physical desktop GPU measurement;
 - physical phone FPS/memory/battery behavior.
 
-## Guardrails
+## Risks / decisions
 
-Deployment work must not:
+- The current experience is intentionally synthetic and must not be described as a scan, photogrammetric reconstruction, or digital twin.
+- Existing-source geometry work has reached diminishing returns.
+- GitHub Pages currently returns a 10-minute cache policy for the checked release resources; the release verifier records the live headers rather than assuming CDN behavior.
+- The release pipeline now exercises production after deployment, reducing the chance of a green build hiding a broken public path.
 
-- change monument/source geometry;
-- restart point-cloud/surface experiments;
-- change field-capture NO-GO;
-- send permission outreach;
-- claim scan/digital-twin status;
-- weaken existing CI/RAD/surface gates.
+## Next phase
+
+Do **not** automatically restart field capture or geometry experiments.
+
+The next product decision should be one of:
+
+1. stop here and use the public prototype as a portfolio case study;
+2. do a separate portfolio/public-release polish phase for README screenshots/video and project write-up;
+3. reopen real-capture work only if a better source path appears or the field-capture decision is explicitly changed.
 
 ## Resume rule
 
-1. inspect actual `main` and deployment workflow state;
-2. repository state wins over documentation if they differ;
-3. if Pages is still disabled, ask the user only for the one-time Pages source change;
-4. once Pages is enabled, rerun/dispatch the deploy workflow;
-5. use the real deployment URL for canonical/social metadata;
-6. keep the release candidate visually/source-stable.
+1. inspect actual `main`, workflow state, and the public URL;
+2. repository state wins over this document;
+3. preserve the public release and source/provenance guardrails;
+4. do not redo the processed GLB work;
+5. keep the field-capture NO-GO unless explicitly changed.

@@ -322,17 +322,30 @@ See `PHASE_3P7D_AUDIO_RELEASE.md`.
 
 #### Phase 3P.7E — Public prototype deployment and portfolio packaging
 
-**Status: next.**
+**Status: complete and merged in PR #16.**
 
-Build:
+Delivered:
 
-- choose the actual hosting target;
-- deploy the current release candidate without monument/source changes;
-- add canonical URL and `og:url`;
-- publish a hosted social-preview image;
-- verify production cache/asset delivery;
-- production URL desktop/mobile smoke;
-- capture final portfolio media.
+- GitHub Pages production deployment at `https://sanamrai001.github.io/MaybeBoudha/`;
+- project-path-safe production bundle;
+- canonical URL and `og:url`;
+- hosted 1200 × 630 social-preview image captured from the actual release candidate;
+- production cache/static-asset verification;
+- production desktop/mobile/reduced-motion browser smoke;
+- final production release screenshots/media;
+- README live link;
+- no monument/source-geometry changes.
+
+Release SHA:
+
+`ef577bca2b0253336a7c00781a85b17664b54a99`
+
+Verified post-merge:
+
+- Deploy GitHub Pages #8 — green;
+- CI #254 — green;
+- RAD Pipeline #139 — green;
+- Surface Reconstruction #50 — green.
 
 Later 3P.7 work may include:
 
