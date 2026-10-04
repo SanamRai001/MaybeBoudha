@@ -35,7 +35,7 @@ jobs:
     timeout-minutes: 15
 
     env:
-      VITE_BASE_PATH: /MaybeBoudha/
+      VITE_BASE_PATH: /
 
     steps:
       - name: Checkout
@@ -69,14 +69,14 @@ jobs:
           fi
           echo "CHROME=$CHROME" >> "$GITHUB_ENV"
 
-      - name: Start project-path preview server
+      - name: Start custom-domain root preview server
         run: |
           npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/maybeboudha-pages-preview.log 2>&1 &
           echo $! > /tmp/maybeboudha-pages-preview.pid
 
       - name: Capture release social preview
         env:
-          MAYBEBOUDHA_TARGET_BASE_URL: http://127.0.0.1:4173/MaybeBoudha/
+          MAYBEBOUDHA_TARGET_BASE_URL: http://127.0.0.1:4173/
           MAYBEBOUDHA_VIEWPORT_WIDTH: 1200
           MAYBEBOUDHA_VIEWPORT_HEIGHT: 630
         run: |
@@ -84,7 +84,7 @@ jobs:
             prototype \
             dist/images/social-preview.png
 
-      - name: Verify project-path-safe build
+      - name: Verify custom-domain root build
         run: node scripts/verify-pages-build.mjs dist "$VITE_BASE_PATH"
 
       - name: Configure GitHub Pages
@@ -119,7 +119,7 @@ jobs:
     timeout-minutes: 20
 
     env:
-      MAYBEBOUDHA_PRODUCTION_URL: https://sanamrai001.github.io/MaybeBoudha/
+      MAYBEBOUDHA_PRODUCTION_URL: https://maybeboudha.run.place/
 
     steps:
       - name: Checkout
