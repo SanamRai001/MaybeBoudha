@@ -13,7 +13,7 @@ The current public release is an **honest synthetic visual feasibility study**, 
 - Repository: `SanamRai001/MaybeBoudha`
 - Default branch: `main`
 - Current branch: `main`
-- Public URL: `https://sanamrai001.github.io/MaybeBoudha/`
+- Public URL: `https://maybeboudha.run.place/`
 
 ## Last completed phase
 
@@ -540,3 +540,19 @@ away from the cited plinth + drum stack without stronger source evidence.
 3. preserve the public release and source/provenance guardrails;
 4. do not redo the processed GLB work;
 5. keep the field-capture NO-GO unless explicitly changed.
+
+## Phase 3P.7I — GitHub Pages custom-domain root migration
+
+Status: **fix proposed on `fix/pages-custom-domain-root`; pending PR checks and production verification**.
+
+Custom domain: `https://maybeboudha.run.place/` (DNS and TLS validated by direct GitHub Pages HTTP/HTTPS requests). The previous project-path bundle attempted to load `/MaybeBoudha/assets/*.js` on the new domain; GitHub returned HTML at that nonexistent location, causing Firefox to block the module due to MIME mismatch.
+
+Changes proposed:
+
+- use `VITE_BASE_PATH: /` in the Pages workflow (the Vite config already reads it);
+- point local Pages release capture and production smoke to root-domain URLs;
+- update canonical, Open Graph, Twitter and README public links;
+- update build verification to assert root paths and reject stale `/MaybeBoudha/` URLs;
+- verify production JavaScript/CSS MIME types so an HTML fallback cannot pass a 200-only check.
+
+Verification required before calling this done: PR CI / Pages build must pass, merge only after review, deploy to Pages, check production HTML and JS/CSS MIME types, and inspect desktop/mobile runtime. Do not modify DNS records or monument geometry in this phase.

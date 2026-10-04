@@ -3,21 +3,22 @@ import { join, resolve } from 'node:path'
 
 const [distArg, baseArg] = process.argv.slice(2)
 const dist = resolve(distArg || 'dist')
-const base = baseArg || '/MaybeBoudha/'
+const base = baseArg || '/'
 
 if (!base.startsWith('/') || !base.endsWith('/')) {
   throw new Error(`Expected deployment base must start/end with "/": ${base}`)
 }
 
 const index = await readFile(join(dist, 'index.html'), 'utf8')
+const publicUrl = 'https://maybeboudha.run.place/'
 
 const requiredIndexFragments = [
   `href="${base}site.webmanifest"`,
   `src="${base}assets/`,
-  `<link rel="canonical" href="https://sanamrai001.github.io/MaybeBoudha/" />`,
-  `<meta property="og:url" content="https://sanamrai001.github.io/MaybeBoudha/" />`,
-  `<meta property="og:image" content="https://sanamrai001.github.io/MaybeBoudha/images/social-preview.png" />`,
-  `<meta name="twitter:image" content="https://sanamrai001.github.io/MaybeBoudha/images/social-preview.png" />`,
+  `<link rel="canonical" href="${publicUrl}" />`,
+  `<meta property="og:url" content="${publicUrl}" />`,
+  `<meta property="og:image" content="${publicUrl}images/social-preview.png" />`,
+  `<meta name="twitter:image" content="${publicUrl}images/social-preview.png" />`,
 ]
 
 for (const fragment of requiredIndexFragments) {
@@ -47,7 +48,11 @@ const manifest = JSON.parse(
 )
 
 if (manifest.start_url !== '.' || manifest.scope !== '.') {
-  throw new Error('Web manifest must keep relative start_url and scope for project Pages.')
+  throw new Error('Web manifest must keep relative start_url and scope.')
+}
+
+if (index.includes('/MaybeBoudha/')) {
+  throw new Error('Pages HTML still references the retired /MaybeBoudha/ project path.')
 }
 
 async function collectJavaScript(directory) {
@@ -78,6 +83,13 @@ const suspicious = [
 
 for (const path of await collectJavaScript(dist)) {
   const source = await readFile(path, 'utf8')
+
+  if (source.includes('/MaybeBoudha/')) {
+    throw new Error(`Built JavaScript still references the retired project path: ${path}`)
+  }
+
+  // Root-absolute asset paths are valid for a custom domain served from /.
+  if (base === '/') continue
 
   for (const pattern of suspicious) {
     if (source.includes(pattern)) {

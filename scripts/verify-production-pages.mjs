@@ -126,6 +126,14 @@ const checkedAssets = []
 for (const url of assetUrls) {
   const response = await fetchWithRetry(url)
   const body = await response.arrayBuffer()
+  const contentType = response.headers.get('content-type') ?? ''
+  const expectedType = new URL(url).pathname.endsWith('.js')
+    ? /(?:javascript|ecmascript)/i
+    : /text\/css/i
+
+  if (!expectedType.test(contentType)) {
+    throw new Error(`Production asset has incorrect MIME type (${contentType}): ${url}`)
+  }
 
   if (body.byteLength <= 0) {
     throw new Error(`Production asset was empty: ${url}`)
@@ -134,7 +142,7 @@ for (const url of assetUrls) {
   checkedAssets.push({
     url,
     bytes: body.byteLength,
-    contentType: response.headers.get('content-type'),
+    contentType,
     cacheControl: response.headers.get('cache-control'),
     etag: response.headers.get('etag'),
     lastModified: response.headers.get('last-modified'),
