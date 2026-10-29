@@ -8,7 +8,7 @@ The goal is not a normal tourism landing page or a generic 3D viewer. MaybeBoudh
 
 ## Current status
 
-**Phase 3P.7E — the public prototype is live on GitHub Pages on the custom domain (root-path deployment). Release hardening adds canonical/social metadata and post-deploy desktop/mobile production smoke coverage.**
+**The public synthetic visual-feasibility prototype is deployed at the custom-domain root.** The scene remains a crafted hybrid, not a measured reconstruction or digital twin. The historical release includes canonical/social metadata and post-deploy desktop/mobile browser smoke; current visitor-experience and reliability improvements are proposed in the [October 2026 audit](docs/PRODUCT_AUDIT_2026-10-29.md), not yet implemented.
 
 Live prototype: [https://maybeboudha.run.place/](https://maybeboudha.run.place/)
 
@@ -158,6 +158,8 @@ The `?renderer=rad` route expects generated RAD/RADC files under `/rad/`; normal
 
 ## Documentation
 
+- [Critical Product & Engineering Audit — 29 Oct 2026 (proposed findings)](docs/PRODUCT_AUDIT_2026-10-29.md)
+- [Evidence-Gated Improvement Roadmap — 29 Oct 2026 (planning only)](docs/IMPROVEMENT_ROADMAP_2026-10-29.md)
 - [Product Vision](docs/PRODUCT_VISION.md)
 - [Technical Plan](docs/TECHNICAL_PLAN.md)
 - [Roadmap](docs/ROADMAP.md)
@@ -248,27 +250,10 @@ The source-derived dome is useful geometric evidence, but the lower transition r
 
 See [Selective Hybrid Spike](docs/SELECTIVE_HYBRID_SPIKE.md).
 
-## Immediate next step
+## Next product work (proposed)
 
-Enable GitHub Pages once:
+The root-path GitHub Pages deployment is already configured and was verified by the repository workflows; **do not repeat the obsolete first-time Pages enablement instructions**.
 
-```text
-Settings → Pages → Build and deployment → Source → GitHub Actions
-```
+Prioritize the [critical product audit](docs/PRODUCT_AUDIT_2026-10-29.md) and its [phased improvement plan](docs/IMPROVEMENT_ROADMAP_2026-10-29.md). The first implementation milestone is recoverable packed-model and WebGL failure handling, followed by an evidence-based visitor task comparison. These are proposals, **not shipped features**.
 
-Then rerun/dispatch the `Deploy GitHub Pages` workflow.
-
-The production Pages bundle is already build-verified. After the first successful live deployment:
-
-- use the actual deployment URL for canonical / `og:url`;
-- publish a hosted social-preview image;
-- verify production asset/cache behavior;
-- run production URL desktop/mobile smoke;
-- capture final portfolio media;
-- keep monument/source geometry unchanged.
-
-The current decision remains **NO-GO for field capture right now**.
-
-Field-clearance outreach remains prepared but deferred.
-
-See [Real-Capture Go / No-Go](docs/REAL_CAPTURE_GO_NO_GO.md) and [ROADMAP.md](docs/ROADMAP.md).
+The current real-capture decision remains **NO-GO**. Do not send field-permission requests without a new explicit go/no-go decision. See [Real-Capture Go / No-Go](docs/REAL_CAPTURE_GO_NO_GO.md). Operational progress remains in [PROJECT_STATE.md](docs/PROJECT_STATE.md).
